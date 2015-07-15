@@ -1,0 +1,72 @@
+DATABASE mymusic
+
+TABLE config
+	id			INT
+	property	VARCHAR
+	value		VARCHAR
+
+TABLE songs
+	id			INT
+	name		VARCHAR
+	aid			INT		(artist id)
+	rid			INT		(record id)
+	length		INT		(song duration in milliseconds)
+	bitrate		INT		(in kbps)
+	discno		INT
+	trackno		INT
+	rating		INT
+	
+TABLE artists
+	id			INT
+	name		VARCHAR
+	
+TABLE records
+	id			INT
+	name		VARCHAR
+	aid			INT
+	typeid		INT
+	release		DATE
+	
+TABLE record_type
+	id			INT
+	name		VARCHAR		(album - 1, ep - 2, single - 2, live - 3, special - 5, radio-recording - 2, compilation - 4, best-of - 4, other - 5)
+	level		INT		record type importance level 
+	
+TABLE mmlink
+	id			INT
+	sid			INT
+	mmid		INT
+	added		DATE
+	
+TABLE playcnts
+	id			INT
+	sid			INT
+	devid		INT
+	playcnt		INT
+	
+TABLE played
+	id			INT
+	sid			INT
+	devid		INT		(device id)
+	timestamp	TIMESTAMP
+	
+TABLE devices
+	id			INT
+	name		VARCHAR
+	typeid		INT
+	
+TABLE device_type
+	id			INT
+	name		VARCHAR		(laptop, mp3-device, pc)
+	
+TABLE search
+	id			INT
+	sid			INT
+	tag			VARCHAR
+	
+TABLE logs
+	id			INT
+	timestamp	TIMESTAMP
+	action		VARCHAR
+	status		VARCHAR
+	description	VARCHAR

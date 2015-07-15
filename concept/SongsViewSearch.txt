@@ -1,0 +1,41 @@
+SELECT
+	sv.SongName,
+	sv.ArtistName,
+	sv.RecordName
+FROM
+	(
+		SELECT
+			SongId,
+			COUNT(SongId) AS 'SongCount'
+		FROM
+
+		(
+			(
+				SELECT
+					SongId
+				FROM
+					SongsView
+				WHERE
+					SongName LIKE '%editors%' OR ArtistName LIKE '%editors%' OR RecordName LIKE '%editors%'
+			)
+
+			UNION ALL
+
+			(
+				SELECT
+					SongId
+				FROM
+					SongsView
+				WHERE
+					SongName LIKE '%papillon%' OR ArtistName LIKE '%papillon%' OR RecordName LIKE '%papillon%'
+			)
+		) count_query
+
+		GROUP BY
+			SongId
+	) sub_query
+	
+	INNER JOIN SongsView sv ON sv.SongId = sub_query.SongId
+	
+WHERE
+	SongCount >= 2

@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE songs [
+	<!ELEMENT songs (song)*>
+	<!ELEMENT song (name, artist, record, length, bitrate, mmid, devid, playcnt, trackno, discno, rating, added)>
+	<!ELEMENT name (#PCDATA)>
+	<!ELEMENT artist (#PCDATA)>
+	<!ELEMENT record (#PCDATA)>
+	<!ELEMENT length (#PCDATA)>
+	<!ELEMENT bitrate (#PCDATA)>
+	<!ELEMENT mmid (#PCDATA)>
+	<!ELEMENT devid (#PCDATA)>
+	<!ELEMENT playcnt (#PCDATA)>
+	<!ELEMENT trackno (#PCDATA)>
+	<!ELEMENT discno (#PCDATA)>
+	<!ELEMENT rating (#PCDATA)>
+	<!ELEMENT added (#PCDATA)>
+]>
+<songs>
+	<song>
+		<name>Reagan's Skeleton</name>
+		<artist>Yeasayer</artist>
+		<record>Fragrant World</record>
+		<length>240</length>
+		<bitrate>128</bitrate>
+		<mmid>15465</mmid>
+		<devid>1</devid>
+		<playcnt>1</playcnt>
+		<trackno>7</trackno>
+		<discno>1</discno>
+		<rating>100</rating>
+		<added>40600.25689</added>
+	</song>
+</songs>

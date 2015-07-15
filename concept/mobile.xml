@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mobile [
+	<!ELEMENT mobile (play)*>
+	<!ELEMENT play (sid, devid, timestamp)>
+	<!ELEMENT sid (#PCDATA)>
+	<!ELEMENT devid (#PCDATA)>
+	<!ELEMENT timestamp (#PCDATA)>
+]>
+
+<mobile>
+	<play>
+		<sid>1020</sid>
+		<devid>2</devid>
+		<timestamp>14125685</timestamp>
+	</play>
+</mobile>

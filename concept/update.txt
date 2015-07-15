@@ -1,0 +1,12 @@
+Database update cycle
+	1.	Check if newer version of MM.DB is available
+	2.	If available, generate songs.xml and played.xml data files
+	3.	Import generated data files
+	4.	Import mobile data files
+
+Mobile update cycle:
+
+	1.	Export data from played table to mobile.{UNIX_TIMESTAMP}.xml file
+	2.	Upload mobile file
+	3.	Check if newer version of myMobileMusic.DB is available
+	4.	If available, download new file

@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE played [
+	<!ELEMENT played (play)*>
+	<!ELEMENT play (pldid, mmid, devid, timestamp)>
+	<!ELEMENT pldid (#PCDATA)>
+	<!ELEMENT mmid (#PCDATA)>
+	<!ELEMENT devid (#PCDATA)>
+	<!ELEMENT timestamp (#PCDATA)>
+]>
+
+
+<played>
+	<play>
+		<pldid>7589</pldid>
+		<mmid>15225</mmid>
+		<devid>1</devid>
+		<timestamp>40999.25689845</timestamp>
+	</play>
+</played>
