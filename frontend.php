@@ -6,9 +6,16 @@
 		
 		private $PAGE_TITLE = "myMusic - Everything you want to know about your music library";
 		
-		private $STYLESHEETS = array("http://fonts.googleapis.com/css?family=Oxygen", "mymusic.css");
+		private $STYLESHEETS = array(
+								"http://fonts.googleapis.com/css?family=Oxygen",
+								"external/bootstrap/css/bootstrap.min.css",
+								"mymusic.css"
+							);
 		
-		private $SCRIPTS = array("mymusic.js");
+		private $SCRIPTS = array(
+								"external/jquery/jquery-2.1.4.min.js",
+								"mymusic.js"
+							);
 		
 		public function __construct() {
 			$this->page = new page();
@@ -68,7 +75,7 @@
 			$search = "";
 			
 			$search .= "<div id='bar_search'>";
-				$search .= "<div><input type='text' id='search' size='40' value='Search for songs, artists, records - whatever you want to know' /></div>";
+				$search .= "<div><input type='text' id='search' size='40' placeholder='Search for songs, artists, records - whatever you want to know' /></div>";
 			$search .= "</div>";
 			
 			return $search;
@@ -97,6 +104,7 @@
 				$master .= "<head>";
 					// Meta information
 					$master .= "<meta charset='utf-8' />";
+					$master .= "<meta name='viewport' content='width=device-width, initial-scale=1' />";
 				
 					// Page title
 					$master .= "<title>" . $this->PAGE_TITLE . "</title>";
@@ -104,11 +112,6 @@
 					// CSS
 					foreach ($this->STYLESHEETS as $css) {
 						$master .= "<link rel='stylesheet' href='" . $css . "' type='text/css'>";
-					}
-					
-					// JS
-					foreach ($this->SCRIPTS as $js) {
-						$master .= "<script type='text/javascript src='" . $js . "'></script>";
 					}
 				$master .= "</head>";
 				
@@ -126,6 +129,11 @@
 			
 					// close master tag
 					$close .= "</div>";
+					
+					// Javascript source files are put to bottom of body for improved page load time
+					foreach ($this->SCRIPTS as $js) {
+						$close .= "<script type='text/javascript' src='" . $js . "'></script>";
+					}
 				
 				// close body tag
 				$close .= "</body>";
