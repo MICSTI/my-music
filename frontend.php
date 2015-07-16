@@ -14,6 +14,7 @@
 		
 		private $SCRIPTS = array(
 								"external/jquery/jquery-2.1.4.min.js",
+								"external/bootstrap/js/bootstrap.min.js",
 								"mymusic.js"
 							);
 		
