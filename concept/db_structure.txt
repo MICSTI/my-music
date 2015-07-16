@@ -70,3 +70,9 @@ TABLE logs
 	action		VARCHAR
 	status		VARCHAR
 	description	VARCHAR
+
+
+CREATE VIEW SongsView AS
+	SELECT s.id AS "SongId", s.name AS "SongName", a.name AS "ArtistName", r.name AS "RecordName" FROM songs s
+    INNER JOIN artists a ON a.id = s.aid 
+    INNER JOIN records r ON r.id = s.rid
