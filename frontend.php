@@ -36,9 +36,6 @@
 			// add menu div
 			$this->page->addPart("menu", $this->getMenu());
 			
-			// add search div
-			$this->page->addPart("search", $this->getSearch());
-			
 			// add main div
 			$this->page->addPart("main", $main);
 			
@@ -52,9 +49,8 @@
 		private function getTitle () {
 			$title = "";
 			
-			$title .= "<div id='bar_title'>";
-				$title .= "<div>myMusic</div>";
-				$title .= "<div>Everything you want to know about your music library.</div>";
+			$title .= "<div class='page-header'>";
+				$title .= "<h1>myMusic <small>Everything you want to know about your music library</small></h1>";
 			$title .= "</div>";
 			
 			return $title;
@@ -64,22 +60,44 @@
 		private function getMenu () {
 			$menu = "";
 			
-			$menu .= "<div id='bar_menu'>";
-				$menu .= "MENU";
-			$menu .= "</div>";
+			$menu .= "<nav role='navigation' class='navbar navbar-default'>";
+				$menu .= "<div class='navbar-header'>";
+					$menu .= "<button type='button' data-target='#navbarCollapse' data-toggle='collapse' class='navbar-toggle'>";
+						$menu .= "<span class='sr-only'>Toggle navigation</span>";
+						$menu .= "<span class='icon-bar'></span>";
+						$menu .= "<span class='icon-bar'></span>";
+						$menu .= "<span class='icon-bar'></span>";
+					$menu .= "</button>";
+					
+					$menu .= "<a href='#' class='navbar-brand'>myMusic</a>";
+				$menu .= "</div>";
+				
+				$menu .= "<div id='navbarCollapse' class='collapse navbar-collapse'>";
+					$menu .= "<ul class='nav navbar-nav'>";
+						$menu .= "<li class='active'><a href='#'>Home</a></li>";
+						$menu .= "<li class='dropdown'>";
+							$menu .= "<a href='#' data-toggle='dropdown' class='dropdown-toggle'>Charts <b class='caret'></b></a>";
+							
+							$menu .= "<ul class='dropdown-menu'>";
+								$menu .= "<li><a href='#'>Top 20/20</a></li>";
+								$menu .= "<li><a href='#'>Years</a></li>";
+							$menu .= "</ul>";
+						$menu .= "<li><a href='#'>History</a></li>";
+						$menu .= "<li><a href='#'>Input</a></li>";
+						$menu .= "<li><a href='#'>Concerts</a></li>";
+						$menu .= "<li><a href='#'>Settings</a></li>";
+					$menu .= "</ul>";
+					
+					// Search field
+					$menu .= "<form role='search' class='navbar-form navbar-left'>";
+						$menu .= "<div class='form-group'>";
+							$menu .= "<input type='text' placeholder='Search for songs, artists, records' class='form-control' size='32' />";
+						$menu .= "</div>";
+					$menu .= "</form>";
+				$menu .= "</div>";
+			$menu .= "</nav>";
 			
 			return $menu;
-		}
-		
-		// Content of search div
-		private function getSearch () {
-			$search = "";
-			
-			$search .= "<div id='bar_search'>";
-				$search .= "<div><input type='text' id='search' size='40' placeholder='Search for songs, artists, records - whatever you want to know' /></div>";
-			$search .= "</div>";
-			
-			return $search;
 		}
 		
 		// Content of footer div
