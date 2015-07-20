@@ -1,5 +1,6 @@
 <?php
 	// PHP files
+	require_once('util.php');
 	require_once('music.controller.php');
 	require_once('init.db.php');
 	require_once('mm.db.php');

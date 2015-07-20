@@ -82,7 +82,7 @@
 								$menu .= "<li><a href='#'>Top 20/20</a></li>";
 								$menu .= "<li><a href='#'>Years</a></li>";
 							$menu .= "</ul>";
-						$menu .= "<li><a href='#'>History</a></li>";
+						$menu .= "<li><a href='history.php?date=2012-01-30'>History</a></li>";
 						$menu .= "<li><a href='#'>Input</a></li>";
 						$menu .= "<li><a href='#'>Concerts</a></li>";
 						$menu .= "<li><a href='#'>Settings</a></li>";
