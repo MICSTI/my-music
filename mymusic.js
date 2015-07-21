@@ -9,7 +9,10 @@ var search = function(elem) {
 		}
 	})
 	 .done( function (msg) {
-		alert(msg);
+		console.log(msg);
+	 })
+	 .fail( function (error) {
+		 console.log("AJAX search error", error);
 	 });
 }
 

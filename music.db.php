@@ -860,6 +860,98 @@
 		}
 		
 		/**
+			Performs a short single search on the database for a song, artist or record.
+			Short single search means that there is only one word in the search query that consists of three or less characters.
+			In this mode, only the beginning of entries in the database are matched (i.e. LIKE 'xx%')
+			Input sanitation is done before this step, so the input is guaranteed to be stripped off of any scripts tags.
+			
+			Returned is an array containing the results, or false if an error occurred during the SQL query.
+		*/
+		public function shortSingleSearch ($search, $limit = 10) {
+			// escape string in case there's any apostrophes in it
+			$search = mysql_real_escape_string($search);
+			
+			$sql = "SELECT SongId, SongName, ArtistName, RecordName FROM SongsView WHERE SongName LIKE '" . $search . "%' OR ArtistName LIKE '" . $search . "%' OR RecordName LIKE '" . $search . "%' LIMIT :limit";
+			
+			try {
+				$query = $this->db->prepare($sql);
+				$query->execute( array(':limit' => $limit) );
+				
+				return $query->fetchAll(PDO::FETCH_ASSOC);
+			} catch (Exception $e) {
+				return false;
+			}
+		}
+		
+		/**
+			Performs a long single search on the database for a song, artist or record.
+			Long single search means that there is only one word in the search query that consists of more than three characters.
+			In this mode, entries that contain the term within a word are matched, too (i.e. LIKE '%xxxx%')
+			Input sanitation is done before this step, so the input is guaranteed to be stripped off of any scripts tags.
+			
+			Returned is an array containing the results, or false if an error occurred during the SQL query.
+		*/
+		public function longSingleSearch ($search, $limit = 10) {
+			// escape string in case there's any apostrophes in it
+			$search = mysql_real_escape_string($search);
+			
+			$sql = "SELECT SongId, SongName, ArtistName, RecordName FROM SongsView WHERE SongName LIKE '%" . $search . "%' OR ArtistName LIKE '%" . $search . "%' OR RecordName LIKE '%" . $search . "%' LIMIT :limit";
+			
+			try {
+				$query = $this->db->prepare($sql);
+				$query->execute( array(':limit' => $limit) );
+				
+				return $query->fetchAll(PDO::FETCH_ASSOC);
+			} catch (Exception $e) {
+				return false;
+			}
+		}
+		
+		/**
+			Performs a multi search on the database for a song, artist or record.
+			Multi search means that the query consists of at least two words.
+			This mode performs a grouped-query, which means that searching for "Ashes Bowie" will return the song "Ashes To Ashes" by David Bowie".
+			Like the single search, every word up to three characters is only matched from the beginning, every word with more than three letters is matched anywhere.
+			Input sanitation is done before this step, so the input is guaranteed to be stripped off of any scripts tags.
+			
+			Returned is an array containing the results, or false if an error occurred during the SQL query.
+		*/
+		public function multiSearch ($search_array, $limit = 10) {
+			$term_query = "";
+			
+			foreach ($search_array as $term) {
+				$term = mysql_real_escape_string($term);
+				
+				if (strlen($term) <= 3) {
+					// short word
+					$tq = "( SELECT SongId FROM SongsView WHERE SongName LIKE '" . $term . "%' OR ArtistName LIKE '" . $term . "%' OR RecordName LIKE '" . $term . "%' )";
+				} else {
+					// long word
+					$tq = "( SELECT SongId FROM SongsView WHERE SongName LIKE '%" . $term . "%' OR ArtistName LIKE '%" . $term . "%' OR RecordName LIKE '%" . $term . "%' )";
+				}
+				
+				if ($term_query != "") {
+					$term_query .= " UNION ALL ";
+				}
+				
+				$term_query .= $tq;
+			}
+			
+			$count_query = " SELECT SongId, COUNT(SongId) AS 'SongCount' FROM ( " . $term_query . " ) count_query GROUP BY SongId HAVING COUNT(SongId) >= :term_count ";
+		
+			$main_sql = "SELECT sv.SongId, sv.SongName, sv.ArtistName, sv.RecordName FROM ( " . $count_query . " ) sub_query INNER JOIN SongsView sv ON sv.SongId = sub_query.SongId LIMIT :limit";
+			
+			try {
+				$query = $this->db->prepare($main_sql);
+				$query->execute( array(':limit' => $limit, ':term_count' => count($search_array)) );
+				
+				return $query->fetchAll(PDO::FETCH_ASSOC);
+			} catch (Exception $e) {
+				return false;
+			}
+		}
+		
+		/**
 			Sets the search tags for a song.
 			All tags are stored in lower case, for easier finding.
 			You can specify tags not to be indexed for a song through the "search_tags_exclude" property in config table

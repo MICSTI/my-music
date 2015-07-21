@@ -19,7 +19,7 @@
 						$html .= "<th>Time</th>";
 						$html .= "<th>Song</th>";
 						$html .= "<th>Artist</th>";
-						$html .= "<th>Record</th>";
+						$html .= "<th class='hidden-xs'>Record</th>";
 					$html .= "</tr>";
 				$html .= "</thead>";
 				
@@ -29,7 +29,7 @@
 							$html .= "<td>" . getTimeFromTimestamp($song["Timestamp"]) . "</td>";
 							$html .= "<td>" . $song["SongName"] . "</td>";
 							$html .= "<td>" . $song["ArtistName"] . "</td>";
-							$html .= "<td>" . $song["RecordName"] . "</td>";
+							$html .= "<td class='hidden-xs'>" . $song["RecordName"] . "</td>";
 						$html .= "</tr>";
 					}
 				$html .= "</tbody>";

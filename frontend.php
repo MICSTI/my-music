@@ -104,9 +104,9 @@
 		private function getFooter () {
 			$footer = "";
 			
-			$footer .= "<div id='footer'>";
+			/*$footer .= "<div id='footer'>";
 				$footer .= "&copy; Michael Stifter 2014";
-			$footer .= "</div>";
+			$footer .= "</div>";*/
 			
 			return $footer;
 		}
