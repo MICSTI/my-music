@@ -11,7 +11,7 @@
 		$songs = $mc->getMDB()->getPlayedHistoryForDate($date);
 		
 		if (!empty($songs)) {
-			$html .= "<h4><strong>Played songs on " . $mysql_date->convert2AustrianDate() . "</strong></h4>";
+			$html .= "<h4><strong>Played songs on </strong><input type='text' id='pickdate' placeholder='Pick date' size='12' /></h4>";
 		
 			$html .= "<table class='table table-striped'>";
 				$html .= "<thead>";

@@ -10,6 +10,7 @@
 								"http://fonts.googleapis.com/css?family=Oxygen",
 								"external/bootstrap/css/bootstrap.min.css",
 								"auto_complete.css",
+								"datepicker.css",
 								"mymusic.css"
 							);
 		
@@ -17,6 +18,7 @@
 								"external/jquery/jquery-2.1.4.min.js",
 								"external/bootstrap/js/bootstrap.min.js",
 								"auto_complete.js",
+								"bootstrap-datepicker.js",
 								"mymusic.js"
 							);
 		
