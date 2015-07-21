@@ -91,7 +91,7 @@
 					// Search field
 					$menu .= "<form role='search' class='navbar-form navbar-left'>";
 						$menu .= "<div class='form-group'>";
-							$menu .= "<input type='text' placeholder='Search for songs, artists, records' class='form-control' size='32' />";
+							$menu .= "<input type='text' id='searchfield' placeholder='Search for songs, artists or records' class='form-control' size='33' />";
 						$menu .= "</div>";
 					$menu .= "</form>";
 				$menu .= "</div>";
