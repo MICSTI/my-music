@@ -871,7 +871,7 @@
 			// escape string in case there's any apostrophes in it
 			$search = mysql_real_escape_string($search);
 			
-			$sql = "SELECT SongId, SongName, ArtistName, RecordName FROM SongsView WHERE SongName LIKE '" . $search . "%' OR ArtistName LIKE '" . $search . "%' OR RecordName LIKE '" . $search . "%' LIMIT :limit";
+			$sql = "SELECT SongId, SongName, ArtistName, RecordName FROM SongsView WHERE SongName LIKE '" . $search . "%' OR ArtistName LIKE '" . $search . "%' LIMIT :limit";
 			
 			try {
 				$query = $this->db->prepare($sql);
@@ -895,7 +895,7 @@
 			// escape string in case there's any apostrophes in it
 			$search = mysql_real_escape_string($search);
 			
-			$sql = "SELECT SongId, SongName, ArtistName, RecordName FROM SongsView WHERE SongName LIKE '%" . $search . "%' OR ArtistName LIKE '%" . $search . "%' OR RecordName LIKE '%" . $search . "%' LIMIT :limit";
+			$sql = "SELECT SongId, SongName, ArtistName, RecordName FROM SongsView WHERE SongName LIKE '%" . $search . "%' OR ArtistName LIKE '%" . $search . "%' LIMIT :limit";
 			
 			try {
 				$query = $this->db->prepare($sql);
@@ -924,10 +924,10 @@
 				
 				if (strlen($term) <= 3) {
 					// short word
-					$tq = "( SELECT SongId FROM SongsView WHERE SongName LIKE '" . $term . "%' OR ArtistName LIKE '" . $term . "%' OR RecordName LIKE '" . $term . "%' )";
+					$tq = "( SELECT SongId FROM SongsView WHERE SongName LIKE '" . $term . "%' OR ArtistName LIKE '" . $term . "%' )";
 				} else {
 					// long word
-					$tq = "( SELECT SongId FROM SongsView WHERE SongName LIKE '%" . $term . "%' OR ArtistName LIKE '%" . $term . "%' OR RecordName LIKE '%" . $term . "%' )";
+					$tq = "( SELECT SongId FROM SongsView WHERE SongName LIKE '%" . $term . "%' OR ArtistName LIKE '%" . $term . "%' )";
 				}
 				
 				if ($term_query != "") {
