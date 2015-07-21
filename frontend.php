@@ -15,6 +15,7 @@
 		private $SCRIPTS = array(
 								"external/jquery/jquery-2.1.4.min.js",
 								"external/bootstrap/js/bootstrap.min.js",
+								"external/jquery/typeahead.bundle.min.js",
 								"mymusic.js"
 							);
 		
@@ -91,7 +92,7 @@
 					// Search field
 					$menu .= "<form role='search' class='navbar-form navbar-left'>";
 						$menu .= "<div class='form-group'>";
-							$menu .= "<input type='text' id='searchfield' placeholder='Search for songs, artists or records' class='form-control' size='33' />";
+							$menu .= "<input type='text' id='searchfield' class='form-control' placeholder='Search for songs, artists or records' size='33' />";
 						$menu .= "</div>";
 					$menu .= "</form>";
 				$menu .= "</div>";
