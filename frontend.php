@@ -54,7 +54,7 @@
 			$title = "";
 			
 			$title .= "<div class='page-header'>";
-				$title .= "<h1>myMusic <small>Everything you want to know about your music library</small></h1>";
+				$title .= "<h1>myMusic <small class='hidden-xs'>Everything you want to know about your music library</small></h1>";
 			$title .= "</div>";
 			
 			return $title;

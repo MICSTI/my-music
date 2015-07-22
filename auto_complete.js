@@ -20,13 +20,23 @@ function AutoComplete() {
 	// result div
 	var result;
 	
+	// timer to keep track if user is still typing in the text input field to avoid unnecessary AJAX calls
+	var typingTimer;
+	
+	// the time in milliseconds until the AJAX call is executed
+	var doneTypingInterval = 200;
+	
+	// helper variable to keep track which choice is currently selected (for navigation with arrow keys)
 	var choice = -1;
+	
+	// class names for AJAX request result div
 	var choiceSelectId = "ac_r_";
 	var choiceClass = "ac_r";
 	
 	this.setId = function(_id) {
 		id = _id;
 		
+		// init jQuery selectors for parent and result div and bind key listeners
 		init();
 	}
 	
@@ -34,6 +44,10 @@ function AutoComplete() {
 		url = _url;
 	}
 	
+	/**
+		Performs the initialization of the important elements.
+		Selectors for parent and result elements as well as key listeners.
+	*/
 	var init = function() {
 		result_id = id + "_result";
 		parent = $("#" + id);
@@ -51,16 +65,37 @@ function AutoComplete() {
 			  
 		$("." + choiceClass).css("width", parent.outerWidth + "px")
 		
-		// set keyup listener to get updates and move through auto complete choices (we use a closure so we can pass the event to the key handler)
-		parent.on("keyup", function(event) { return keyHandler(event); } );
+		// set keyup listener 
+		parent.on("keyup", function(event) {
+			// if input is enter or escape, up or down arrow, put it through immediately, otherwise wait some time until user has stopped typing
+			if (event.which == 13 || event.which == 27 || event.which == 38 || event.which == 40) {
+				doneTyping(event);
+			} else {
+				// stop the timeout
+				clearTimeout(typingTimer);
+				
+				// start the timeout to see if user presses another key (we use a closure here so we can pass the event along to the doneTyping method)
+				typingTimer = setTimeout( function() { return doneTyping(event); }, doneTypingInterval);
+			}
+		});
+		
+		// clear the timeout if the user presses a key down
+		parent.on("keydown", function() {
+			clearTimeout(typingTimer);
+		});
 		
 		// set focus listener to get results if parent gets focus
 		parent.on("focus", getUpdate);
-		
-		// set blur listener to hide result div if parent has lost focus
-		parent.on("blur", removeResult);
 	}
 	
+	// perform keyhandler method to get updates and move through auto complete choices
+	var doneTyping = function(event) {
+		keyHandler(event);
+	}
+	
+	/**
+		Performs an AJAX call to retrieve the possible choices for the search term.
+	*/
 	var getUpdate = function() {		
 		$.ajax({
 			method: "GET",
@@ -80,6 +115,14 @@ function AutoComplete() {
 				// set content of div
 				result.html(getHtml());
 				
+				// add onclick listener for choices
+				$("." + choiceClass).each(function (i, item) {
+					$(this).on("click", function() { 
+						choice = i;
+						selectResult();
+					});
+				});
+				
 				// show result div
 				result.show();
 			} else {
@@ -93,6 +136,10 @@ function AutoComplete() {
 		 });
 	}
 	
+	/**
+		Handles the key input from the user.
+		Enter, escape, and arrow up and down are caught, for every other key the update function will be called.
+	*/
 	var keyHandler = function(keyStroke) {
 		var text = parent.val();
 		
@@ -151,6 +198,9 @@ function AutoComplete() {
 		}
 	}
 	
+	/**
+		Returns the HTML for the result div.
+	*/
 	var getHtml = function() {
 		var html = "";
 		
@@ -161,13 +211,23 @@ function AutoComplete() {
 		return html;
 	}
 	
+	/**
+		Handles the selection of a choice.
+	*/
 	var selectResult = function() {
 		alert("You selected " + json.data[choice]["SongName"] + " by " + json.data[choice]["ArtistName"]);
 	}
 	
+	/**
+		Hides the result div and resets the choice variable.
+	*/
 	var removeResult = function() {
 		choice = -1;
 		result.hide();
 		result.html("");
+	}
+	
+	this.selectChoice = function (i) {
+		selectResult(i);
 	}
 }
