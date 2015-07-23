@@ -15,8 +15,8 @@
 		$html .= "<h4><strong>Played songs on </strong>" . $datepicker_elem . "</h4>";
 		
 		$html .= "<span>";
-			$html .= "<span><a href='history.php?date='>Year before</span>";
-			$html .= "<span><a href='history.php?date='>Year after</span>";
+			$html .= "<span><a href='history.php'>Year before</span>";
+			$html .= "<span><a href='history.php'>Year after</span>";
 		$html .= "</span>";
 	
 		$html .= "<table class='table table-striped'>";
