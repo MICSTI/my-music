@@ -19,6 +19,7 @@
 								"external/bootstrap/js/bootstrap.min.js",
 								"auto_complete.js",
 								"bootstrap-datepicker.js",
+								"util.js",
 								"mymusic.js"
 							);
 		
@@ -84,6 +85,7 @@
 							
 							$menu .= "<ul class='dropdown-menu'>";
 								$menu .= "<li><a href='#'>Top 20/20</a></li>";
+								$menu .= "<li><a href='#'>Favourites</a></li>";
 								$menu .= "<li><a href='#'>Years</a></li>";
 							$menu .= "</ul>";
 						$menu .= "<li><a href='history.php?date=2012-01-30'>History</a></li>";
