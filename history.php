@@ -18,8 +18,8 @@
 		$html .= "<h4><strong>Played songs on </strong>" . $datepicker_elem . "</h4>";
 		
 		$html .= "<span>";
-			$html .= "<span><a href='history.php'>Year before</span>";
-			$html .= "<span><a href='history.php'>Year after</span>";
+			$html .= "<span><a href='history.php'>Year before</a></span>";
+			$html .= "<span><a href='history.php'>Year after</a></span>";
 		$html .= "</span>";
 	
 		$html .= "<table class='table table-striped'>";
@@ -37,8 +37,8 @@
 					$html .= "<tr>";
 						$html .= "<td>" . getTimeFromTimestamp($song["Timestamp"]) . "</td>";
 						$html .= "<td><a href='song.php?id=" . $song["SongId"] . "'>" . $song["SongName"] . "</a></td>";
-						$html .= "<td>" . $song["ArtistName"] . "</td>";
-						$html .= "<td class='hidden-xs'>" . $song["RecordName"] . "</td>";
+						$html .= "<td><a href='artist.php?id=" . $song["ArtistId"] . "'>" . $song["ArtistName"] . "</a></td>";
+						$html .= "<td class='hidden-xs'><a href='record.php?id=" . $song["RecordId"] . "'>" . $song["RecordName"] . "</a></td>";
 					$html .= "</tr>";
 				}
 			$html .= "</tbody>";
