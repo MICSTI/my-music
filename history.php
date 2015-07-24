@@ -11,6 +11,9 @@
 	
 	$datepicker_elem = "<input type='text' id='pickdate' placeholder='Pick date' size='12' />";
 	
+	// Headline
+	$html .= "<h3>History</h3>";
+	
 	if (!empty($songs)) {
 		$html .= "<h4><strong>Played songs on </strong>" . $datepicker_elem . "</h4>";
 		
@@ -33,7 +36,7 @@
 				foreach ($songs as $song) {
 					$html .= "<tr>";
 						$html .= "<td>" . getTimeFromTimestamp($song["Timestamp"]) . "</td>";
-						$html .= "<td>" . $song["SongName"] . "</td>";
+						$html .= "<td><a href='song.php?id=" . $song["SongId"] . "'>" . $song["SongName"] . "</a></td>";
 						$html .= "<td>" . $song["ArtistName"] . "</td>";
 						$html .= "<td class='hidden-xs'>" . $song["RecordName"] . "</td>";
 					$html .= "</tr>";

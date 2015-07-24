@@ -5,3 +5,20 @@ body {
 input[type=text] {
     font-family: 'Oxygen', sans-serif;
 }
+
+.bold {
+	font-weight: bold;
+}
+
+.rank {
+	text-align: right;
+}
+
+#icon-brand {
+	color: #f89406;
+}
+
+.song-general-info div {
+	padding-top: 4px;
+	padding-bottom: 4px;
+}

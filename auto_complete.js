@@ -148,7 +148,16 @@ function AutoComplete() {
 				// Enter
 				case 13:
 					keyStroke.preventDefault();
-					selectResult();
+					
+					if (choice >= 0) {
+						// go to selected choice
+						selectResult();
+					} else if (json.data.length == 1) {
+						// special case: only one choice, go to that choice without having to select it first
+						choice = 0;
+						selectResult();
+					}
+	
 					break;
 					
 				// Escape
@@ -215,7 +224,7 @@ function AutoComplete() {
 		Handles the selection of a choice.
 	*/
 	var selectResult = function() {
-		alert("You selected " + json.data[choice]["SongName"] + " by " + json.data[choice]["ArtistName"]);
+		window.location.href = "song.php?id=" + json.data[choice]["SongId"];
 	}
 	
 	/**

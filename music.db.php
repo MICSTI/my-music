@@ -142,7 +142,7 @@
 					$this->addLog(__FUNCTION__, "success", "fetched from " . $type . " with id " . $id);
 				}
 			
-				return $query->fetch();
+				return $query->fetch(PDO::FETCH_ASSOC);
 			} else {
 				return false;
 			}
@@ -197,7 +197,209 @@
 			Returns a song with all meta data from the database
 		*/
 		public function getSong ($id) {
-			return $this->getSingleGeneric('songs', $id);
+			$sql = "SELECT
+						so.name AS 'SongName',
+						ar.id AS 'ArtistId',
+						ar.name AS 'ArtistName',
+						re.id AS 'RecordId',
+						re.name AS 'RecordName',
+						so.length AS 'SongLength',
+						so.rating AS 'SongRating'
+					FROM
+						songs so INNER JOIN
+						artists ar ON ar.id = so.aid INNER JOIN
+						records re ON re.id = so.rid
+					WHERE
+						so.id = :id";
+
+			$query = $this->db->prepare($sql);
+			$query->execute( array(':id' => $id) );
+			
+			if ($query->rowCount() > 0) {
+				if ($this->logging) {
+					$this->addLog(__FUNCTION__, "success", "fetched song details for song id " . $id);
+				}
+				
+				return $query->fetch(PDO::FETCH_ASSOC);
+			} else {
+				return null;
+			}
+		}
+		
+		/**
+			Returns the number of times a song has been played.
+		*/
+		public function getSongPlayCount ($id) {
+			$sql = "SELECT
+						COUNT(*) AS 'PlayCount'
+					FROM
+						played
+					WHERE
+						sid = :id
+					GROUP BY 
+						sid";
+						
+			$query = $this->db->prepare($sql);
+			$query->execute( array(':id' => $id) );
+			
+			if ($query->rowCount() > 0) {
+				if ($this->logging) {
+					$this->addLog(__FUNCTION__, "success", "fetched played count for song id " . $id);
+				}
+				
+				$fetch = $query->fetch(PDO::FETCH_ASSOC);
+				
+				return $fetch["PlayCount"];
+			} else {
+				return null;
+			}
+		}
+		
+		/**
+			Returns the date when a song was added.
+		*/
+		public function getSongAddedDate ($id) {
+			$sql = "SELECT
+						added AS 'AddedDate'
+					FROM
+						mmlink
+					WHERE
+						sid = :id
+					ORDER BY
+						added ASC
+					LIMIT 1";
+						
+			$query = $this->db->prepare($sql);
+			$query->execute( array(':id' => $id) );
+			
+			if ($query->rowCount() > 0) {
+				if ($this->logging) {
+					$this->addLog(__FUNCTION__, "success", "fetched added date song id " . $id);
+				}
+				
+				$fetch = $query->fetch(PDO::FETCH_ASSOC);
+				
+				return $fetch["AddedDate"];
+			} else {
+				return null;
+			}
+		}
+		
+		/**
+			Returns the most recent played entry for a song.
+			If no played entry is found for this song, false is returned.
+		*/
+		public function getMostRecentPlayed($id) {
+			$sql = "SELECT
+						timestamp
+					FROM
+						played
+					WHERE
+						sid = :id
+					ORDER BY
+						timestamp DESC
+					LIMIT 1";
+						
+			$query = $this->db->prepare($sql);
+			$query->execute( array(':id' => $id) );
+			
+			if ($query->rowCount() > 0) {
+				if ($this->logging) {
+					$this->addLog(__FUNCTION__, "success", "fetched most recent played entry for song id " . $id);
+				}
+				
+				$fetch = $query->fetch(PDO::FETCH_ASSOC);
+				
+				return $fetch["timestamp"];
+			} else {
+				return false;
+			}
+		}
+		
+		/**
+			Returns an array containing basic information about a record as well as the list of all songs in the record
+		*/
+		public function getRecord($id) {
+			$record = array();
+			
+			// basic information
+			$sql = "SELECT
+						re.id AS 'RecordId',
+						re.name AS 'RecordName',
+						ar.id AS 'ArtistId',
+						ar.name AS 'ArtistName'
+					FROM
+						records re INNER JOIN
+						artists ar ON ar.id = re.aid
+					WHERE
+						re.id = :id";
+						
+			$query = $this->db->prepare($sql);
+			$query->execute( array(':id' => $id) );
+			
+			if ($query->rowCount() > 0) {
+				$fetch = $query->fetch(PDO::FETCH_ASSOC);
+				
+				$record["RecordId"] = $fetch["RecordId"];
+				$record["RecordName"] = $fetch["RecordName"];
+				$record["ArtistId"] = $fetch["ArtistId"];
+				$record["ArtistName"] = $fetch["ArtistName"];
+			}
+			
+			// song list with played counts
+			$sql = "SELECT
+						sq.SongId,
+						sq.SongName,
+						sq.SongDiscNo,
+						sq.SongTrackNo,
+						sq.SongLength,
+						sq.SongRating,
+						COUNT(pl.sid) AS 'PlayedCount'
+					FROM
+						(SELECT
+							so.id AS 'SongId',
+							so.name AS 'SongName',
+							so.discno AS 'SongDiscNo',
+							so.trackno AS 'SongTrackNo',
+							so.length AS 'SongLength',
+							so.rating AS 'SongRating'
+						FROM
+							songs so
+						WHERE
+							so.rid = :id) sq INNER JOIN
+						played pl ON pl.sid = sq.SongId
+					GROUP BY
+						pl.sid
+					ORDER BY
+						SongDiscNo, SongTrackNo";
+						
+			$query = $this->db->prepare($sql);
+			$query->execute( array(':id' => $id) );
+			
+			// song list
+			$song_list = array();
+			
+			// song played ocunt
+			$song_played_count = 0;
+			
+			// song duration count
+			$song_length_count = 0;
+			
+			if ($query->rowCount() > 0) {
+				$songs = $query->fetchAll(PDO::FETCH_ASSOC);
+				
+				foreach($songs as $song) {
+					array_push($song_list, $song);
+					$song_played_count += $song["PlayedCount"];
+					$song_length_count += $song["SongLength"];
+				}
+			}
+			
+			$record["SongList"] = $song_list;
+			$record["SongPlayedCount"] = $song_played_count;
+			$record["SongLengthCount"] = $song_length_count;
+						
+			return $record;
 		}
 		
 		/**
@@ -1500,7 +1702,7 @@
 			Returns the play history for the specified song
 			If no result is found, return will be null
 		*/
-		private function getPlayedSongHistory ($sid, $limit_low = "", $limit_high = "") {
+		public function getPlayedSongHistory ($sid, $limit_low = "", $limit_high = "") {
 			// strip input from code tags
 			$sid = strip_tags($sid);
 			$limit_low = strip_tags($limit_low);
@@ -1532,6 +1734,117 @@
 		}
 		
 		/**
+			Returns the 100 most played songs in the database
+		*/
+		public function getMostPlayedSongs() {
+			$sql = "SELECT
+						so.id AS 'SongId',
+						so.name AS 'SongName',
+						ar.id AS 'ArtistId',
+						ar.name AS 'ArtistName',
+						pc_q.PlayedCount AS 'PlayedCount'
+					FROM
+						(SELECT
+							sid AS 'SongId',
+							COUNT(sid) AS 'PlayedCount'
+						FROM
+							played
+						GROUP BY
+							sid
+						ORDER BY
+							PlayedCount DESC
+						LIMIT 100) pc_q INNER JOIN
+					songs so ON so.id = pc_q.SongId INNER JOIN
+					artists ar ON ar.id = so.aid";
+
+			$query = $this->db->prepare($sql);
+			$query->execute();
+			
+			if ($query->rowCount() > 0) {
+				if ($this->logging) {
+					$this->addLog(__FUNCTION__, "success", "fetched most played songs");
+				}
+				
+				return $query->fetchAll(PDO::FETCH_ASSOC);
+			} else {
+				return null;
+			}
+		}
+		
+		/**
+			Returns the 100 most played artists in the database
+		*/
+		public function getMostPlayedArtists() {
+			$sql = "SELECT
+						ar.id AS 'ArtistId',
+						ar.name AS 'ArtistName',
+						COUNT(pl.sid) AS 'PlayedCount'
+					FROM
+						artists ar INNER JOIN
+						songs so ON so.aid = ar.id INNER JOIN
+						played pl ON pl.sid = so.id
+					GROUP BY
+						ar.id
+					ORDER BY
+						PlayedCount DESC
+					LIMIT 100";
+
+			$query = $this->db->prepare($sql);
+			$query->execute();
+			
+			if ($query->rowCount() > 0) {
+				if ($this->logging) {
+					$this->addLog(__FUNCTION__, "success", "fetched most played artists");
+				}
+				
+				return $query->fetchAll(PDO::FETCH_ASSOC);
+			} else {
+				return null;
+			}
+		}
+		
+		/**
+			Returns the 100 most played records in the database
+		*/
+		public function getMostPlayedRecords() {
+			$sql = "SELECT
+						pl_q.RecordId,
+						pl_q.RecordName,
+						pl_q.ArtistId,
+						ar.name AS 'ArtistName',
+						pl_q.PlayedCount
+					FROM
+						(SELECT
+							re.id AS 'RecordId',
+							re.name AS 'RecordName',
+							re.aid AS 'ArtistId',
+							COUNT(pl.sid) AS 'PlayedCount'
+						FROM
+							records re INNER JOIN
+							songs so ON so.rid = re.id INNER JOIN
+							played pl ON pl.sid = so.id
+						GROUP BY
+							re.id
+						ORDER BY
+							PlayedCount DESC
+						LIMIT 100) pl_q INNER JOIN
+						artists ar ON ar.id = pl_q.ArtistId";
+
+			$query = $this->db->prepare($sql);
+			$query->execute();
+			
+			if ($query->rowCount() > 0) {
+				if ($this->logging) {
+					$this->addLog(__FUNCTION__, "success", "fetched most played records");
+				}
+				
+				return $query->fetchAll(PDO::FETCH_ASSOC);
+			} else {
+				return null;
+			}
+		}
+		
+		/**
 			Returns the play history for the specfied date
 			If no result is found, null is returned
 		*/
@@ -1543,8 +1856,11 @@
 			
 			$sql = "SELECT
 						pl.timestamp AS 'Timestamp',
+						so.id AS 'SongId',
 						so.name AS 'SongName',
+						ar.id AS 'ArtistId',
 						ar.name AS 'ArtistName',
+						re.id AS 'RecordId',
 						re.name AS 'RecordName'
 					FROM
 						played pl 

@@ -1,0 +1,59 @@
+- Most played songs
+SELECT
+	so.id AS "SongId",
+	so.name AS "SongName",
+	ar.id AS "ArtistId",
+	ar.name AS "ArtistName",
+	pc_q.PlayedCount AS "PlayedCount"
+FROM
+	(SELECT
+		sid AS "SongId",
+		COUNT(sid) AS "PlayedCount"
+	FROM
+		played
+	GROUP BY
+		sid
+	ORDER BY
+		PlayedCount DESC
+	LIMIT 100) pc_q INNER JOIN
+	songs so ON so.id = pc_q.SongId INNER JOIN
+	artists ar ON ar.id = so.aid
+
+- Most played artists
+SELECT
+	ar.id AS "ArtistId",
+	ar.name AS "ArtistName",
+	COUNT(pl.sid) AS "PlayedCount"
+FROM
+	artists ar INNER JOIN
+	songs so ON so.aid = ar.id INNER JOIN
+	played pl ON pl.sid = so.id
+GROUP BY
+	ar.id
+ORDER BY
+	PlayedCount DESC
+LIMIT 100
+
+- Most played records
+SELECT
+	pl_q.RecordId,
+	pl_q.RecordName,
+	pl_q.ArtistId,
+	ar.name AS "ArtistName",
+	pl_q.PlayedCount
+FROM
+	(SELECT
+		re.id AS "RecordId",
+		re.name AS "RecordName",
+		re.aid AS "ArtistId",
+		COUNT(pl.sid) AS "PlayedCount"
+	FROM
+		records re INNER JOIN
+		songs so ON so.rid = re.id INNER JOIN
+		played pl ON pl.sid = so.id
+	GROUP BY
+		re.id
+	ORDER BY
+		PlayedCount DESC
+	LIMIT 100) pl_q INNER JOIN
+	artists ar ON ar.id = pl_q.ArtistId

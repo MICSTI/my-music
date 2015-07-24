@@ -42,7 +42,7 @@
 			$this->page->addPart("menu", $this->getMenu());
 			
 			// add main div
-			$this->page->addPart("main", $main);
+			$this->page->addPart("main", $this->getMainWrapper($main));
 			
 			// add footer div
 			$this->page->addPart("footer", $this->getFooter());
@@ -74,7 +74,7 @@
 						$menu .= "<span class='icon-bar'></span>";
 					$menu .= "</button>";
 					
-					$menu .= "<a href='#' class='navbar-brand'>myMusic</a>";
+					$menu .= "<a href='#' id='icon-brand' class='navbar-brand glyphicon glyphicon-headphones'></a>";
 				$menu .= "</div>";
 				
 				$menu .= "<div id='navbarCollapse' class='collapse navbar-collapse'>";
@@ -85,7 +85,7 @@
 							
 							$menu .= "<ul class='dropdown-menu'>";
 								$menu .= "<li><a href='#'>Top 20/20</a></li>";
-								$menu .= "<li><a href='#'>Favourites</a></li>";
+								$menu .= "<li><a href='favourites.php'>Favourites</a></li>";
 								$menu .= "<li><a href='#'>Years</a></li>";
 							$menu .= "</ul>";
 						$menu .= "<li><a href='history.php?date=2012-01-30'>History</a></li>";
@@ -104,6 +104,13 @@
 			$menu .= "</nav>";
 			
 			return $menu;
+		}
+		
+		// main wrapper
+		private function getMainWrapper ($main) {
+			$wrapper = "<div class='container pull-left'>" . $main . "</div>";
+			
+			return $wrapper;
 		}
 		
 		// Content of footer div
@@ -130,6 +137,9 @@
 					// Meta information
 					$master .= "<meta charset='utf-8' />";
 					$master .= "<meta name='viewport' content='width=device-width, initial-scale=1' />";
+					
+					// Favicon
+					$master .= "<link rel='icon' type='image/png' href='img/glyphicons-77-headphones.png' />";
 				
 					// Page title
 					$master .= "<title>" . $this->PAGE_TITLE . "</title>";
