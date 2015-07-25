@@ -9,18 +9,27 @@
 	
 	$songs = $mc->getMDB()->getPlayedHistoryForDate($date);
 	
-	$datepicker_elem = "<input type='text' id='pickdate' placeholder='Pick date' size='12' />";
+	$datepicker_elem = "<input type='text' id='pickdate' placeholder='Pick date' size='12' value='" . $mysql_date->convert2AustrianDate() . "' />";
 	
 	// Headline
 	$html .= "<h3>History</h3>";
 	
+	// Year before + year after
+	$year_jump = "";
+	
+	$year_before = (substr($date, 0, 4) - 1) . substr($date, 4);
+	$year_after = (substr($date, 0, 4) + 1) . substr($date, 4);
+	
+	$year_jump .= "<span>";
+		$year_jump .= "<span><a href='history.php?date=" . $year_before . "'>Year before</a></span>";
+		$year_jump .= "<span><a href='history.php?date=" . $year_after . "'>Year after</a></span>";
+	$year_jump .= "</span>";
+	
 	if (!empty($songs)) {
-		$html .= "<h4><strong>Played songs on </strong>" . $datepicker_elem . "</h4>";
+		$html .= "<span><strong>Played songs on </strong>" . $datepicker_elem . "</span>";
 		
-		$html .= "<span>";
-			$html .= "<span><a href='history.php'>Year before</a></span>";
-			$html .= "<span><a href='history.php'>Year after</a></span>";
-		$html .= "</span>";
+		// add year before + after
+		$html .= $year_jump;
 	
 		$html .= "<table class='table table-striped'>";
 			$html .= "<thead>";
@@ -44,7 +53,9 @@
 			$html .= "</tbody>";
 		$html .= "</table>";
 	} else {
-		$html .= "<h4><strong>No songs were played on </strong>" . $datepicker_elem . "</h4>";
+		$html .= "<span><strong>No songs were played on </strong>" . $datepicker_elem . "</span>";
+		
+		$html .= $year_jump;
 	}
 	
 	echo $mc->getIndexHTML($html);

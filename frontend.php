@@ -4,7 +4,7 @@
 	class frontend {
 		private $page;
 		
-		private $PAGE_TITLE = "myMusic - Everything you want to know about your music library";
+		private $PAGE_TITLE = "myMusic";
 		
 		private $STYLESHEETS = array(
 								"http://fonts.googleapis.com/css?family=Oxygen",
@@ -88,7 +88,7 @@
 								$menu .= "<li><a href='favourites.php'>Favourites</a></li>";
 								$menu .= "<li><a href='#'>Years</a></li>";
 							$menu .= "</ul>";
-						$menu .= "<li><a href='history.php?date=2012-01-30'>History</a></li>";
+						$menu .= "<li><a href='history.php'>History</a></li>";
 						$menu .= "<li><a href='#'>Input</a></li>";
 						$menu .= "<li><a href='#'>Concerts</a></li>";
 						$menu .= "<li><a href='#'>Settings</a></li>";
