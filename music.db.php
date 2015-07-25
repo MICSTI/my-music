@@ -354,7 +354,7 @@
 						sq.SongTrackNo,
 						sq.SongLength,
 						sq.SongRating,
-						COUNT(pl.sid) AS 'PlayedCount'
+						SUM(sq.SongPlay) AS 'PlayedCount'
 					FROM
 						(SELECT
 							so.id AS 'SongId',
@@ -362,14 +362,15 @@
 							so.discno AS 'SongDiscNo',
 							so.trackno AS 'SongTrackNo',
 							so.length AS 'SongLength',
-							so.rating AS 'SongRating'
+							so.rating AS 'SongRating',
+							IF(pl.sid, 1, 0) AS 'SongPlay'
 						FROM
-							songs so
+							songs so LEFT JOIN
+							played pl ON pl.sid = so.id
 						WHERE
-							so.rid = :id) sq INNER JOIN
-						played pl ON pl.sid = sq.SongId
+							so.rid = :id) sq
 					GROUP BY
-						pl.sid
+						sq.SongId
 					ORDER BY
 						SongDiscNo, SongTrackNo";
 						

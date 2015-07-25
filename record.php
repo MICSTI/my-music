@@ -26,8 +26,6 @@
 						
 						$html .= "<div class='col-sm-3 bold'>Artist:</div>";
 						$html .= "<div class='col-sm-9'><a href='artist.php?id=" . $record_info["ArtistId"] . "'>" . $record_info["ArtistName"] . "</a></div>";
-						
-						// Duration!?!
 					$html .= "</div>";
 					
 					$html .= "<div class='song-general-info col-sm-8'>";
@@ -64,7 +62,16 @@
 									
 									$track_no = $song["SongTrackNo"] > 0 ? $song["SongTrackNo"] : "";
 									
-									$last_played = new MysqlDate($mc->getMDB()->getMostRecentPlayed($sid));
+									$most_recent = $mc->getMDB()->getMostRecentPlayed($sid);
+									
+									if ($most_recent !== false) {
+										$last_played = new MysqlDate($most_recent);
+										$last_played = $last_played->convert2AustrianDatetime();
+									} else {
+										$last_played = "";
+									}
+									
+									
 									
 									$html .= "<tr>";
 										$html .= "<td class='rank'>" . $track_no . "</td>";
@@ -72,7 +79,7 @@
 										$html .= "<td>" . millisecondsToMinutes($song["SongLength"]) . "</td>";
 										$html .= "<td>" . $song["SongRating"] . "</td>";
 										$html .= "<td>" . $song["PlayedCount"] . "</td>";
-										$html .= "<td>" . $last_played->convert2AustrianDatetime() . "</td>";
+										$html .= "<td>" . $last_played . "</td>";
 									$html .= "</tr>";
 								}
 							$html .= "</tbody>";
