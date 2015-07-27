@@ -59,8 +59,10 @@
 						$html .= "<div class='col-sm-3 bold'>Added to library:</div>";
 						$html .= "<div class='col-sm-9'>" . $added_date->convert2AustrianDate() . "</div>";
 						
+						$times = $play_count == 1 ? "time" : "times";
+						
 						$html .= "<div class='col-sm-3 bold'>Played:</div>";
-						$html .= "<div class='col-sm-9'>" . $play_count . " times</div>";
+						$html .= "<div class='col-sm-9'>" . $play_count . " " . $times . "</div>";
 					$html .= "</div>";
 				$html .= "</div>";
 			$html .= "</div>";

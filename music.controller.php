@@ -49,6 +49,13 @@
 		public function getMDB () {
 			return $this->mdb;
 		}
+		
+		/**
+			Returns reference to frontend instance
+		*/
+		public function getFrontend() {
+			return $this->frontend;
+		}
 
 		public function getIndexHTML ($main = "") {
 			return $this->frontend->getIndex($main);

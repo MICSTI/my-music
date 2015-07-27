@@ -190,7 +190,52 @@
 			Returns an artist with all meta data from the database
 		*/
 		public function getArtist ($id) {
-			return $this->getSingleGeneric('artists', $id);
+			$artist = array();
+			
+			// basic information
+			$sql = "SELECT
+						ar.id AS 'ArtistId',
+						ar.name AS 'ArtistName'
+					FROM
+						artists ar
+					WHERE
+						ar.id = :id";
+						
+			$query = $this->db->prepare($sql);
+			$query->execute( array(':id' => $id) );
+			
+			if ($query->rowCount() > 0) {
+				$fetch = $query->fetch(PDO::FETCH_ASSOC);
+	
+				$artist["ArtistId"] = $fetch["ArtistId"];
+				$artist["ArtistName"] = $fetch["ArtistName"];
+			}
+			
+			// artist play count
+			$sql = "SELECT
+						COUNT(*) AS 'ArtistPlayCount'
+					FROM
+						artists ar INNER JOIN
+						songs so ON so.aid = ar.id INNER JOIN
+						played pl ON pl.sid = so.id
+					WHERE
+						ar.id = :id";
+							
+			$query = $this->db->prepare($sql);
+			$query->execute( array(':id' => $id) );
+			
+			if ($query->rowCount() > 0) {
+				$fetch = $query->fetch(PDO::FETCH_ASSOC);
+	
+				$artist["ArtistPlayCount"] = $fetch["ArtistPlayCount"];
+			}
+			
+			// get records in chronological descending order
+			$releases = $this->getArtistReleases($id);
+			
+			$artist["Releases"] = $releases;
+			
+			return $artist;
 		}
 		
 		/**
@@ -346,6 +391,25 @@
 				$record["ArtistName"] = $fetch["ArtistName"];
 			}
 			
+			// get additional record infos like the song list, total playing time and total play count
+			$record_info = $this->getRecordSongList($id);
+			
+			// put items from 
+			$record["SongList"] = $record_info["SongList"];
+			$record["SongPlayedCount"] = $record_info["SongPlayedCount"];
+			$record["SongLengthCount"] = $record_info["SongLengthCount"];
+						
+			return $record;
+		}
+		
+		/**
+			Returns an array containg the song list for a record.
+			Additionally, there's a total play count of all the songs on the record
+			and the total playing length of the record included.
+		*/
+		function getRecordSongList($id) {
+			$record = array();
+			
 			// song list with played counts
 			$sql = "SELECT
 						sq.SongId,
@@ -390,6 +454,11 @@
 				$songs = $query->fetchAll(PDO::FETCH_ASSOC);
 				
 				foreach($songs as $song) {
+					// add last played timestamp to song
+					$most_recent = $this->getMostRecentPlayed($song["SongId"]);
+				
+					$song["MostRecentPlayed"] = getMostRecentPlayedText($most_recent);
+					
 					array_push($song_list, $song);
 					$song_played_count += $song["PlayedCount"];
 					$song_length_count += $song["SongLength"];
@@ -399,8 +468,61 @@
 			$record["SongList"] = $song_list;
 			$record["SongPlayedCount"] = $song_played_count;
 			$record["SongLengthCount"] = $song_length_count;
-						
+			
 			return $record;
+		}
+		
+		/**
+			Returns an array containing all 5 star songs by an artist ordered by play count.
+		*/
+		public function getPopularSongByArtist($id) {
+			$songs = array();
+			
+			// song list with played counts
+			$sql = "SELECT
+						sq.SongId,
+						sq.SongName,
+						sq.SongLength,
+						sq.RecordId,
+						sq.RecordName,
+						SUM(sq.SongPlay) AS 'PlayedCount'
+					FROM
+						(SELECT
+							so.id AS 'SongId',
+							so.name AS 'SongName',
+							so.length AS 'SongLength',
+							re.id AS 'RecordId',
+							re.name AS 'RecordName',
+							IF(pl.sid, 1, 0) AS 'SongPlay'
+						FROM
+							songs so INNER JOIN
+							records re ON re.id = so.rid LEFT JOIN
+							played pl ON pl.sid = so.id
+						WHERE
+							so.aid = :id AND
+							so.rating = 100) sq
+					GROUP BY
+						sq.SongId
+					ORDER BY
+						PlayedCount DESC";
+						
+			$query = $this->db->prepare($sql);
+			$query->execute( array(':id' => $id) );
+			
+			if ($query->rowCount() > 0) {
+				$popular = $query->fetchAll(PDO::FETCH_ASSOC);
+				
+				// add last played timestamp to each song
+				foreach ($popular as $song) {
+					$most_recent = $this->getMostRecentPlayed($song["SongId"]);
+				
+					$song["MostRecentPlayed"] = getMostRecentPlayedText($most_recent);
+					
+					array_push($songs, $song);
+				}
+			}
+			
+			return $songs;
 		}
 		
 		/**
@@ -1889,27 +2011,52 @@
 		}
 		
 		/**
+			Wrapper method for getting the releases of one artist
+		*/
+		private function getArtistReleases ($aid) {
+			$releases = array();
+			
+			// get artist releases by date in descending chronological order
+			$release_array = $this->getArtistReleasesByDate($aid, 'DESC');
+			
+			foreach ($release_array as $release) {
+				/*
+				// add additional info (song list, play count, playing time)
+				$record_info = $this->getRecordSongList($release["RecordId"]);
+			
+				// put items from 
+				$release["SongList"] = $record_info["SongList"];
+				$release["SongPlayedCount"] = $record_info["SongPlayedCount"];
+				$release["SongLengthCount"] = $record_info["SongLengthCount"];*/
+				
+				array_push($releases, $release);
+			}
+			
+			return $releases;
+		}
+		
+		/**
 			Returns all record releases by the specified artist, ordered by release date.
 			Record type importance level is not considered.
 		*/
-		private function getArtistReleasesByDate ($aid, $limit_low = "", $limit_high = "") {
+		private function getArtistReleasesByDate ($aid, $order = 'ASC', $limit_low = "", $limit_high = "") {
 			// strip input from code tags
 			$aid = strip_tags($aid);
 			$limit_low = strip_tags($limit_low);
 			$limit_high = strip_tags($limit_high);
 			
 			$sql = "SELECT
-						re.id,
-						re.name,
-						re.release,
-						rt.name AS 'Record Type'
+						re.id AS 'RecordId',
+						re.name AS 'RecordTitle',
+						re.publish AS 'RecordPublishDate',
+						rt.name AS 'RecordType'
 					FROM
-						records re
-						INNER JOIN record_type rt ON rt.id = re.typeid
+						records re INNER JOIN
+						record_type rt ON rt.id = re.typeid
 					WHERE
 						re.aid = :aid
 					ORDER BY
-						re.release ASC";
+						re.publish " . $order;
 
 			$sql .= $this->getQueryLimit($limit_low, $limit_high);
 			$query = $this->db->prepare($sql);
@@ -1920,7 +2067,7 @@
 					$this->addLog(__FUNCTION__, "success", "fetched artist releases for artist id " . $aid);
 				}
 				
-				return $query->fetchAll();
+				return $query->fetchAll(PDO::FETCH_ASSOC);
 			} else {
 				return null;
 			}

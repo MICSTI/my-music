@@ -22,3 +22,26 @@
 		
 		return $minutes . ":" . $seconds;
 	}
+	
+	function getMostRecentPlayedText($most_recent) {
+		$text = "";
+		
+		if ($most_recent !== false) {
+			$last_played = new MysqlDate($most_recent);
+			$text = $last_played->convert2AustrianDatetime();
+		}
+		
+		return $text;
+	}
+	
+	function getSongLink($id, $text) {
+		return "<a href='song.php?id=" . $id . "'>" . $text . "</a>";
+	}
+	
+	function getArtistLink($id, $text) {
+		return "<a href='artist.php?id=" . $id . "'>" . $text . "</a>";
+	}
+	
+	function getRecordLink($id, $text) {
+		return "<a href='record.php?id=" . $id . "'>" . $text . "</a>";
+	}
