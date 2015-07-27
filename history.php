@@ -20,17 +20,18 @@
 	$year_before = (substr($date, 0, 4) - 1) . substr($date, 4);
 	$year_after = (substr($date, 0, 4) + 1) . substr($date, 4);
 	
-	$year_jump .= "<span>";
-		$year_jump .= "<span><a href='history.php?date=" . $year_before . "'>Year before</a></span>";
-		$year_jump .= "<span><a href='history.php?date=" . $year_after . "'>Year after</a></span>";
-	$year_jump .= "</span>";
+	$html .= "<span>";
+		$html .= "<button type='button' class='btn btn-primary' onclick='window.location.href=\"history.php?date=" . $year_before . "\"'><span class='glyphicon glyphicon-chevron-left'></span> Year before</button>";
+			
+			if (!empty($songs)) {
+				$html .= "<span id='history-dp'><strong>Played songs on </strong>" . $datepicker_elem . "</span>";
+			} else {
+				$html .= "<span id='history-dp'><strong>No songs were played on </strong>" . $datepicker_elem . "</span>";
+			}		
+		$html .= "<button type='button' class='btn btn-primary' onclick='window.location.href=\"history.php?date=" . $year_after . "\"'>Year after <span class='glyphicon glyphicon-chevron-right'></span></button>";
+	$html .= "</span>";
 	
 	if (!empty($songs)) {
-		$html .= "<span><strong>Played songs on </strong>" . $datepicker_elem . "</span>";
-		
-		// add year before + after
-		$html .= $year_jump;
-	
 		$html .= "<table class='table table-striped'>";
 			$html .= "<thead>";
 				$html .= "<tr>";
@@ -52,10 +53,6 @@
 				}
 			$html .= "</tbody>";
 		$html .= "</table>";
-	} else {
-		$html .= "<span><strong>No songs were played on </strong>" . $datepicker_elem . "</span>";
-		
-		$html .= $year_jump;
 	}
 	
 	echo $mc->getIndexHTML($html, "history");

@@ -26,3 +26,8 @@ a {
 	padding-top: 4px;
 	padding-bottom: 4px;
 }
+
+#history-dp {
+	display: inline-block;
+	padding: 0px 16px 0px 16px;
+}
