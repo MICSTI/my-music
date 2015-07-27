@@ -92,7 +92,7 @@
 						$menu .= "<li class='" . $this->getActiveText("history", $selected) . "'><a href='history.php'>History</a></li>";
 						$menu .= "<li><a href='#'>Input</a></li>";
 						$menu .= "<li><a href='#'>Concerts</a></li>";
-						$menu .= "<li><a href='#'>Settings</a></li>";
+						$menu .= "<li class='" . $this->getActiveText("settings", $selected) . "'><a href='settings.php'>Settings</a></li>";
 					$menu .= "</ul>";
 					
 					// Search field
@@ -263,6 +263,66 @@
 					}
 				$html .= "</div>";
 			$html .= "</div>";
+			
+			return $html;
+		}
+		
+		public function getSettingsContent($mdb, $group = "general") {
+			$html = "";
+			
+			switch ($group) {
+				case "general":
+					$html .= $this->getGeneralSettings($mdb);
+					break;
+					
+				case "update":
+					$html .= $group;
+					break;
+					
+				case "devices":
+					$html .= $group;
+					break;
+					
+				case "device-types":
+					$html .= $group;
+					break;
+					
+				case "record-types":
+					$html .= $group;
+					break;
+					
+				default:
+					$html .= "Unknown group";
+					break;
+			}
+			
+			return $html;
+		}
+		
+		private function getGeneralSettings($mdb) {
+			$html = "";
+			
+			// MM DB modification
+			$mm_db_modification = new UnixTimestamp($mdb->getConfig("mm_db_modification"));
+			
+			$html .= "<p>";
+				$html .= "<div><strong>MediaMonkey database modification</strong></div>";
+				$html .= "<div>" . $mm_db_modification->convert2AustrianDateTime() . "</div>";
+			$html .= "</p>";
+			
+			// Successful update
+			$successful_update = new UnixTimestamp($mdb->getConfig("successful_update"));
+			
+			$html .= "<p>";
+				$html .= "<div><strong>Last successful update</strong></div>";
+				$html .= "<div>" . $successful_update->convert2AustrianDateTime() . "</div>";
+			$html .= "</p>";
+			
+			// Version
+			$html .= "<p>";
+				$html .= "<div><strong>Version</strong></div>";
+				$html .= "<div>0.2</div>";
+			$html .= "</p>";
 			
 			return $html;
 		}
