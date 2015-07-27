@@ -45,9 +45,9 @@
 				foreach ($songs as $song) {
 					$html .= "<tr>";
 						$html .= "<td>" . getTimeFromTimestamp($song["Timestamp"]) . "</td>";
-						$html .= "<td><a href='song.php?id=" . $song["SongId"] . "'>" . $song["SongName"] . "</a></td>";
-						$html .= "<td><a href='artist.php?id=" . $song["ArtistId"] . "'>" . $song["ArtistName"] . "</a></td>";
-						$html .= "<td class='hidden-xs'><a href='record.php?id=" . $song["RecordId"] . "'>" . $song["RecordName"] . "</a></td>";
+						$html .= "<td>" . getSongLink($song["SongId"], $song["SongName"]) . "</td>";
+						$html .= "<td>" . getArtistLink($song["ArtistId"], $song["ArtistName"]) . "</td>";
+						$html .= "<td class='hidden-xs'>" . getRecordLink($song["RecordId"], $song["RecordName"]) . "</td>";
 					$html .= "</tr>";
 				}
 			$html .= "</tbody>";
@@ -58,4 +58,4 @@
 		$html .= $year_jump;
 	}
 	
-	echo $mc->getIndexHTML($html);
+	echo $mc->getIndexHTML($html, "history");

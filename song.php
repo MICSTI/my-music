@@ -40,10 +40,10 @@
 						$html .= "<div class='col-sm-9'>" . $song_info["SongName"] . "</div>";
 						
 						$html .= "<div class='col-sm-3 bold'>Artist:</div>";
-						$html .= "<div class='col-sm-9'><a href='artist.php?id=" . $song_info["ArtistId"] . "'>" . $song_info["ArtistName"] . "</a></div>";
+						$html .= "<div class='col-sm-9'>" . getArtistLink($song_info["ArtistId"],$song_info["ArtistName"]) . "</div>";
 						
 						$html .= "<div class='col-sm-3 bold'>Record:</div>";
-						$html .= "<div class='col-sm-9'><a href='record.php?id=" . $song_info["RecordId"] . "'>" . $song_info["RecordName"] . "</a></div>";
+						$html .= "<div class='col-sm-9'>" . getRecordLink($song_info["RecordId"], $song_info["RecordName"]) . "</div>";
 						
 						$html .= "<div class='col-sm-3 bold'>Duration:</div>";
 						$html .= "<div class='col-sm-9'>" . millisecondsToMinutes($song_info["SongLength"]) . " min</div>";

@@ -57,8 +57,8 @@
 			return $this->frontend;
 		}
 
-		public function getIndexHTML ($main = "") {
-			return $this->frontend->getIndex($main);
+		public function getIndexHTML ($main = "", $selected = "") {
+			return $this->frontend->getIndex($main, $selected);
 		}
 		
 		/**

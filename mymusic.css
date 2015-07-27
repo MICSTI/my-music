@@ -6,6 +6,10 @@ input[type=text] {
     font-family: 'Oxygen', sans-serif;
 }
 
+a {
+	outline: 0 !important;
+}
+
 .bold {
 	font-weight: bold;
 }

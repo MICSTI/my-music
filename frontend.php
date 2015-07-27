@@ -34,12 +34,12 @@
 			return $this->page->getHTML();
 		}
 		
-		public function getIndex ($main = "") {
+		public function getIndex ($main = "", $menu_select = "") {
 			// add title div
 			$this->page->addPart("title", $this->getTitle());
 			
 			// add menu div
-			$this->page->addPart("menu", $this->getMenu());
+			$this->page->addPart("menu", $this->getMenu($menu_select));
 			
 			// add main div
 			$this->page->addPart("main", $this->getMainWrapper($main));
@@ -62,7 +62,7 @@
 		}
 		
 		// Content of menu div
-		private function getMenu () {
+		private function getMenu ($selected) {
 			$menu = "";
 			
 			$menu .= "<nav role='navigation' class='navbar navbar-default'>";
@@ -79,8 +79,8 @@
 				
 				$menu .= "<div id='navbarCollapse' class='collapse navbar-collapse'>";
 					$menu .= "<ul class='nav navbar-nav'>";
-						$menu .= "<li class='active'><a href='#'>Home</a></li>";
-						$menu .= "<li class='dropdown'>";
+						$menu .= "<li class='" . $this->getActiveText("home", $selected) . "'><a href='#'>Home</a></li>";
+						$menu .= "<li class='dropdown " . $this->getActiveText("charts", $selected) . "'>";
 							$menu .= "<a href='#' data-toggle='dropdown' class='dropdown-toggle'>Charts <b class='caret'></b></a>";
 							
 							$menu .= "<ul class='dropdown-menu'>";
@@ -88,7 +88,8 @@
 								$menu .= "<li><a href='favourites.php'>Favourites</a></li>";
 								$menu .= "<li><a href='#'>Years</a></li>";
 							$menu .= "</ul>";
-						$menu .= "<li><a href='history.php'>History</a></li>";
+							
+						$menu .= "<li class='" . $this->getActiveText("history", $selected) . "'><a href='history.php'>History</a></li>";
 						$menu .= "<li><a href='#'>Input</a></li>";
 						$menu .= "<li><a href='#'>Concerts</a></li>";
 						$menu .= "<li><a href='#'>Settings</a></li>";
@@ -104,6 +105,20 @@
 			$menu .= "</nav>";
 			
 			return $menu;
+		}
+		
+		/**
+			Checks if the element class should be marked as "active".
+		*/
+		private function checkActive ($li, $actual) {
+			return $li == $actual;
+		}
+		
+		/**
+			Performs a check if the menu element should be marked as active
+		*/
+		private function getActiveText ($li, $actual) {
+			return $this->checkActive($li, $actual) ? "active" : "";
 		}
 		
 		// main wrapper
@@ -195,7 +210,7 @@
 						$html .= "<div class='col-sm-9'>" . $record_info["RecordName"] . "</div>";
 						
 						$html .= "<div class='col-sm-3 bold'>Artist:</div>";
-						$html .= "<div class='col-sm-9'><a href='artist.php?id=" . $record_info["ArtistId"] . "'>" . $record_info["ArtistName"] . "</a></div>";
+						$html .= "<div class='col-sm-9'>" . getArtistLink($record_info["ArtistId"], $record_info["ArtistName"]) . "</div>";
 					$html .= "</div>";
 					
 					$html .= "<div class='song-general-info col-sm-8'>";
@@ -234,7 +249,7 @@
 									
 									$html .= "<tr>";
 										$html .= "<td class='rank'>" . $track_no . "</td>";
-										$html .= "<td><a href='song.php?id=" . $song["SongId"] . "'>" . $song["SongName"] . "</a></td>";
+										$html .= "<td>" . getSongLink($song["SongId"], $song["SongName"]) . "</td>";
 										$html .= "<td>" . millisecondsToMinutes($song["SongLength"]) . "</td>";
 										$html .= "<td>" . $song["SongRating"] . "</td>";
 										$html .= "<td>" . $song["PlayedCount"] . "</td>";
