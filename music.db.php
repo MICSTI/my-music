@@ -1647,6 +1647,34 @@
 		}
 		
 		/**
+			Returns an array containing all icons.
+			If no icons exist, null is returned.
+		*/
+		public function getIcons() {
+			$artist = array();
+			
+			// get all icons
+			$sql = "SELECT
+						ic.id AS 'IconId',
+						ic.name AS 'IconName',
+						ic.type AS 'IconType',
+						ic.path AS 'IconPath'
+					FROM
+						icons ic";
+						
+			$query = $this->db->prepare($sql);
+			$query->execute();
+			
+			if ($query->rowCount() > 0) {
+				$fetch = $query->fetchAll(PDO::FETCH_ASSOC);
+	
+				return $fetch;
+			} else {
+				return null;
+			}
+		}
+		
+		/**
 			Returns the name of the specified device id.
 			False is returned if device does not exist.
 		*/
@@ -2014,23 +2042,8 @@
 			Wrapper method for getting the releases of one artist
 		*/
 		private function getArtistReleases ($aid) {
-			$releases = array();
-			
 			// get artist releases by date in descending chronological order
-			$release_array = $this->getArtistReleasesByDate($aid, 'DESC');
-			
-			foreach ($release_array as $release) {
-				/*
-				// add additional info (song list, play count, playing time)
-				$record_info = $this->getRecordSongList($release["RecordId"]);
-			
-				// put items from 
-				$release["SongList"] = $record_info["SongList"];
-				$release["SongPlayedCount"] = $record_info["SongPlayedCount"];
-				$release["SongLengthCount"] = $record_info["SongLengthCount"];*/
-				
-				array_push($releases, $release);
-			}
+			$releases = $this->getArtistReleasesByDate($aid, 'DESC');
 			
 			return $releases;
 		}

@@ -279,6 +279,10 @@
 					$html .= $group;
 					break;
 					
+				case "icons":
+					$html .= $this->getIconSettings($mdb);
+					break;
+					
 				case "devices":
 					$html .= $group;
 					break;
@@ -319,10 +323,46 @@
 			$html .= "</p>";
 			
 			// Version
+			$version_number = $mdb->getConfig("version_number");
+			$version_string = $mdb->getConfig("version_string");
+			
 			$html .= "<p>";
 				$html .= "<div><strong>Version</strong></div>";
-				$html .= "<div>0.2</div>";
+				$html .= "<div>" . $version_string . " (#" . $version_number . ")</div>";
 			$html .= "</p>";
+			
+			return $html;
+		}
+		
+		private function getIconSettings($mdb) {
+			$html = "";
+			
+			// get all icons from the database
+			$icons = $mdb->getIcons();
+			
+			$html .= "<table class='table table-striped'>";
+				$html .= "<thead>";
+					$html .= "<tr>";
+						$html .= "<th class='col-sm-1'>Icon</th>";
+						$html .= "<th class='col-sm-9'>Name</th>";
+						$html .= "<th class='col-sm-2'><button type='button' class='btn btn-primary'><span class='glyphicon glyphicon-plus'></span></buton></th>";
+					$html .= "</tr>";
+				$html .= "</thead>";
+				
+				$html .= "<tbody>";
+					foreach ($icons as $icon) {
+						$html .= "<tr>";
+							$html .= "<td>" . getIconRef($icon) . "</td>";
+							$html .= "<td>" . $icon["IconName"] . "</td>";
+							$html .= "<td><button type='button' class='btn btn-default'><span class='glyphicon glyphicon-pencil'></span></button></td>";
+						$html .= "</tr>";
+					}
+				$html .= "</tbody>";
+			$html .= "</table>";
+			
+			foreach ($icons as $icon) {
+				
+			}
 			
 			return $html;
 		}

@@ -19,6 +19,11 @@
 				$html .= "<span>Update</span>";
 			$html .= "</a>";
 			
+			// Icons
+			$html .= "<a href='#' id='settings-icons' class='list-group-item'>";
+				$html .= "<span>Icons</span>";
+			$html .= "</a>";
+			
 			// Devices
 			$html .= "<a href='#' id='settings-devices' class='list-group-item'>";
 				$html .= "<span>Devices</span>";

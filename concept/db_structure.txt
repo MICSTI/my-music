@@ -58,11 +58,13 @@ TABLE devices
 TABLE device_type
 	id			INT
 	name		VARCHAR		(laptop, mp3-device, pc)
+	iconid		INT
 	
-TABLE search
+TABLE icons
 	id			INT
-	sid			INT
-	tag			VARCHAR
+	name		VARCHAR
+	type		VARCHAR		(glyphicon or image)
+	path		VARCHAR
 	
 TABLE logs
 	id			INT

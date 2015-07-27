@@ -45,3 +45,11 @@
 	function getRecordLink($id, $text) {
 		return "<a href='record.php?id=" . $id . "'>" . $text . "</a>";
 	}
+	
+	function getIconRef($icon) {
+		if ($icon["IconType"] == "glyphicon") {
+			return "<span class='glyphicon " . $icon["IconPath"] . "'></span>";
+		} else {
+			return "<img src='" . $icon["IconPath"] . "' />";
+		}
+	}
