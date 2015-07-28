@@ -234,8 +234,8 @@
 								$html .= "<tr>";
 									$html .= "<th class='col-sm-1'>Track no.</th>";
 									$html .= "<th class='col-sm-4'>Title</th>";
-									$html .= "<th class='col-sm-1'>Duration</th>";
-									$html .= "<th class='col-sm-2'>Rating</th>";
+									$html .= "<th class='col-sm-1 hidden-xs'>Duration</th>";
+									$html .= "<th class='col-sm-2 hidden-xs'>Rating</th>";
 									$html .= "<th class='col-sm-2'>Count</th>";
 									$html .= "<th class='col-sm-2'>Last listened</th>";
 								$html .= "</tr>";
@@ -250,8 +250,8 @@
 									$html .= "<tr>";
 										$html .= "<td class='rank'>" . $track_no . "</td>";
 										$html .= "<td>" . getSongLink($song["SongId"], $song["SongName"]) . "</td>";
-										$html .= "<td>" . millisecondsToMinutes($song["SongLength"]) . "</td>";
-										$html .= "<td>" . $song["SongRating"] . "</td>";
+										$html .= "<td class='hidden-xs'>" . millisecondsToMinutes($song["SongLength"]) . "</td>";
+										$html .= "<td class='hidden-xs'>" . $song["SongRating"] . "</td>";
 										$html .= "<td>" . $song["PlayedCount"] . "</td>";
 										$html .= "<td>" . $song["MostRecentPlayed"] . "</td>";
 									$html .= "</tr>";

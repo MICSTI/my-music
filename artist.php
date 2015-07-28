@@ -51,8 +51,8 @@
 								$html .= "<thead>";
 									$html .= "<tr>";
 										$html .= "<th class='col-sm-4'>Title</th>";
-										$html .= "<th class='col-sm-3'>Record</th>";
-										$html .= "<th class='col-sm-1'>Duration</th>";
+										$html .= "<th class='col-sm-3 hidden-xs'>Record</th>";
+										$html .= "<th class='col-sm-1 hidden-xs'>Duration</th>";
 										$html .= "<th class='col-sm-2'>Count</th>";
 										$html .= "<th class='col-sm-2'>Last listened</th>";
 									$html .= "</tr>";
@@ -62,8 +62,8 @@
 									foreach ($popular as $song) {
 										$html .= "<tr>";
 											$html .= "<td>" . getSongLink($song["SongId"], $song["SongName"]) . "</td>";
-											$html .= "<td>" . getRecordLink($song["RecordId"], $song["RecordName"]) . "</td>";
-											$html .= "<td>" . millisecondsToMinutes($song["SongLength"]) . "</td>";
+											$html .= "<td class='hidden-xs'>" . getRecordLink($song["RecordId"], $song["RecordName"]) . "</td>";
+											$html .= "<td class='hidden-xs'>" . millisecondsToMinutes($song["SongLength"]) . "</td>";
 											$html .= "<td>" . $song["PlayedCount"] . "</td>";
 											$html .= "<td>" . $song["MostRecentPlayed"] . "</td>";
 										$html .= "</tr>";
