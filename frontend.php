@@ -180,6 +180,27 @@
 					// close master tag
 					$close .= "</div>";
 					
+					// Modal
+					$close .= "<div id='music-modal' class='modal fade'>";
+						$close .= "<div class='modal-dialog'>";
+							$close .= "<div class='modal-content'>";
+								$close .= "<div class='modal-header'>";
+									$close .= "<button type='button' class='close' data-dismiss='modal' aria-hidden='true'>&times;</button>";
+									$close .= "<h4 class='modal-title'>Modal title</h4>";
+								$close .= "</div>";
+								
+								$close .= "<div class='modal-body'>";
+									$close .= "<p>Hello, I'm a modal!</p>";
+								$close .= "</div>";
+								
+								$close .= "<div class='modal-footer'>";
+									$close .= "<button tyoe='button' class='btn btn-default' data-dismiss='modal'>Cancel</button>";
+									$close .= "<button tyoe='button' class='btn btn-primary'>Save</button>";
+								$close .= "</div>";
+							$close .= "</div>";
+						$close .= "</div>";
+					$close .= "</div>";
+					
 					// Javascript source files are put to bottom of body for improved page load time
 					foreach ($this->SCRIPTS as $js) {
 						$close .= "<script type='text/javascript' src='" . $js . "'></script>";
@@ -354,24 +375,11 @@
 						$html .= "<tr>";
 							$html .= "<td>" . getIconRef($icon) . "</td>";
 							$html .= "<td>" . $icon["IconName"] . "</td>";
-							$html .= "<td><a href='#' id='settings-icon' role='button' class='btn btn-default'><span class='glyphicon glyphicon-pencil'></span></td>";
+							$html .= "<td><a href='#' id='settings-icon' role='button' class='btn btn-default' onclick=\"changeSettings('changeIcon', '" . $icon["IconId"] . "')\"><span class='glyphicon glyphicon-pencil'></span></td>";
 						$html .= "</tr>";
 					}
 				$html .= "</tbody>";
 			$html .= "</table>";
-			
-			foreach ($icons as $icon) {
-				
-			}
-			
-			$html .= "<script type='text/javascript'>";
-				$html .= "$(document).ready(function() {
-					$('#settings-icon').click(function() {
-						$('#settings-modal').find('.modal-title').text('ICONS ICONS ICONS');
-						$('#settings-modal').modal('show');
-					});
-				});";
-			$html .= "</script>";
 			
 			return $html;
 		}

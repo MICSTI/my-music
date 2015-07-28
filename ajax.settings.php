@@ -2,7 +2,28 @@
 	include('resources.php');
 	
 	if ($_GET) {
-		$tab = isset($_GET['tab']) ? trim($_GET['tab']) : "";
+		$action = isset($_GET['action']) ? trim($_GET['action']) : "";
+		$id = isset($_GET['id']) ? trim($_GET['id']) : "";
 		
-		echo $mc->getFrontend()->getSettingsContent($mc->getMDB(), $tab);
+		switch ($action) {
+			// tab selection
+			case "tab":
+				echo $mc->getFrontend()->getSettingsContent($mc->getMDB(), $id);
+				break;
+			
+			// change icons
+			case "changeIcon":
+				$data = array();
+				
+				$data["title"] = "Edit icon";
+				$data["body"] = "Here goes the form";
+				$data["footer"] = "Maybe we should define a good solution for displaying the buttons and attach a function to handle saving";
+				
+				echo json_encode($data);
+				break;
+				
+			default:
+				echo "Unknown action";
+				break;
+		}
 	}

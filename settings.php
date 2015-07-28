@@ -46,25 +46,4 @@
 		$html .= $mc->getFrontend()->getSettingsContent($mc->getMDB());
 	$html .= "</div>";
 	
-	// Modal
-	$html .= "<div id='settings-modal' class='modal fade'>";
-		$html .= "<div class='modal-dialog'>";
-			$html .= "<div class='modal-content'>";
-				$html .= "<div class='modal-header'>";
-					$html .= "<button type='button' class='close' data-dismiss='modal' aria-hidden='true'>&times;</button>";
-					$html .= "<h4 class='modal-title'>Confirmation</h4>";
-				$html .= "</div>";
-				
-				$html .= "<div class='modal-body'>";
-					$html .= "<p>Hello, I'm a modal!</p>";
-				$html .= "</div>";
-				
-				$html .= "<div class='modal-footer'>";
-					$html .= "<button tyoe='button' class='btn btn-default' data-dismiss='modal'>Close</button>";
-					$html .= "<button tyoe='button' class='btn btn-primary'>Save</button>";
-				$html .= "</div>";
-			$html .= "</div>";
-		$html .= "</div>";
-	$html .= "</div>";
-	
 	echo $mc->getIndexHTML($html, "settings");

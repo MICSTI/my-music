@@ -1,3 +1,28 @@
+function changeSettings(_action, _id) {
+	var modal = $("#music-modal");
+	
+	$.ajax( {
+		method: "GET",
+		url: "ajax.settings.php",
+		data: {
+			action: _action,
+			id: _id
+		}
+	}).done(function(data) {
+		// set content of modal
+		var content = JSON.parse(data);
+		
+		modal.find(".modal-title").text(content.title);
+		modal.find(".modal-body").text(content.body);
+		modal.find(".modal-footer").text(content.footer);
+		
+		modal.modal("show");
+	}).fail(function(error) {
+		// log error
+		console.log("ajax.settings.php", error);
+	});
+}
+
 $(document).ready( function () {
 	// make sure you can't submit the search form (would interfere with enter listener of auto complete)
 	$("#form-search").on("keypress", function(event) { return event.keyCode != 13; });
@@ -35,7 +60,8 @@ $(document).ready( function () {
 				method: "GET",
 				url: "ajax.settings.php",
 				data: {
-					tab: target
+					action: "tab",
+					id: target
 				}
 			}).done(function(data) {
 				// set content
@@ -58,6 +84,27 @@ $(document).ready( function () {
 			$(this).find(".modal-title").text(titleData);
 		});*/
 	}
+	
+	// Modal
+	/*$("#music-modal").on("show.bs.modal", function(event) {
+		// get the button that triggered the modal
+		var button = $(event.relatedTarget);
+		
+		// extract id
+		var id = button.data("id");
+		
+		// set content
+		$(this).find(".modal-title").text(id);
+	});*/
+	
+	var ModalRemote = function() {
+		this.hi = function() {
+			alert("HI");
+		}
+	}
+	
+	// init modal
+	var modal = new ModalRemote();
 	
 	var removeSettingsActive = function() {
 		$("#settings a").removeClass("active");
