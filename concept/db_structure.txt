@@ -25,7 +25,7 @@ TABLE records
 	name		VARCHAR
 	aid			INT
 	typeid		INT
-	release		DATE
+	publish		DATE
 	
 TABLE record_type
 	id			INT
@@ -37,12 +37,6 @@ TABLE mmlink
 	sid			INT
 	mmid		INT
 	added		DATE
-	
-TABLE playcnts
-	id			INT
-	sid			INT
-	devid		INT
-	playcnt		INT
 	
 TABLE played
 	id			INT

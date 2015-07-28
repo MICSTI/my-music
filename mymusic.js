@@ -19,6 +19,7 @@ $(document).ready( function () {
 	// settings
 	var settings = $("#settings");
 	if (settings.length > 0) {
+		// list navigation (load content of clicked tab via AJAX)
 		$("#settings a").on("click", function(e) {
 			// remove active class
 			removeSettingsActive();
@@ -44,6 +45,18 @@ $(document).ready( function () {
 				console.log("ajax.settings.php", error);
 			});
 		});
+		
+		// modal
+		/*$("#settings-modal").on("show.bs.modal", function(event) {
+			// get button that triggered the modal
+			var button = $(event.relatedTarget);
+			
+			// extract title
+			var titleData = button.data("title");
+			
+			// set content of modal
+			$(this).find(".modal-title").text(titleData);
+		});*/
 	}
 	
 	var removeSettingsActive = function() {

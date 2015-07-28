@@ -345,7 +345,7 @@
 					$html .= "<tr>";
 						$html .= "<th class='col-sm-1'>Icon</th>";
 						$html .= "<th class='col-sm-9'>Name</th>";
-						$html .= "<th class='col-sm-2'><button type='button' class='btn btn-primary'><span class='glyphicon glyphicon-plus'></span></buton></th>";
+						$html .= "<th class='col-sm-2'><button type='button' class='btn btn-primary'><span class='glyphicon glyphicon-plus'></span></button></th>";
 					$html .= "</tr>";
 				$html .= "</thead>";
 				
@@ -354,7 +354,7 @@
 						$html .= "<tr>";
 							$html .= "<td>" . getIconRef($icon) . "</td>";
 							$html .= "<td>" . $icon["IconName"] . "</td>";
-							$html .= "<td><button type='button' class='btn btn-default'><span class='glyphicon glyphicon-pencil'></span></button></td>";
+							$html .= "<td><a href='#' id='settings-icon' role='button' class='btn btn-default'><span class='glyphicon glyphicon-pencil'></span></td>";
 						$html .= "</tr>";
 					}
 				$html .= "</tbody>";
@@ -363,6 +363,15 @@
 			foreach ($icons as $icon) {
 				
 			}
+			
+			$html .= "<script type='text/javascript'>";
+				$html .= "$(document).ready(function() {
+					$('#settings-icon').click(function() {
+						$('#settings-modal').find('.modal-title').text('ICONS ICONS ICONS');
+						$('#settings-modal').modal('show');
+					});
+				});";
+			$html .= "</script>";
 			
 			return $html;
 		}
