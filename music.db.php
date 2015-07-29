@@ -7,7 +7,7 @@
 		private $mobile_db;
 	
 		// Should vital database transactions (insert, update, delete) be logged?
-		private $logging = false;
+		private $logging = true;
 		
 		// Should every database transaction (even select) be logged?
 		private $verbose = false;
@@ -1651,8 +1651,6 @@
 			If no icons exist, null is returned.
 		*/
 		public function getIcons() {
-			$artist = array();
-			
 			// get all icons
 			$sql = "SELECT
 						ic.id AS 'IconId',
@@ -1671,6 +1669,52 @@
 				return $fetch;
 			} else {
 				return null;
+			}
+		}
+		
+		/**
+			Returns the icon with the matching id from the database.
+			If no icon is found with this id, null is returned.
+		*/
+		public function getIcon($id) {
+			// get icon
+			$sql = "SELECT
+						ic.id AS 'IconId',
+						ic.name AS 'IconName',
+						ic.type AS 'IconType',
+						ic.path AS 'IconPath'
+					FROM
+						icons ic
+					WHERE
+						id = :id
+					ORDER BY
+						ic.name";
+						
+			$query = $this->db->prepare($sql);
+			$query->execute( array(':id' => $id) );
+			
+			if ($query->rowCount() > 0) {
+				$fetch = $query->fetch(PDO::FETCH_ASSOC);
+	
+				return $fetch;
+			} else {
+				return null;
+			}
+		}
+		
+		public function updateIcon($id, $name, $type, $path) {
+			$sql = "UPDATE icons SET name = :name, type = :type, path = :path WHERE id = :id";
+			
+			$query = $this->db->prepare($sql);
+			$success = $query->execute( array(':id' => $id, ':name' => $name, ':type' => $type, ':path' => $path) );
+			
+			if ($success !== false) {
+				// update successful
+				return true;
+			} else {
+				// update not successful
+				$this->addLog(__FUNCTION__, "error", "tried to update icon with id " . $id . " and name " . $name . ", type " . $type . ", path " . $path . "\n" . implode(" / ", $query->errorInfo()));
+				return false;
 			}
 		}
 		

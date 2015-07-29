@@ -1,25 +1,74 @@
-function changeSettings(_action, _id) {
+function crudModal(_action, _id, _params) {
+	var modal = $("#music-modal");
+	
+	if (_id === undefined)
+		_id = 0;
+	
+	if (_params === undefined)
+		_params = "";
+	
+	$.ajax( {
+		method: "GET",
+		url: "ajax.modal.php",
+		data: {
+			action: _action,
+			id: _id,
+			params: _params
+		}
+	}).done(function(data) {
+		// parse JSON response
+		var content = JSON.parse(data);
+		
+		if (content.status == "ok") {
+			// set content of modal
+			modal.find(".modal-title").html(content.title);
+			modal.find(".modal-body").html(content.body);
+			modal.find(".modal-footer").html(content.footer);
+			
+			// attach save button handler
+			modal.find(".modal-action-save").on("click", function() {
+				persistCrud(content.save, _id, $("#" + content.form_name).serialize());
+			});
+			
+			// show modal
+			modal.modal("show");
+		} else {
+			// an error occurred
+			console.log("ajax.modal.php", content.message);
+		}
+	}).fail(function(error) {
+		// log error
+		console.log("crudModal", error);
+	});
+}
+
+function persistCrud(_action, _id, _params) {
 	var modal = $("#music-modal");
 	
 	$.ajax( {
 		method: "GET",
-		url: "ajax.settings.php",
+		url: "ajax.modal.php",
 		data: {
 			action: _action,
-			id: _id
+			id: _id,
+			params: _params
 		}
 	}).done(function(data) {
-		// set content of modal
+		// parse JSON response
 		var content = JSON.parse(data);
 		
-		modal.find(".modal-title").text(content.title);
-		modal.find(".modal-body").text(content.body);
-		modal.find(".modal-footer").text(content.footer);
+		if (content.success) {
+			// set success message
+			
+		} else {
+			// set error message
+			
+		}
 		
-		modal.modal("show");
+		modal.modal("hide");
 	}).fail(function(error) {
 		// log error
-		console.log("ajax.settings.php", error);
+		console.log("persistCrud", error);
 	});
 }
 
@@ -71,40 +120,7 @@ $(document).ready( function () {
 				console.log("ajax.settings.php", error);
 			});
 		});
-		
-		// modal
-		/*$("#settings-modal").on("show.bs.modal", function(event) {
-			// get button that triggered the modal
-			var button = $(event.relatedTarget);
-			
-			// extract title
-			var titleData = button.data("title");
-			
-			// set content of modal
-			$(this).find(".modal-title").text(titleData);
-		});*/
 	}
-	
-	// Modal
-	/*$("#music-modal").on("show.bs.modal", function(event) {
-		// get the button that triggered the modal
-		var button = $(event.relatedTarget);
-		
-		// extract id
-		var id = button.data("id");
-		
-		// set content
-		$(this).find(".modal-title").text(id);
-	});*/
-	
-	var ModalRemote = function() {
-		this.hi = function() {
-			alert("HI");
-		}
-	}
-	
-	// init modal
-	var modal = new ModalRemote();
 	
 	var removeSettingsActive = function() {
 		$("#settings a").removeClass("active");
