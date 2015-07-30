@@ -52,7 +52,7 @@
 					$body .= "<div class='form-group'>";
 						$body .= "<label for='icon-type' class='control-label col-xs-2'>Type</label>";
 						$body .= "<div class='col-xs-10'>";
-							$body .= "<select class='form-control' id='icon-type' name='icon-type' placeholder='Select icon type'>";
+							$body .= "<select class='selectpicker form-control' id='icon-type' name='icon-type' placeholder='Select icon type'>";
 								// icon types
 								$body .= "<option value='glyphicon' " . compareOption("glyphicon", $icon["IconType"])  . ">Glyphicon</option>";
 								$body .= "<option value='path' " . compareOption("path", $icon["IconType"])  . ">Path</option>";
@@ -69,6 +69,9 @@
 					$body .= "</div>";
 				$body .= "</form>";
 				
+				// adds the selectpicker initialization to the body
+				$body .= getSelectpickerReadyFunction();
+				
 				$data["body"] = $body;
 				
 				// footer
@@ -84,11 +87,88 @@
 			case "UC6Bw9u5":
 				parse_str($params, $get);
 				
-				// put a wrapper function that handles insert / update here
-				$success = $mc->getMDB()->updateIcon($id, $get["icon-name"], $get["icon-type"], $get["icon-path"]);
+				// save the icon to the database
+				$success = $mc->getMDB()->saveIcon($id, $get["icon-name"], $get["icon-type"], $get["icon-path"]);
 			
 				$data["success"] = $success;
 			
+				break;
+				
+			// add/edit device type
+			case "21Uww2Uj":
+				// get data if edit
+				if ($id > 0) {
+					$device_type = $mc->getMDB()->getDeviceType($id);
+				} else {
+					$device_type = array();
+					
+					$device_type["DeviceTypeName"] = "";
+					$device_type["DeviceTypeIconId"] = "";
+				}
+				
+				// form name (for processing data in Javascript)
+				$form_name = "device-type-data";
+				$data["form_name"] = $form_name;
+				
+				// tab name (for updating the content after saving)
+				$tab_name = "device-types";
+				$data["tab_name"] = $tab_name;
+			
+				// title
+				$title = $id <= 0 ? "Add new device type" : "Edit device type";
+				$data["title"] = $title;
+				
+				// body
+				$body = "";
+				
+				$body .= "<form class='form-horizontal' id='" . $form_name . "'>";
+					// name
+					$body .= "<div class='form-group'>";
+						$body .= "<label for='device-type-name' class='control-label col-xs-2'>Name</label>";
+						$body .= "<div class='col-xs-10'>";
+							$body .= "<input type='text' class='form-control' id='device-type-name' name='device-type-name' placeholder='Name' value='" . $device_type["DeviceTypeName"] . "' />";
+						$body .= "</div>";
+					$body .= "</div>";
+					
+					// icon
+					$body .= "<div class='form-group'>";
+						$body .= "<label for='device-type-icon' class='control-label col-xs-2'>Icon</label>";
+						$body .= "<div class='col-xs-10'>";
+							$body .= "<select class='selectpicker form-control' id='device-type-icon' name='device-type-icon'>";
+								// display all options
+								$icons = $mc->getMDB()->getIcons();
+								
+								foreach ($icons as $icon) {
+									$body .= "<option value='" . $icon["IconId"] . "' data-icon='" . $icon["IconPath"] . "' " . compareOption($icon["IconId"], $device_type["DeviceTypeIconId"]) . ">" . $icon["IconName"] . "</option>";
+								}
+							$body .= "</select>";
+						$body .= "</div>";
+					$body .= "</div>";
+				$body .= "</form>";
+				
+				// adds the selectpicker initialization to the body
+				$body .= getSelectpickerReadyFunction();
+				
+				$data["body"] = $body;
+				
+				// footer
+				$footer = $mc->getFrontend()->getModalButtons(array("cancel", "save"));
+				$data["footer"] = $footer;
+				
+				// save method id
+				$data["save"] = "RWxHGHMK";
+				
+				break;
+				
+			// save device type
+			case "RWxHGHMK":
+				parse_str($params, $get);
+				
+				// save the device type to the database
+				$success = $mc->getMDB()->saveDeviceType($id, $get["device-type-name"], $get["device-type-icon"]);
+			
+				$data["success"] = $success;
+				
 				break;
 				
 			default:

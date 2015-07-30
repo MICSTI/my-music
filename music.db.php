@@ -1658,7 +1658,9 @@
 						ic.type AS 'IconType',
 						ic.path AS 'IconPath'
 					FROM
-						icons ic";
+						icons ic
+					ORDER BY
+						ic.name";
 						
 			$query = $this->db->prepare($sql);
 			$query->execute();
@@ -1686,7 +1688,7 @@
 					FROM
 						icons ic
 					WHERE
-						id = :id
+						ic.id = :id
 					ORDER BY
 						ic.name";
 						
@@ -1699,6 +1701,54 @@
 				return $fetch;
 			} else {
 				return null;
+			}
+		}
+		
+		/**
+			Persists an icon. The function updates the icon if it already exists or adds it to the database if it doesn't exist.
+			Returns true if the process was successful, false if it wasn't
+		*/
+		public function saveIcon($id, $name, $type, $path) {
+			if ($id <= 0) {
+				// add new icon
+				$success = $this->addIcon($name, $type, $path);
+				
+				// set success to true if a correct id was returned
+				if ($success !== false AND $success > 0) {
+					$success = true;
+				}
+			} else {
+				// update existing icon
+				$success = $this->updateIcon($id, $name, $type, $path);
+			}
+			
+			return $success;
+		}
+		
+		/**
+			Adds an icon to the database.
+			Returns the id of the newly inserted icon, false if an error occurred.
+		*/
+		public function addIcon($name, $type, $path) {
+			$sql = "INSERT INTO icons (name, type, path) VALUES (:name, :type, :path)";
+			
+			$query = $this->db->prepare($sql);
+			$success = $query->execute( array(':name' => $name, ':type' => $type, ':path' => $path) );
+			
+			if ($query->rowCount() > 0) {
+				$inserted = $this->db->lastInsertId();
+			
+				if ($this->logging) {
+					$this->addLog(__FUNCTION__, "success", "added new icon [ name: " . $name . ", type: " . $type . ", path: " . $path . " ] with id " . $inserted);
+				}
+			
+				return $inserted;
+			} else {
+				if ($this->logging) {
+					$this->addLog(__FUNCTION__, "error", "tried to add new icon [ name: " . $name . ", type: " . $type . ", path: " . $path . " ] \n" . implode(" / ", $query->errorInfo()));
+				}
+			
+				return false;
 			}
 		}
 		
@@ -1881,20 +1931,125 @@
 		}
 		
 		/**
-			Adds a new device type to the database.
-			A device type is specified by name only (laptop, mp3-device, etc.)
-			Returns newly inserted id if successful, false if otherwise.
+			Returns an array containing all device types.
+			If no device types exist, null is returned.
 		*/
-		public function addDeviceType ($name) {
-			return $this->addGenericByName('device_type', $name);
+		public function getDeviceTypes() {
+			// get all icons
+			$sql = "SELECT
+						dt.id AS 'DeviceTypeId',
+						dt.name AS 'DeviceTypeName',
+						dt.iconid AS 'DeviceTypeIconId'
+					FROM
+						device_type dt";
+						
+			$query = $this->db->prepare($sql);
+			$query->execute();
+			
+			if ($query->rowCount() > 0) {
+				$fetch = $query->fetchAll(PDO::FETCH_ASSOC);
+	
+				return $fetch;
+			} else {
+				return null;
+			}
 		}
 		
 		/**
-			Updates the device type with the specified id
-			Returns true if update was successful, false if otherwise
+			Returns the device type with the matching id from the database.
+			If no device type is found with this id, null is returned.
 		*/
-		public function updateDeviceType ($id, $name) {
-			return $this->updateGeneric('device_type', $id, $name);
+		public function getDeviceType($id) {
+			// get icon
+			$sql = "SELECT
+						dt.id AS 'DeviceTypeId',
+						dt.name AS 'DeviceTypeName',
+						dt.iconid AS 'DeviceTypeIconId'
+					FROM
+						device_type dt
+					WHERE
+						dt.id = :id
+					ORDER BY
+						dt.name";
+						
+			$query = $this->db->prepare($sql);
+			$query->execute( array(':id' => $id) );
+			
+			if ($query->rowCount() > 0) {
+				$fetch = $query->fetch(PDO::FETCH_ASSOC);
+	
+				return $fetch;
+			} else {
+				return null;
+			}
+		}
+		
+		/**
+			Persists a device type. The function updates the device type if it already exists or adds it to the database if it doesn't exist.
+			Returns true if the process was successful, false if it wasn't.
+		*/
+		public function saveDeviceType($id, $name, $iconid) {
+			if ($id <= 0) {
+				// add new device type
+				$success = $this->addDeviceType($name, $iconid);
+				
+				// set success to true if a correct id was returned
+				if ($success !== false AND $success > 0) {
+					$success = true;
+				}
+			} else {
+				// update existing device type
+				$success = $this->updateDeviceType($id, $name, $iconid);
+			}
+			
+			return $success;
+		}
+		
+		/**
+			Adds a device type to the database.
+			Returns the id of the newly inserted device type, false if an error occurred.
+		*/
+		public function addDeviceType($name, $iconid) {
+			$sql = "INSERT INTO device_type (name, iconid) VALUES (:name, :iconid)";
+			
+			$query = $this->db->prepare($sql);
+			$success = $query->execute( array(':name' => $name, ':iconid' => $iconid) );
+			
+			if ($query->rowCount() > 0) {
+				$inserted = $this->db->lastInsertId();
+			
+				if ($this->logging) {
+					$this->addLog(__FUNCTION__, "success", "added new device type [ name: " . $name . ", iconid: " . $iconid . " ] with id " . $inserted);
+				}
+			
+				return $inserted;
+			} else {
+				if ($this->logging) {
+					$this->addLog(__FUNCTION__, "error", "tried to add new device type [ name: " . $name . ", iconid: " . $iconid . " ]  \n" . implode(" / ", $query->errorInfo()));
+				}
+			
+				return false;
+			}
+		}
+		
+		/**
+			Updates an icon in the database.
+			Returns true if the update process was successful or nothing was changed, false if an error occurred.
+		*/
+		public function updateDeviceType($id, $name, $iconid) {
+			$sql = "UPDATE device_type SET name = :name, iconid = :iconid WHERE id = :id";
+			
+			$query = $this->db->prepare($sql);
+			$success = $query->execute( array(':id' => $id, ':name' => $name, ':iconid' => $iconid) );
+			
+			if ($query->rowCount() > 0 OR $success !== false) {
+				// update successful or nothing was changed
+				return true;
+			} else {
+				// update not successful
+				$this->addLog(__FUNCTION__, "error", "tried to update device type with id " . $id . " and name " . $name . ", iconid " . $iconid . "\n" . implode(" / ", $query->errorInfo()));
+				return false;
+			}
 		}
 		
 		/**

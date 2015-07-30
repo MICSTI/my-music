@@ -46,10 +46,17 @@
 		return "<a href='record.php?id=" . $id . "'>" . $text . "</a>";
 	}
 	
-	function getIconRef($icon) {
+	function getIconRef($icon, $img_path = "") {
 		if ($icon["IconType"] == "glyphicon") {
 			return "<span class='glyphicon " . $icon["IconPath"] . "'></span>";
 		} else {
-			return "<img src='" . $icon["IconPath"] . "' />";
+			return "<span class='icon-external'><img src='" . $img_path . $icon["IconPath"] . "' /></span>";
 		}
+	}
+	
+	/**
+		Inits all elements that have the .selectpicker class attribute as a selectpicker
+	*/
+	function getSelectpickerReadyFunction() {
+		return "<script type='text/javascript'>$(document).ready(function() { $('.selectpicker').selectpicker({}); });</script>";
 	}

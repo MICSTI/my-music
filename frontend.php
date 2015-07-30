@@ -9,6 +9,7 @@
 		private $STYLESHEETS = array(
 								"http://fonts.googleapis.com/css?family=Oxygen",
 								"external/bootstrap/css/bootstrap.min.css",
+								"external/bootstrap-select/bootstrap-select.min.css",
 								"auto_complete.css",
 								"datepicker.css",
 								"mymusic.css"
@@ -17,12 +18,17 @@
 		private $SCRIPTS = array(
 								"external/jquery/jquery-2.1.4.min.js",
 								"external/bootstrap/js/bootstrap.min.js",
+								"external/bootstrap-select/bootstrap-select.min.js",
 								"external/notifiy/notify-combined.min.js",
 								"auto_complete.js",
 								"bootstrap-datepicker.js",
 								"util.js",
 								"mymusic.js"
 							);
+							
+		// Action ids
+		private $SAVE_ICON = "TkTiW5a3";
+		private $SAVE_DEVICE_TYPE = "21Uww2Uj";
 		
 		public function __construct() {
 			$this->page = new page();
@@ -324,7 +330,7 @@
 					break;
 					
 				case "device-types":
-					$html .= $group;
+					$html .= $this->getDeviceTypeSettings($mdb);
 					break;
 					
 				case "record-types":
@@ -339,37 +345,43 @@
 			return $html;
 		}
 		
+		/**
+			Returns the content of the general settings tab
+		*/
 		private function getGeneralSettings($mdb) {
 			$html = "";
 			
 			// MM DB modification
 			$mm_db_modification = new UnixTimestamp($mdb->getConfig("mm_db_modification"));
 			
-			$html .= "<p>";
+			$html .= "<div>";
 				$html .= "<div><strong>MediaMonkey database modification</strong></div>";
 				$html .= "<div>" . $mm_db_modification->convert2AustrianDateTime() . "</div>";
-			$html .= "</p>";
+			$html .= "</div>";
 			
 			// Successful update
 			$successful_update = new UnixTimestamp($mdb->getConfig("successful_update"));
 			
-			$html .= "<p>";
+			$html .= "<div>";
 				$html .= "<div><strong>Last successful update</strong></div>";
 				$html .= "<div>" . $successful_update->convert2AustrianDateTime() . "</div>";
-			$html .= "</p>";
+			$html .= "</div>";
 			
 			// Version
 			$version_number = $mdb->getConfig("version_number");
 			$version_string = $mdb->getConfig("version_string");
 			
-			$html .= "<p>";
+			$html .= "<div>";
 				$html .= "<div><strong>Version</strong></div>";
 				$html .= "<div>" . $version_string . " (#" . $version_number . ")</div>";
-			$html .= "</p>";
+			$html .= "</div>";
 			
 			return $html;
 		}
 		
+		/**
+			Returns the content of the icon settings tab
+		*/
 		private function getIconSettings($mdb) {
 			$html = "";
 			
@@ -381,16 +393,51 @@
 					$html .= "<tr>";
 						$html .= "<th class='col-sm-1'>Icon</th>";
 						$html .= "<th class='col-sm-9'>Name</th>";
-						$html .= "<th class='col-sm-2'><button type='button' class='btn btn-primary' onclick=\"crudModal('TkTiW5a3')\"><span class='glyphicon glyphicon-plus'></span></button></th>";
+						$html .= "<th class='col-sm-2'><button type='button' class='btn btn-primary' onclick=\"crudModal('" . $this->SAVE_ICON . "')\"><span class='glyphicon glyphicon-plus'></span></button></th>";
 					$html .= "</tr>";
 				$html .= "</thead>";
 				
 				$html .= "<tbody>";
 					foreach ($icons as $icon) {
 						$html .= "<tr>";
-							$html .= "<td>" . getIconRef($icon) . "</td>";
+							$html .= "<td>" . getIconRef($icon, $mdb->getConfig("img_path")) . "</td>";
 							$html .= "<td>" . $icon["IconName"] . "</td>";
-							$html .= "<td><a href='#' id='settings-icon' role='button' class='btn btn-default' onclick=\"crudModal('TkTiW5a3', '" . $icon["IconId"] . "')\"><span class='glyphicon glyphicon-pencil'></span></td>";
+							$html .= "<td><a href='#' role='button' class='btn btn-default' onclick=\"crudModal('" . $this->SAVE_ICON . "', '" . $icon["IconId"] . "')\"><span class='glyphicon glyphicon-pencil'></span></td>";
+						$html .= "</tr>";
+					}
+				$html .= "</tbody>";
+			$html .= "</table>";
+			
+			return $html;
+		}
+		
+		/**
+			Returns the content of the device type settings tab
+		*/
+		private function getDeviceTypeSettings($mdb) {
+			$html = "";
+			
+			// get all icons from the database
+			$device_types = $mdb->getDeviceTypes();
+			
+			$html .= "<table class='table table-striped'>";
+				$html .= "<thead>";
+					$html .= "<tr>";
+						$html .= "<th class='col-sm-1'> </th>";
+						$html .= "<th class='col-sm-9'>Device type</th>";
+						$html .= "<th class='col-sm-2'><button type='button' class='btn btn-primary' onclick=\"crudModal('" . $this->SAVE_DEVICE_TYPE . "')\"><span class='glyphicon glyphicon-plus'></span></button></th>";
+					$html .= "</tr>";
+				$html .= "</thead>";
+				
+				$html .= "<tbody>";
+					foreach ($device_types as $device_type) {
+						// get icon
+						$icon = $mdb->getIcon($device_type["DeviceTypeIconId"]);
+						
+						$html .= "<tr>";
+							$html .= "<td>" . getIconRef($icon, $mdb->getConfig("img_path")) . "</td>";
+							$html .= "<td>" . $device_type["DeviceTypeName"] . "</td>";
+							$html .= "<td><a href='#' role='button' class='btn btn-default' onclick=\"crudModal('" . $this->SAVE_DEVICE_TYPE . "', '" . $device_type["DeviceTypeId"] . "')\"><span class='glyphicon glyphicon-pencil'></span></td>";
 						$html .= "</tr>";
 					}
 				$html .= "</tbody>";

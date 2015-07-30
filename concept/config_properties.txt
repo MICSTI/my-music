@@ -1,3 +1,7 @@
 last_imported_played_id
 mm_db_modification
 successful_update
+mm_db_devid
+version_number
+version_string
+img_path

@@ -18,6 +18,11 @@ a {
 	text-align: right;
 }
 
+.icon-external img {
+	width: 16px;
+	height: 13px;
+}
+
 #icon-brand {
 	color: #f89406;
 }
