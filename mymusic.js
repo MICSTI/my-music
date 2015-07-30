@@ -61,7 +61,7 @@ function persistCrud(_action, _id, _params, _tab) {
 		modal.on("hidden.bs.modal", function() {
 			if (content.success) {
 				// show success message
-				globalNotify("Changes successfully saved");
+				globalNotify("Changes saved successfully");
 				
 				// update content
 				updateContent(_tab);
@@ -70,7 +70,7 @@ function persistCrud(_action, _id, _params, _tab) {
 				globalNotify("Changes could not be saved", "error");
 			}
 			
-			// remove this handler to avoid performing more than once
+			// remove this handler to avoid performing it more than once
 			modal.off("hidden.bs.modal");
 		});
 		
