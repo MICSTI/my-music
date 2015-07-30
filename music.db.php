@@ -7,7 +7,7 @@
 		private $mobile_db;
 	
 		// Should vital database transactions (insert, update, delete) be logged?
-		private $logging = true;
+		private $logging = false;
 		
 		// Should every database transaction (even select) be logged?
 		private $verbose = false;
@@ -1702,14 +1702,18 @@
 			}
 		}
 		
+		/**
+			Updates an icon in the database.
+			Returns true if the update process was successful or nothing was changed, false if an error occurred.
+		*/
 		public function updateIcon($id, $name, $type, $path) {
 			$sql = "UPDATE icons SET name = :name, type = :type, path = :path WHERE id = :id";
 			
 			$query = $this->db->prepare($sql);
 			$success = $query->execute( array(':id' => $id, ':name' => $name, ':type' => $type, ':path' => $path) );
 			
-			if ($success !== false) {
-				// update successful
+			if ($query->rowCount() > 0 OR $success !== false) {
+				// update successful or nothing was changed
 				return true;
 			} else {
 				// update not successful
