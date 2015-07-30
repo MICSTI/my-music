@@ -17,6 +17,7 @@
 		private $SCRIPTS = array(
 								"external/jquery/jquery-2.1.4.min.js",
 								"external/bootstrap/js/bootstrap.min.js",
+								"external/notifiy/notify-combined.min.js",
 								"auto_complete.js",
 								"bootstrap-datepicker.js",
 								"util.js",

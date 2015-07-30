@@ -26,8 +26,11 @@
 				
 				// form name (for processing data in Javascript)
 				$form_name = "icon-data";
-				
 				$data["form_name"] = $form_name;
+				
+				// tab name (for updating the content after saving)
+				$tab_name = "icons";
+				$data["tab_name"] = $tab_name;
 			
 				// title
 				$title = $id <= 0 ? "Add new icon" : "Edit icon";
