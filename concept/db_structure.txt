@@ -48,6 +48,7 @@ TABLE devices
 	id			INT
 	name		VARCHAR
 	typeid		INT
+	active		INT			(1 = true, 0 = false)
 	
 TABLE device_type
 	id			INT

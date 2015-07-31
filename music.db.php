@@ -1577,35 +1577,55 @@
 		}
 		
 		/**
+			Persists a device. The function updates the device if it already exists or adds it to the database if it doesn't exist.
+			Returns true if the process was successful, false if it wasn't
+		*/
+		public function saveDevice($id, $name, $typeid, $active) {
+			if ($id <= 0) {
+				// add new device
+				$success = $this->addDevice($name, $typeid, $active);
+				
+				// set success to true if a correct id was returned
+				if ($success !== false AND $success > 0) {
+					$success = true;
+				}
+			} else {
+				// update existing device
+				$success = $this->updateDevice($id, $name, $typeid, $active);
+			}
+			
+			return $success;
+		}
+		
+		/**
 			Adds a new device to the database.
-			A device is specified by name and device type id
 			If adding was successful, the newly assigned device id is returned, false otherwise.
 		*/
-		public function addDevice ($name, $typeid) {
+		public function addDevice ($name, $typeid, $active) {
 			// strip input from code tags
 			$name = strip_tags($name);
 			$typeid = strip_tags($typeid);
 			
-			$sql = "INSERT INTO devices (name, typeid) VALUES (:name, :typeid)";
+			$sql = "INSERT INTO devices (name, typeid, active) VALUES (:name, :typeid, :active)";
 			$query = $this->db->prepare($sql);
-			$query->execute( array(':name' => $name, ':typeid' => $typeid) );
+			$query->execute( array(':name' => $name, ':typeid' => $typeid, ':active' => $active) );
 			
 			if ($query->rowCount() > 0) {
 				$inserted = $this->db->lastInsertId();
 				
 				// Mobile database entry
-				$mobile_sql = "INSERT INTO devices (_id, name) VALUES (:id, :name)";
+				$mobile_sql = "INSERT INTO devices (_id, name, active) VALUES (:id, :name, :active)";
 				$mobile_query = $this->mobile_db->prepare($mobile_sql);
-				$mobile_query->execute( array(':id' => $inserted, ':name' => $name) );
+				$mobile_query->execute( array(':id' => $inserted, ':name' => $name, ':active' => $active) );
 			
 				if ($this->logging) {
-					$this->addLog(__FUNCTION__, "success", "added new device '" . $name . "', type id " . $typeid . " with id " . $inserted);
+					$this->addLog(__FUNCTION__, "success", "added new device '" . $name . "', type id " . $typeid . ", active " . $active . " with id " . $inserted);
 				}
 			
 				return $inserted;
 			} else {
 				if ($this->logging) {
-					$this->addLog(__FUNCTION__, "error", "tried to add new device '" . $name . "', type id " . $typeid . " \n" . implode(" / ", $query->errorInfo()));
+					$this->addLog(__FUNCTION__, "error", "tried to add new device '" . $name . "', type id " . $typeid . ", active " . $active . " \n" . implode(" / ", $query->errorInfo()));
 				}
 			
 				return false;
@@ -1616,33 +1636,97 @@
 			Updates an existing device.
 			Returns true if update was successful, false if otherwise.
 		*/
-		public function updateDevice ($id, $name, $typeid) {
+		public function updateDevice ($id, $name, $typeid, $active) {
 			// strip input from code tags
 			$id = strip_tags($id);
 			$name = strip_tags($name);
 			$typeid = strip_tags($typeid);
 			
-			$sql = "UPDATE devices SET name = :name, typeid = :typeid WHERE id = :id";
+			$sql = "UPDATE devices SET name = :name, typeid = :typeid, active = :active WHERE id = :id";
 			$query = $this->db->prepare($sql);
-			$query->execute( array(':id' => $id, ':name' => $name, ':typeid' => $typeid) );
+			$query->execute( array(':id' => $id, ':name' => $name, ':typeid' => $typeid, ':active' => $active) );
 			
 			if ($query->rowCount() > 0) {
 				// Mobile database entry
-				$mobile_sql = "UPDATE devices SET name = :name WHERE _id = :id";
+				$mobile_sql = "UPDATE devices SET name = :name, active = :active WHERE _id = :id";
 				$mobile_query = $this->mobile_db->prepare($mobile_sql);
-				$mobile_query->execute( array(':id' => $id, ':name' => $name) );
+				$mobile_query->execute( array(':id' => $id, ':name' => $name, ':active' => $active) );
 			
 				if ($this->logging) {
-					$this->addLog(__FUNCTION__, "success", "updated tupel in devices with id " . $id . " [ name: " . $name . ", typeid: " . $typeid . " ]");
+					$this->addLog(__FUNCTION__, "success", "updated tupel in devices with id " . $id . " [ name: " . $name . ", typeid: " . $typeid . ", active: " . $active . " ]");
 				}
 			
 				return true;
 			} else {
 				if ($this->logging) {
-					$this->addLog(__FUNCTION__, "error", "tried to update tupel in devices with id " . $id . " [ name: " . $name . ", typeid: " . $typeid . " ] \n" . implode(" / ", $query->errorInfo()));
+					$this->addLog(__FUNCTION__, "error", "tried to update tupel in devices with id " . $id . " [ name: " . $name . ", typeid: " . $typeid . ", active: " . $active . " ] \n" . implode(" / ", $query->errorInfo()));
 				}
 			
 				return false;
+			}
+		}
+		
+		/**
+			Returns an array containing all devices.
+			If no devices exist, null is returned.
+		*/
+		public function getDevices() {
+			// get all devices
+			$sql = "SELECT
+						de.id AS 'DeviceId',
+						de.name AS 'DeviceName',
+						de.typeid AS 'DeviceDeviceTypeId',
+						dt.name AS 'DeviceDeviceTypeName',
+						dt.iconid AS 'DeviceDeviceTypeIconId',
+						de.active AS 'DeviceActive'
+					FROM
+						devices de INNER JOIN
+						device_type dt ON dt.id = de.typeid
+					ORDER BY
+						de.name";
+						
+			$query = $this->db->prepare($sql);
+			$query->execute();
+			
+			if ($query->rowCount() > 0) {
+				$fetch = $query->fetchAll(PDO::FETCH_ASSOC);
+	
+				return $fetch;
+			} else {
+				return null;
+			}
+		}
+		
+		/**
+			Returns the device with the matching id from the database.
+			If no device is found with this id, null is returned.
+		*/
+		public function getDevice($id) {
+			// get device
+			$sql = "SELECT
+						de.id AS 'DeviceId',
+						de.name AS 'DeviceName',
+						de.typeid AS 'DeviceDeviceTypeId',
+						dt.name AS 'DeviceDeviceTypeName',
+						dt.iconid AS 'DeviceDeviceTypeIconId',
+						de.active AS 'DeviceActive'
+					FROM
+						devices de INNER JOIN
+						device_type dt ON dt.id = de.typeid
+					WHERE
+						de.id = :id
+					ORDER BY
+						de.name";
+						
+			$query = $this->db->prepare($sql);
+			$query->execute( array(':id' => $id) );
+			
+			if ($query->rowCount() > 0) {
+				$fetch = $query->fetch(PDO::FETCH_ASSOC);
+	
+				return $fetch;
+			} else {
+				return null;
 			}
 		}
 		
@@ -2432,7 +2516,8 @@
 										
 			$this->mobile_db->exec("CREATE TABLE devices (
 										_id INTEGER PRIMARY KEY,
-										name TEXT)");
+										name TEXT,
+										active INTEGER)");
 										
 			$this->mobile_db->exec("CREATE TABLE played (
 										_id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -2471,9 +2556,9 @@
 			$devices = $query->fetchAll();
 			
 			foreach ($devices as $device) {
-				$dev_sql = "INSERT INTO devices (_id, name) VALUES (:id, :name)";
+				$dev_sql = "INSERT INTO devices (_id, name, active) VALUES (:id, :name, :active)";
 				$dev_query = $this->mobile_db->prepare($dev_sql);
-				$dev_query->execute( array(':id' => $device['id'], ':name' => $device['name']) );
+				$dev_query->execute( array(':id' => $device['id'], ':name' => $device['name'], ':active' => $device['active']) );
 			}
 		}
 		

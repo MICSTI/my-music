@@ -46,11 +46,13 @@
 		return "<a href='record.php?id=" . $id . "'>" . $text . "</a>";
 	}
 	
-	function getIconRef($icon, $img_path = "") {
+	function getIconRef($icon, $img_path = "", $tooltip = "") {
+		$add_tooltip = " data-toggle='tooltip' data-original-title='" . $tooltip . "'";
+		
 		if ($icon["IconType"] == "glyphicon") {
-			return "<span class='glyphicon " . $icon["IconPath"] . "'></span>";
+			return "<span class='glyphicon " . $icon["IconPath"] . "'" . ($tooltip != "" ? $add_tooltip : "") . "></span>";
 		} else {
-			return "<span class='icon-external'><img src='" . $img_path . $icon["IconPath"] . "' /></span>";
+			return "<span class='icon-external'" . ($tooltip != "" ? $add_tooltip : "") . "><img src='" . $img_path . $icon["IconPath"] . "' /></span>";
 		}
 	}
 	
@@ -58,5 +60,28 @@
 		Inits all elements that have the .selectpicker class attribute as a selectpicker
 	*/
 	function getSelectpickerReadyFunction() {
-		return "<script type='text/javascript'>$(document).ready(function() { $('.selectpicker').selectpicker({}); });</script>";
+		return "<script type='text/javascript'>$(document).ready(function() { $('.selectpicker').selectpicker({}); } );</script>";
+	}
+	
+	/**
+		Inits all elements that have the data-toggle='tooltip' attribute as a tooltip
+	*/
+	function getTooltipReadyFunction() {
+		return "<script type='text/javascript'>$(document).ready(function() { $('[data-toggle=\"tooltip\"]').tooltip(); } );</script>";
+	}
+	
+	/**
+		Compares two strings and returns "selected" if they are equal, and an empty string if they are not.
+		Useful for adding select box options.
+	*/
+	function compareOption($check, $actual) {
+		return (($check == $actual) ? "selected" : "");
+	}
+	
+	/**
+		Compares two strings and returns "checked" if they are equal, and an empty string if they are not.
+		Useful for adding checkbox checked states.
+	*/
+	function compareCheck($check, $actual) {
+		return (($check == $actual) ? "checked" : "");
 	}

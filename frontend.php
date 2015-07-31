@@ -28,6 +28,7 @@
 							
 		// Action ids
 		private $SAVE_ICON = "TkTiW5a3";
+		private $SAVE_DEVICE = "VnpguEAw";
 		private $SAVE_DEVICE_TYPE = "21Uww2Uj";
 		
 		public function __construct() {
@@ -326,7 +327,7 @@
 					break;
 					
 				case "devices":
-					$html .= $group;
+					$html .= $this->getDeviceSettings($mdb);
 					break;
 					
 				case "device-types":
@@ -354,7 +355,7 @@
 			// MM DB modification
 			$mm_db_modification = new UnixTimestamp($mdb->getConfig("mm_db_modification"));
 			
-			$html .= "<div>";
+			$html .= "<p><div>";
 				$html .= "<div><strong>MediaMonkey database modification</strong></div>";
 				$html .= "<div>" . $mm_db_modification->convert2AustrianDateTime() . "</div>";
 			$html .= "</div>";
@@ -362,7 +363,7 @@
 			// Successful update
 			$successful_update = new UnixTimestamp($mdb->getConfig("successful_update"));
 			
-			$html .= "<div>";
+			$html .= "<p><div>";
 				$html .= "<div><strong>Last successful update</strong></div>";
 				$html .= "<div>" . $successful_update->convert2AustrianDateTime() . "</div>";
 			$html .= "</div>";
@@ -371,7 +372,7 @@
 			$version_number = $mdb->getConfig("version_number");
 			$version_string = $mdb->getConfig("version_string");
 			
-			$html .= "<div>";
+			$html .= "<p><div>";
 				$html .= "<div><strong>Version</strong></div>";
 				$html .= "<div>" . $version_string . " (#" . $version_number . ")</div>";
 			$html .= "</div>";
@@ -407,6 +408,47 @@
 					}
 				$html .= "</tbody>";
 			$html .= "</table>";
+			
+			return $html;
+		}
+		
+		/**
+			Returns the content of the device settings tab
+		*/
+		private function getDeviceSettings($mdb) {
+			$html = "";
+			
+			// get all devices from the database
+			$devices = $mdb->getDevices();
+			
+			$html .= "<table class='table'>";
+				$html .= "<thead>";
+					$html .= "<tr>";
+						$html .= "<th class='col-sm-1'>Type</th>";
+						$html .= "<th class='col-sm-9'>Name</th>";
+						$html .= "<th class='col-sm-2'><button type='button' class='btn btn-primary' onclick=\"crudModal('" . $this->SAVE_DEVICE . "')\"><span class='glyphicon glyphicon-plus'></span></button></th>";
+					$html .= "</tr>";
+				$html .= "</thead>";
+				
+				$html .= "<tbody>";
+					foreach ($devices as $device) {
+						// get icon
+						$icon = $mdb->getIcon($device["DeviceDeviceTypeIconId"]);
+						
+						// row class (active devices are highlighted)
+						$highlight = $device["DeviceActive"] == 1 ? "info" : "";
+						
+						$html .= "<tr class='" . $highlight . "'>";
+							$html .= "<td>" . getIconRef($icon, $mdb->getConfig("img_path"), $device["DeviceDeviceTypeName"]) . "</td>";
+							$html .= "<td>" . $device["DeviceName"] . "</td>";
+							$html .= "<td><a href='#' role='button' class='btn btn-default' onclick=\"crudModal('" . $this->SAVE_DEVICE . "', '" . $device["DeviceId"] . "')\"><span class='glyphicon glyphicon-pencil'></span></td>";
+						$html .= "</tr>";
+					}
+				$html .= "</tbody>";
+			$html .= "</table>";
+			
+			// adds the tooltip initialization to the body
+			$html .= getTooltipReadyFunction();
 			
 			return $html;
 		}
