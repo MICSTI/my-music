@@ -1857,6 +1857,130 @@
 		}
 		
 		/**
+			Returns an array containing all activities.
+			If no activities exist, null is returned.
+		*/
+		public function getActivities() {
+			// get all activities
+			$sql = "SELECT
+						ac.id AS 'ActivityId',
+						ac.name AS 'ActivityName',
+						ac.color AS 'ActivityColor'
+					FROM
+						activities ac
+					ORDER BY
+						ac.name";
+						
+			$query = $this->db->prepare($sql);
+			$query->execute();
+			
+			if ($query->rowCount() > 0) {
+				$fetch = $query->fetchAll(PDO::FETCH_ASSOC);
+	
+				return $fetch;
+			} else {
+				return null;
+			}
+		}
+		
+		/**
+			Returns the activity with the matching id from the database.
+			If no activity is found with this id, null is returned.
+		*/
+		public function getActivity($id) {
+			// get activity
+			$sql = "SELECT
+						ac.id AS 'ActivityId',
+						ac.name AS 'ActivityName',
+						ac.color AS 'ActivityColor'
+					FROM
+						activities ac
+					WHERE
+						ac.id = :id
+					ORDER BY
+						ac.name";
+						
+			$query = $this->db->prepare($sql);
+			$query->execute( array(':id' => $id) );
+			
+			if ($query->rowCount() > 0) {
+				$fetch = $query->fetch(PDO::FETCH_ASSOC);
+	
+				return $fetch;
+			} else {
+				return null;
+			}
+		}
+		
+		/**
+			Persists an activity. The function updates the activity if it already exists or adds it to the database if it doesn't exist.
+			Returns true if the process was successful, false if it wasn't
+		*/
+		public function saveActivity($id, $name, $color) {
+			if ($id <= 0) {
+				// add new activity
+				$success = $this->addActivity($name, $color);
+				
+				// set success to true if a correct id was returned
+				if ($success !== false AND $success > 0) {
+					$success = true;
+				}
+			} else {
+				// update existing icon
+				$success = $this->updateActivity($id, $name, $color);
+			}
+			
+			return $success;
+		}
+		
+		/**
+			Adds an activity to the database.
+			Returns the id of the newly inserted activity, false if an error occurred.
+		*/
+		public function addActivity($name, $color) {
+			$sql = "INSERT INTO activities (name, color) VALUES (:name, :color)";
+			
+			$query = $this->db->prepare($sql);
+			$success = $query->execute( array(':name' => $name, ':color' => $color) );
+			
+			if ($query->rowCount() > 0) {
+				$inserted = $this->db->lastInsertId();
+			
+				if ($this->logging) {
+					$this->addLog(__FUNCTION__, "success", "added new activity [ name: " . $name . ", color: " . $color . " ] with id " . $inserted);
+				}
+			
+				return $inserted;
+			} else {
+				if ($this->logging) {
+					$this->addLog(__FUNCTION__, "error", "tried to add new activity [ name: " . $name . ", color: " . $color . " ] \n" . implode(" / ", $query->errorInfo()));
+				}
+			
+				return false;
+			}
+		}
+		
+		/**
+			Updates an activity in the database.
+			Returns true if the update process was successful or nothing was changed, false if an error occurred.
+		*/
+		public function updateActivity($id, $name, $color) {
+			$sql = "UPDATE activities SET name = :name, color = :color WHERE id = :id";
+			
+			$query = $this->db->prepare($sql);
+			$success = $query->execute( array(':id' => $id, ':name' => $name, ':color' => $color) );
+			
+			if ($query->rowCount() > 0 OR $success !== false) {
+				// update successful or nothing was changed
+				return true;
+			} else {
+				// update not successful
+				$this->addLog(__FUNCTION__, "error", "tried to update activity with id " . $id . " and name " . $name . ", color " . $color . "\n" . implode(" / ", $query->errorInfo()));
+				return false;
+			}
+		}
+		
+		/**
 			Returns the name of the specified device id.
 			False is returned if device does not exist.
 		*/

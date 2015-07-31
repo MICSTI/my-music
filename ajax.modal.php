@@ -240,9 +240,6 @@
 					$body .= "</div>";
 				$body .= "</form>";
 				
-				// adds the selectpicker initialization to the body
-				$body .= getSelectpickerReadyFunction();
-				
 				$data["body"] = $body;
 				
 				// footer
@@ -260,6 +257,83 @@
 				
 				// save the device type to the database
 				$success = $mc->getMDB()->saveDeviceType($id, $get["device-type-name"], $get["device-type-icon"]);
+			
+				$data["success"] = $success;
+				
+				break;
+				
+			// add/edit activity
+			case "pXBciVn6":
+				// get data if edit
+				if ($id > 0) {
+					$activity = $mc->getMDB()->getActivity($id);
+				} else {
+					$activity = array();
+					
+					$activity["ActivityName"] = "";
+					$activity["ActivityColor"] = "";
+				}
+				
+				// form name (for processing data in Javascript)
+				$form_name = "activity-data";
+				$data["form_name"] = $form_name;
+				
+				// tab name (for updating the content after saving)
+				$tab_name = "activities";
+				$data["tab_name"] = $tab_name;
+			
+				// title
+				$title = $id <= 0 ? "Add new activity" : "Edit activity";
+				$data["title"] = $title;
+				
+				// body
+				$body = "";
+				
+				$body .= "<form class='form-horizontal' id='" . $form_name . "'>";
+					// name
+					$body .= "<div class='form-group'>";
+						$body .= "<label for='activity-name' class='control-label col-xs-2'>Name</label>";
+						$body .= "<div class='col-xs-10'>";
+							$body .= "<input type='text' class='form-control' id='activity-name' name='activity-name' placeholder='Name' value='" . $activity["ActivityName"] . "' />";
+						$body .= "</div>";
+					$body .= "</div>";
+					
+					// color
+					$body .= "<div class='form-group'>";
+						$body .= "<label for='activity-color' class='control-label col-xs-2'>Color</label>";
+						$body .= "<div class='col-xs-10'>";
+							$body .= "<select class='selectpicker form-control' id='activity-color' name='activity-color'>";
+								// display all options
+								$colors = getColors();
+								
+								foreach ($colors as $color) {
+									$body .= "<option value='" . $color . "' data-content=\"<span class='color-label label-" . $color . "'></span> " . capitalizeFirstLetter($color) . "\" " . compareOption($activity["ActivityColor"], $color) . "></option>";
+								}
+							$body .= "</select>";
+						$body .= "</div>";
+					$body .= "</div>";
+				$body .= "</form>";
+				
+				// adds the selectpicker initialization to the body
+				$body .= getSelectpickerReadyFunction();
+				
+				$data["body"] = $body;
+				
+				// footer
+				$footer = $mc->getFrontend()->getModalButtons(array("cancel", "save"));
+				$data["footer"] = $footer;
+				
+				// save method id
+				$data["save"] = "EH5gIhz4";
+				
+				break;
+				
+			// save activity
+			case "EH5gIhz4":
+				parse_str($params, $get);
+				
+				// save the activity to the database
+				$success = $mc->getMDB()->saveActivity($id, $get["activity-name"], $get["activity-color"]);
 			
 				$data["success"] = $success;
 				

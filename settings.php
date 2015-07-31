@@ -38,6 +38,11 @@
 			$html .= "<a href='#' id='settings-record-types' class='list-group-item'>";
 				$html .= "<span>Record types</span>";
 			$html .= "</a>";
+			
+			// Activities
+			$html .= "<a href='#' id='settings-activities' class='list-group-item'>";
+				$html .= "<span>Activities</span>";
+			$html .= "</a>";
 		$html .= "</div>";
 	$html .= "</div>";
 	

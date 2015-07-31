@@ -61,6 +61,11 @@ TABLE icons
 	type		VARCHAR		(glyphicon or image)
 	path		VARCHAR
 	
+TABLE activities
+	id			INT
+	name		VARCHAR
+	color		VARCHAR
+	
 TABLE logs
 	id			INT
 	timestamp	TIMESTAMP

@@ -1,4 +1,12 @@
 <?php
+	function getColors() {
+		return array("brown", "coral", "cornflowerblue", "crimson", "green", "maroon", "orange", "tomato");
+	}
+	
+	function capitalizeFirstLetter($text) {
+		return strtoupper(substr($text, 0, 1)) . substr($text, 1);
+	}
+
 	function getTimeFromTimestamp($timestamp) {
 		$datetime = new DateTime($timestamp);
 		

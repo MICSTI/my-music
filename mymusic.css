@@ -18,6 +18,17 @@ a {
 	text-align: right;
 }
 
+.color-label {
+	border-radius: 50%;
+	width: 12px;
+	height: 12px;
+	display: inline-block;
+}
+
+.label-big {
+	font-size: 82% !important;
+}
+
 .icon-external img {
 	width: 16px;
 	height: 13px;
@@ -36,3 +47,37 @@ a {
 	display: inline-block;
 	padding: 0px 16px 0px 16px;
 }
+
+/* ---- COLORS ---- */
+.label-brown {
+	background-color: brown;
+}
+
+.label-coral {
+	background-color: coral;
+}
+
+.label-cornflowerblue {
+	background-color: cornflowerblue;
+}
+
+.label-crimson {
+	background-color: crimson;
+}
+
+.label-green {
+	background-color: green;
+}
+
+.label-maroon {
+	background-color: maroon;
+}
+
+.label-orange {
+	background-color: orange;
+}
+
+.label-tomato {
+	background-color: tomato;
+}
+/* --------------- */

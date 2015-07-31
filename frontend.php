@@ -28,6 +28,7 @@
 							
 		// Action ids
 		private $SAVE_ICON = "TkTiW5a3";
+		private $SAVE_ACTIVITY = "pXBciVn6";
 		private $SAVE_DEVICE = "VnpguEAw";
 		private $SAVE_DEVICE_TYPE = "21Uww2Uj";
 		
@@ -322,6 +323,10 @@
 					$html .= $group;
 					break;
 					
+				case "activities":
+					$html .= $this->getActivitySettings($mdb);
+					break;
+					
 				case "icons":
 					$html .= $this->getIconSettings($mdb);
 					break;
@@ -484,6 +489,43 @@
 					}
 				$html .= "</tbody>";
 			$html .= "</table>";
+			
+			return $html;
+		}
+		
+		/**
+			Returns the content of the activities settings tab
+		*/
+		private function getActivitySettings($mdb) {
+			$html = "";
+			
+			// get all activities from the database
+			$activities = $mdb->getActivities();
+			
+			if (!is_null($activities)) {
+				$html .= "<table class='table table-striped'>";
+					$html .= "<thead>";
+						$html .= "<tr>";
+							$html .= "<th class='col-sm-2'>Tag</th>";
+							$html .= "<th class='col-sm-8'>Name</th>";
+							$html .= "<th class='col-sm-2'><button type='button' class='btn btn-primary' onclick=\"crudModal('" . $this->SAVE_ACTIVITY . "')\"><span class='glyphicon glyphicon-plus'></span></button></th>";
+						$html .= "</tr>";
+					$html .= "</thead>";
+					
+					$html .= "<tbody>";
+						foreach ($activities as $activity) {							
+							$html .= "<tr>";
+								$html .= "<td><span class='label label-big label-" . $activity["ActivityColor"] . "'>#" . $activity["ActivityName"] . "</span></td>";
+								$html .= "<td>" . $activity["ActivityName"] . "</td>";
+								$html .= "<td><a href='#' role='button' class='btn btn-default' onclick=\"crudModal('" . $this->SAVE_ACTIVITY . "', '" . $activity["ActivityId"] . "')\"><span class='glyphicon glyphicon-pencil'></span></td>";
+							$html .= "</tr>";
+						}
+					$html .= "</tbody>";
+				$html .= "</table>";
+			} else {
+				$html .= "<p>Currently, there are no activities saved.";
+				$html .= "<p>If you want, you can <a href='#' onclick=\"crudModal('" . $this->SAVE_ACTIVITY . "')\">add</a> one.";
+			}
 			
 			return $html;
 		}
