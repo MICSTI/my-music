@@ -632,6 +632,27 @@
 		}
 		
 		/**
+			Saves the order of a record type level.
+			Useful for persisting the sortable grid of record types.
+			Returns true if the operation was successful, false if it was not or an illegal id was passed.
+		*/
+		public function updateRecordTypeLevel($id, $level) {
+			if ($id > 0) {
+				$sql = "UPDATE record_type SET level = :level WHERE id = :id";
+				$query = $this->db->prepare($sql);
+				$success = $query->execute( array(':id' => $id, ':level' => $level) );
+				
+				if ($query->rowCount() > 0 OR $success !== false) {
+					return true;
+				} else {
+					return false;
+				}
+			}
+			
+			return false;
+		}
+		
+		/**
 			Adds a new record type to the database.
 			If insert was successful, the newly assigned id is returned, otherwise false.
 		*/
@@ -666,11 +687,6 @@
 			Returns true if update was successful, false otherwise.
 		*/
 		public function updateRecordType ($id, $name, $level) {
-			// strip input from code tags
-			$id = strip_tags($id);
-			$name = strip_tags($name);
-			$level = strip_tags($level);
-			
 			$sql = "UPDATE record_type SET name = :name, level = :level WHERE id = :id";
 			$query = $this->db->prepare($sql);
 			$query->execute( array(':id' => $id, ':name' => $name, ':level' => $level) );

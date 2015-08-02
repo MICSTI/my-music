@@ -104,6 +104,9 @@ function updateContent(target) {
 	});
 }
 
+/**
+	Shows a global notification (one that is not bound to any DOM element).
+*/
 function globalNotify(_text, _type, _position) {
 	var text = _text || "Default";
 	var type = _type || "success";
@@ -114,6 +117,80 @@ function globalNotify(_text, _type, _position) {
 		className: type,
 		globalPosition: position
 	} );
+}
+
+/**
+	Handles reordering the record types by importance.
+*/
+function reorderRecordTypes() {
+	// toggle reorder and control buttons
+	$("#btn-record-type-reorder").hide();
+	$("#btn-record-type-control").show();
+	
+	// hide add button
+	$("#btn-record-type-add").hide();
+	
+	// hide edit buttons
+	$(".record-type-edit").hide();
+	
+	// make record type divs sortable
+	$("#record-type-order").sortable();
+	
+	// cancel button
+	$("#btn-record-type-cancel").on("click", function() {
+		// show add button
+		$("#btn-record-type-add").show();
+		
+		// show edit buttons
+		$(".record-type-edit").show();
+		
+		// make record type divs not-sortable
+		$("#record-type-order").sortable("destroy");
+		
+		// toggle reorder and control buttons
+		$("#btn-record-type-control").hide();
+		$("#btn-record-type-reorder").show();
+	});
+	
+	// save button
+	$("#btn-record-type-save").on("click", function() {
+		$(this).hide();
+		$("#btn-record-type-cancel").hide();
+		
+		var new_order = [];
+		
+		$(".record-type-edit").each(function(i, item) {
+			// id is like "record-type-id-x", so the actual id starts at index 15
+			new_order.push(item.id.substr(15));
+		});
+		
+		// save order
+		$.ajax( {
+			method: "GET",
+			url: "ajax.modal.php",
+			data: {
+				action: "U7GK66Ve",
+				params: new_order.join(",")
+			}
+		}).done(function(data) {
+			// parse JSON response
+			var content = JSON.parse(data);
+			
+			if (content.success) {
+				// show success message
+				globalNotify("Changes saved successfully");
+			} else {
+				// show error message
+				globalNotify("Changes could not be saved", "error");
+			}
+						
+			// update content
+			updateContent(content.tab);
+		}).fail(function(error) {
+			// log error
+			console.log("persistCrud", error);
+		});
+	});
 }
 
 $(document).ready( function () {

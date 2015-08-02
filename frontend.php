@@ -9,6 +9,7 @@
 		private $STYLESHEETS = array(
 								"http://fonts.googleapis.com/css?family=Oxygen",
 								"external/bootstrap/css/bootstrap.min.css",
+								"external/jquery/jquery-ui.min.css",
 								"external/bootstrap-select/bootstrap-select.min.css",
 								"auto_complete.css",
 								"datepicker.css",
@@ -17,6 +18,7 @@
 		
 		private $SCRIPTS = array(
 								"external/jquery/jquery-2.1.4.min.js",
+								"external/jquery/jquery-ui.min.js",
 								"external/bootstrap/js/bootstrap.min.js",
 								"external/bootstrap-select/bootstrap-select.min.js",
 								"external/notifiy/notify-combined.min.js",
@@ -543,16 +545,35 @@
 			$html .= "<table class='table'>";
 				$html .= "<thead>";
 					$html .= "<tr>";
-						$html .= "<th class='col-sm-10'>Record type</th>";
-						$html .= "<th class='col-sm-2'><button type='button' class='btn btn-primary' onclick=\"crudModal('" . $this->SAVE_RECORD_TYPE . "')\"><span class='glyphicon glyphicon-plus'></span></button></th>";
+						$html .= "<th class='col-sm-7'>Record type</th>";
+						
+						$html .= "<th class='col-sm-3'>";
+							// re-order record types
+							$html .= "<button type='button' id='btn-record-type-reorder' class='btn btn-primary' onclick='reorderRecordTypes()'><span class='glyphicon glyphicon-move'></span> Reorder</button>";
+							
+							// save or dismiss record types order
+							$html .= "<span id='btn-record-type-control'>";
+								// cancel
+								$html .= "<button type='button' id='btn-record-type-cancel' class='btn btn-default'><span class='glyphicon glyphicon-remove'></span> Cancel</button>";
+							
+								// save
+								$html .= "<button type='button' id='btn-record-type-save' class='btn btn-success'><span class='glyphicon glyphicon-ok'></span> Save</button>";
+							$html .= "</span>";
+						$html .= "</th>";
+						
+						$html .= "<th class='col-sm-2'>";
+							// add new record type
+							$html .= "<button type='button' id='btn-record-type-add' class='btn btn-primary' onclick=\"crudModal('" . $this->SAVE_RECORD_TYPE . "')\"><span class='glyphicon glyphicon-plus'></span></button>";
+						$html .= "</th>";
 					$html .= "</tr>";
 				$html .= "</thead>";
 				
-				$html .= "<tbody>";
+				$html .= "<tbody id='record-type-order'>";
 					foreach ($record_types as $record_type) {
 						$html .= "<tr>";
 							$html .= "<td>" . $record_type["RecordTypeName"] . "</td>";
-							$html .= "<td><a href='#' role='button' class='btn btn-default' onclick=\"crudModal('" . $this->SAVE_RECORD_TYPE . "', '" . $record_type["RecordTypeId"] . "')\"><span class='glyphicon glyphicon-pencil'></span></td>";
+							$html .= "<td> </td>";
+							$html .= "<td><a href='#' role='button' id='record-type-id-" . $record_type["RecordTypeId"] . "' class='btn btn-default record-type-edit' onclick=\"crudModal('" . $this->SAVE_RECORD_TYPE . "', '" . $record_type["RecordTypeId"] . "')\"><span class='glyphicon glyphicon-pencil'></span></td>";
 						$html .= "</tr>";
 					}
 				$html .= "</tbody>";

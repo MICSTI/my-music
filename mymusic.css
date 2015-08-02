@@ -48,6 +48,22 @@ a {
 	padding: 0px 16px 0px 16px;
 }
 
+#btn-record-type-control {
+	display: none;
+}
+
+#btn-record-type-cancel {
+	margin-right: 12px;
+}
+
+#record-type-order .ui-sortable-handle {
+	background-color: #d9edf7;
+}
+
+.ui-sortable-handle:hover {
+	cursor: move;
+}
+
 /* ---- COLORS ---- */
 .label-brown {
 	background-color: brown;

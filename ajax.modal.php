@@ -411,6 +411,28 @@
 				
 				break;
 				
+			// save record type order
+			case "U7GK66Ve":
+				$order_array = explode(",", $params);
+				
+				$success = true;
+				$order = 1;
+				
+				foreach($order_array as $rt) {
+					if (!$mc->getMDB()->updateRecordTypeLevel($rt, $order)) {
+						$success = false;
+					}
+					
+					$order++;
+				}
+				
+				// tab to updateRecordTypeLevel
+				$data["tab"] = "record-types";
+				
+				$data["success"] = $success;
+			
+				break;
+				
 			default:
 				$data["status"] = "error";
 				$data["message"] = "unknown action";
