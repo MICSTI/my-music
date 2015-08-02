@@ -240,6 +240,9 @@
 					$body .= "</div>";
 				$body .= "</form>";
 				
+				// adds the selectpicker initialization to the body
+				$body .= getSelectpickerReadyFunction();
+				
 				$data["body"] = $body;
 				
 				// footer

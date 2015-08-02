@@ -17,18 +17,32 @@
 	// Year before + year after
 	$year_jump = "";
 	
-	$year_before = (substr($date, 0, 4) - 1) . substr($date, 4);
-	$year_after = (substr($date, 0, 4) + 1) . substr($date, 4);
+	if (substr($date, 5) == "02-29") {
+		// special case: 29th of February - Year before shows 4 years before
+		// we ignore the other special case of leap years that are divisible by 100 but not by 400 - like 2100, 2200, etc.
+		$before_text = "4 years before";
+		$after_text = "4 years after";
+		
+		$year_before = (substr($date, 0, 4) - 4) . substr($date, 4);
+		$year_after = (substr($date, 0, 4) + 4) . substr($date, 4);
+	} else {
+		// normal case: year before
+		$before_text = "Year before";
+		$after_text = "Year after";
+		
+		$year_before = (substr($date, 0, 4) - 1) . substr($date, 4);
+		$year_after = (substr($date, 0, 4) + 1) . substr($date, 4);
+	}
 	
 	$html .= "<span>";
-		$html .= "<button type='button' class='btn btn-primary' onclick='window.location.href=\"history.php?date=" . $year_before . "\"'><span class='glyphicon glyphicon-chevron-left'></span> Year before</button>";
-			
-			if (!empty($songs)) {
-				$html .= "<span id='history-dp'><strong>Played songs on </strong>" . $datepicker_elem . "</span>";
-			} else {
-				$html .= "<span id='history-dp'><strong>No songs were played on </strong>" . $datepicker_elem . "</span>";
-			}		
-		$html .= "<button type='button' class='btn btn-primary' onclick='window.location.href=\"history.php?date=" . $year_after . "\"'>Year after <span class='glyphicon glyphicon-chevron-right'></span></button>";
+		$html .= "<button type='button' class='btn btn-primary' onclick='window.location.href=\"history.php?date=" . $year_before . "\"'><span class='glyphicon glyphicon-chevron-left'></span> " . $before_text . "</button>";
+		
+		if (!empty($songs)) {
+			$html .= "<span id='history-dp'><strong>Played songs on </strong>" . $datepicker_elem . "</span>";
+		} else {
+			$html .= "<span id='history-dp'><strong>No songs were played on </strong>" . $datepicker_elem . "</span>";
+		}		
+		$html .= "<button type='button' class='btn btn-primary' onclick='window.location.href=\"history.php?date=" . $year_after . "\"'>" . $after_text . " <span class='glyphicon glyphicon-chevron-right'></span></button>";
 	$html .= "</span>";
 	
 	if (!empty($songs)) {
