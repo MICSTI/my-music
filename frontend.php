@@ -31,6 +31,7 @@
 		private $SAVE_ACTIVITY = "pXBciVn6";
 		private $SAVE_DEVICE = "VnpguEAw";
 		private $SAVE_DEVICE_TYPE = "21Uww2Uj";
+		private $SAVE_RECORD_TYPE = "k2PZk2Zq";
 		
 		public function __construct() {
 			$this->page = new page();
@@ -340,7 +341,7 @@
 					break;
 					
 				case "record-types":
-					$html .= $group;
+					$html .= $this->getRecordTypeSettings($mdb);
 					break;
 					
 				default:
@@ -470,7 +471,7 @@
 			$html .= "<table class='table table-striped'>";
 				$html .= "<thead>";
 					$html .= "<tr>";
-						$html .= "<th class='col-sm-1'> </th>";
+						$html .= "<th class='col-sm-1'>Icon</th>";
 						$html .= "<th class='col-sm-9'>Device type</th>";
 						$html .= "<th class='col-sm-2'><button type='button' class='btn btn-primary' onclick=\"crudModal('" . $this->SAVE_DEVICE_TYPE . "')\"><span class='glyphicon glyphicon-plus'></span></button></th>";
 					$html .= "</tr>";
@@ -526,6 +527,36 @@
 				$html .= "<p>Currently, there are no activities saved.";
 				$html .= "<p>If you want, you can <a href='#' onclick=\"crudModal('" . $this->SAVE_ACTIVITY . "')\">add</a> one.";
 			}
+			
+			return $html;
+		}
+		
+		/**
+			Returns the content of the record type settings tab
+		*/
+		private function getRecordTypeSettings($mdb) {
+			$html = "";
+			
+			// get all icons from the database
+			$record_types = $mdb->getRecordTypes();
+			
+			$html .= "<table class='table'>";
+				$html .= "<thead>";
+					$html .= "<tr>";
+						$html .= "<th class='col-sm-10'>Record type</th>";
+						$html .= "<th class='col-sm-2'><button type='button' class='btn btn-primary' onclick=\"crudModal('" . $this->SAVE_RECORD_TYPE . "')\"><span class='glyphicon glyphicon-plus'></span></button></th>";
+					$html .= "</tr>";
+				$html .= "</thead>";
+				
+				$html .= "<tbody>";
+					foreach ($record_types as $record_type) {
+						$html .= "<tr>";
+							$html .= "<td>" . $record_type["RecordTypeName"] . "</td>";
+							$html .= "<td><a href='#' role='button' class='btn btn-default' onclick=\"crudModal('" . $this->SAVE_RECORD_TYPE . "', '" . $record_type["RecordTypeId"] . "')\"><span class='glyphicon glyphicon-pencil'></span></td>";
+						$html .= "</tr>";
+					}
+				$html .= "</tbody>";
+			$html .= "</table>";
 			
 			return $html;
 		}

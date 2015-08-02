@@ -534,6 +534,104 @@
 		}
 		
 		/**
+			Returns an array containing all record types.
+			If no record types exist, null is returned.
+		*/
+		public function getRecordTypes() {
+			// get all record types
+			$sql = "SELECT
+						rt.id AS 'RecordTypeId',
+						rt.name AS 'RecordTypeName',
+						rt.level AS 'RecordTypeLevel'
+					FROM
+						record_type rt
+					ORDER BY
+						rt.level ASC";
+						
+			$query = $this->db->prepare($sql);
+			$query->execute();
+			
+			if ($query->rowCount() > 0) {
+				$fetch = $query->fetchAll(PDO::FETCH_ASSOC);
+	
+				return $fetch;
+			} else {
+				return null;
+			}
+		}
+		
+		/**
+			Returns the next level for a record type.
+			If no record types exist, 1 will be returned.
+		*/
+		public function getNextRecordTypeLevel() {
+			// get the next record type level
+			$sql = "SELECT
+						MAX(rt.level) + 1 AS 'NextRecordTypeLevel'
+					FROM
+						record_type rt";
+						
+			$query = $this->db->prepare($sql);
+			$query->execute();
+			
+			if ($query->rowCount() > 0) {
+				$fetch = $query->fetch(PDO::FETCH_ASSOC);
+	
+				return $fetch["NextRecordTypeLevel"];
+			} else {
+				return 1;
+			}
+		}
+		
+		/**
+			Returns the record type with the matching id from the database.
+			If no record type is found with this id, null is returned.
+		*/
+		public function getRecordType($id) {
+			// get record type
+			$sql = "SELECT
+						rt.id AS 'RecordTypeId',
+						rt.name AS 'RecordTypeName',
+						rt.level AS 'RecordTypeLevel'
+					FROM
+						record_type rt
+					WHERE
+						rt.id = :id";
+						
+			$query = $this->db->prepare($sql);
+			$query->execute( array(':id' => $id) );
+			
+			if ($query->rowCount() > 0) {
+				$fetch = $query->fetch(PDO::FETCH_ASSOC);
+	
+				return $fetch;
+			} else {
+				return null;
+			}
+		}
+		
+		/**
+			Persists a record type. The function updates the record type if it already exists or adds it to the database if it doesn't exist.
+			Returns true if the process was successful, false if it wasn't.
+		*/
+		public function saveRecordType($id, $name, $level) {
+			if ($id <= 0) {
+				// add new record type
+				$success = $this->addRecordType($name, $level);
+				
+				// set success to true if a correct id was returned
+				if ($success !== false AND $success > 0) {
+					$success = true;
+				}
+			} else {
+				// update existing record type
+				$success = $this->updateRecordType($id, $name, $level);
+			}
+			
+			return $success;
+		}
+		
+		/**
 			Adds a new record type to the database.
 			If insert was successful, the newly assigned id is returned, otherwise false.
 		*/
@@ -557,6 +655,35 @@
 			} else {
 				if ($this->logging) {
 					$this->addLog(__FUNCTION__, "error", "tried to add new tupel in " . $type . " '" . $name . "', importance level " . $level . " \n" . implode(" / ", $query->errorInfo()));
+				}
+			
+				return false;
+			}
+		}
+		
+		/**
+			Updates name of specified record type id.
+			Returns true if update was successful, false otherwise.
+		*/
+		public function updateRecordType ($id, $name, $level) {
+			// strip input from code tags
+			$id = strip_tags($id);
+			$name = strip_tags($name);
+			$level = strip_tags($level);
+			
+			$sql = "UPDATE record_type SET name = :name, level = :level WHERE id = :id";
+			$query = $this->db->prepare($sql);
+			$query->execute( array(':id' => $id, ':name' => $name, ':level' => $level) );
+			
+			if ($query->rowCount() > 0) {
+				if ($this->logging) {
+					$this->addLog(__FUNCTION__, "success", "updated tupel in record_type with id " . $id . " [ name: " . $name . ", importance level: " . $level . " ]");
+				}
+			
+				return true;
+			} else {
+				if ($this->logging) {
+					$this->addLog(__FUNCTION__, "error", "tried to update tupel in record_type with id " . $id . " [ name: " . $name . ", importance level: " . $level . " ] \n" . implode(" / ", $query->errorInfo()));
 				}
 			
 				return false;
@@ -859,35 +986,6 @@
 		*/
 		public function updateArtist ($id, $name) {
 			return $this->updateGeneric('artists', $id, $name);
-		}
-		
-		/**
-			Updates name of specified record type id.
-			Returns true if update was successful, false otherwise.
-		*/
-		public function updateRecordType ($id, $name, $level) {
-			// strip input from code tags
-			$id = strip_tags($id);
-			$name = strip_tags($name);
-			$level = strip_tags($level);
-			
-			$sql = "UPDATE record_type SET name = :name, level = :level WHERE id = :id";
-			$query = $this->db->prepare($sql);
-			$query->execute( array(':id' => $id, ':name' => $name, ':level' => $level) );
-			
-			if ($query->rowCount() > 0) {
-				if ($this->logging) {
-					$this->addLog(__FUNCTION__, "success", "updated tupel in record_type with id " . $id . " [ name: " . $name . ", importance level: " . $level . " ]");
-				}
-			
-				return true;
-			} else {
-				if ($this->logging) {
-					$this->addLog(__FUNCTION__, "error", "tried to update tupel in record_type with id " . $id . " [ name: " . $name . ", importance level: " . $level . " ] \n" . implode(" / ", $query->errorInfo()));
-				}
-			
-				return false;
-			}
 		}
 		
 		/**
@@ -2149,7 +2247,9 @@
 						dt.name AS 'DeviceTypeName',
 						dt.iconid AS 'DeviceTypeIconId'
 					FROM
-						device_type dt";
+						device_type dt
+					ORDER BY
+						dt.name";
 						
 			$query = $this->db->prepare($sql);
 			$query->execute();
@@ -2176,9 +2276,7 @@
 					FROM
 						device_type dt
 					WHERE
-						dt.id = :id
-					ORDER BY
-						dt.name";
+						dt.id = :id";
 						
 			$query = $this->db->prepare($sql);
 			$query->execute( array(':id' => $id) );

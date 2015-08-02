@@ -342,6 +342,75 @@
 				
 				break;
 				
+			// add/edit record type
+			case "k2PZk2Zq":
+				// get data if edit
+				if ($id > 0) {
+					$record_type = $mc->getMDB()->getRecordType($id);
+				} else {
+					$record_type = array();
+					
+					$record_type["RecordTypeName"] = "";
+					$record_type["RecordTypeLevel"] = "";
+				}
+				
+				// form name (for processing data in Javascript)
+				$form_name = "record-type-data";
+				$data["form_name"] = $form_name;
+				
+				// tab name (for updating the content after saving)
+				$tab_name = "record-types";
+				$data["tab_name"] = $tab_name;
+			
+				// title
+				$title = $id <= 0 ? "Add new record type" : "Edit record type";
+				$data["title"] = $title;
+				
+				// body
+				$body = "";
+				
+				$body .= "<form class='form-horizontal' id='" . $form_name . "'>";
+					// name
+					$body .= "<div class='form-group'>";
+						$body .= "<label for='record-type-name' class='control-label col-xs-2'>Name</label>";
+						$body .= "<div class='col-xs-10'>";
+							$body .= "<input type='text' class='form-control' id='record-type-name' name='record-type-name' placeholder='Name' value='" . $record_type["RecordTypeName"] . "' />";
+						$body .= "</div>";
+					$body .= "</div>";
+					
+					// level (hidden)
+					$body .= "<input type='hidden' id='record-type-level' name='record-type-level' value='" . $record_type["RecordTypeLevel"] . "' />";
+				$body .= "</form>";
+				
+				$data["body"] = $body;
+				
+				// footer
+				$footer = $mc->getFrontend()->getModalButtons(array("cancel", "save"));
+				$data["footer"] = $footer;
+				
+				// save method id
+				$data["save"] = "uS9wWOLJ";
+				
+				break;
+				
+			// save record type
+			case "uS9wWOLJ":
+				parse_str($params, $get);
+				
+				// if it is a new record type, get the next record type level
+				if ($id <= 0) {
+					$level = $mc->getMDB()->getNextRecordTypeLevel();
+				} else {
+					$level = $get["record-type-level"];
+				}
+				
+				// save the record type to the database
+				$success = $mc->getMDB()->saveRecordType($id, $get["record-type-name"], $level);
+			
+				$data["success"] = $success;
+				
+				break;
+				
 			default:
 				$data["status"] = "error";
 				$data["message"] = "unknown action";
