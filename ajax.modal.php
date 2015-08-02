@@ -44,7 +44,7 @@
 					$body .= "<div class='form-group'>";
 						$body .= "<label for='icon-name' class='control-label col-xs-2'>Name</label>";
 						$body .= "<div class='col-xs-10'>";
-							$body .= "<input type='text' class='form-control' id='icon-name' name='icon-name' placeholder='Name' value='" . $icon["IconName"] . "' />";
+							$body .= "<input type='text' class='form-control autofocus' id='icon-name' name='icon-name' placeholder='Name' value='" . $icon["IconName"] . "' />";
 						$body .= "</div>";
 					$body .= "</div>";
 					
@@ -129,7 +129,7 @@
 					$body .= "<div class='form-group'>";
 						$body .= "<label for='device-name' class='control-label col-xs-2'>Name</label>";
 						$body .= "<div class='col-xs-10'>";
-							$body .= "<input type='text' class='form-control' id='device-name' name='device-name' placeholder='Name' value='" . $device["DeviceName"] . "' />";
+							$body .= "<input type='text' class='form-control autofocus' id='device-name' name='device-name' placeholder='Name' value='" . $device["DeviceName"] . "' />";
 						$body .= "</div>";
 					$body .= "</div>";
 					
@@ -220,7 +220,7 @@
 					$body .= "<div class='form-group'>";
 						$body .= "<label for='device-type-name' class='control-label col-xs-2'>Name</label>";
 						$body .= "<div class='col-xs-10'>";
-							$body .= "<input type='text' class='form-control' id='device-type-name' name='device-type-name' placeholder='Name' value='" . $device_type["DeviceTypeName"] . "' />";
+							$body .= "<input type='text' class='form-control autofocus' id='device-type-name' name='device-type-name' placeholder='Name' value='" . $device_type["DeviceTypeName"] . "' />";
 						$body .= "</div>";
 					$body .= "</div>";
 					
@@ -297,7 +297,7 @@
 					$body .= "<div class='form-group'>";
 						$body .= "<label for='activity-name' class='control-label col-xs-2'>Name</label>";
 						$body .= "<div class='col-xs-10'>";
-							$body .= "<input type='text' class='form-control' id='activity-name' name='activity-name' placeholder='Name' value='" . $activity["ActivityName"] . "' />";
+							$body .= "<input type='text' class='form-control autofocus' id='activity-name' name='activity-name' placeholder='Name' value='" . $activity["ActivityName"] . "' />";
 						$body .= "</div>";
 					$body .= "</div>";
 					
@@ -374,7 +374,7 @@
 					$body .= "<div class='form-group'>";
 						$body .= "<label for='record-type-name' class='control-label col-xs-2'>Name</label>";
 						$body .= "<div class='col-xs-10'>";
-							$body .= "<input type='text' class='form-control' id='record-type-name' name='record-type-name' placeholder='Name' value='" . $record_type["RecordTypeName"] . "' />";
+							$body .= "<input type='text' class='form-control autofocus' id='record-type-name' name='record-type-name' placeholder='Name' value='" . $record_type["RecordTypeName"] . "' />";
 						$body .= "</div>";
 					$body .= "</div>";
 					

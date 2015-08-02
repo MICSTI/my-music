@@ -1,11 +1,16 @@
 function crudModal(_action, _id, _params) {
-	var modal = $("#music-modal");
-	
 	if (_id === undefined)
 		_id = 0;
 	
 	if (_params === undefined)
 		_params = "";
+	
+	var modal = $("#music-modal");
+	
+	// set autofocus for the modal
+	modal.on("shown.bs.modal", function() {
+		$('.autofocus').focus();
+	});
 	
 	$.ajax( {
 		method: "GET",
