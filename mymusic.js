@@ -9,7 +9,7 @@ function crudModal(_action, _id, _params) {
 	
 	// set autofocus for the modal
 	modal.on("shown.bs.modal", function() {
-		$('.autofocus').focus();
+		$('.autofocus').first().focus();
 	});
 	
 	$.ajax( {
