@@ -397,25 +397,30 @@
 			// get all icons from the database
 			$icons = $mdb->getIcons();
 			
-			$html .= "<table class='table table-striped'>";
-				$html .= "<thead>";
-					$html .= "<tr>";
-						$html .= "<th class='col-sm-1'>Icon</th>";
-						$html .= "<th class='col-sm-9'>Name</th>";
-						$html .= "<th class='col-sm-2'><button type='button' class='btn btn-primary' onclick=\"crudModal('" . $this->SAVE_ICON . "')\"><span class='glyphicon glyphicon-plus'></span></button></th>";
-					$html .= "</tr>";
-				$html .= "</thead>";
-				
-				$html .= "<tbody>";
-					foreach ($icons as $icon) {
+			if (!is_null($icons)) {
+				$html .= "<table class='table table-striped'>";
+					$html .= "<thead>";
 						$html .= "<tr>";
-							$html .= "<td>" . getIconRef($icon, $mdb->getConfig("img_path")) . "</td>";
-							$html .= "<td>" . $icon["IconName"] . "</td>";
-							$html .= "<td><a href='#' role='button' class='btn btn-default' onclick=\"crudModal('" . $this->SAVE_ICON . "', '" . $icon["IconId"] . "')\"><span class='glyphicon glyphicon-pencil'></span></td>";
+							$html .= "<th class='col-sm-1'>Icon</th>";
+							$html .= "<th class='col-sm-9'>Name</th>";
+							$html .= "<th class='col-sm-2'><button type='button' class='btn btn-primary' onclick=\"crudModal('" . $this->SAVE_ICON . "')\"><span class='glyphicon glyphicon-plus'></span></button></th>";
 						$html .= "</tr>";
-					}
-				$html .= "</tbody>";
-			$html .= "</table>";
+					$html .= "</thead>";
+					
+					$html .= "<tbody>";
+						foreach ($icons as $icon) {
+							$html .= "<tr>";
+								$html .= "<td>" . getIconRef($icon, $mdb->getConfig("img_path")) . "</td>";
+								$html .= "<td>" . $icon["IconName"] . "</td>";
+								$html .= "<td><a href='#' role='button' class='btn btn-default' onclick=\"crudModal('" . $this->SAVE_ICON . "', '" . $icon["IconId"] . "')\"><span class='glyphicon glyphicon-pencil'></span></td>";
+							$html .= "</tr>";
+						}
+					$html .= "</tbody>";
+				$html .= "</table>";
+			} else {
+				$html .= "<p>Currently, there are no icons saved.";
+				$html .= "<p>If you want, you can <a href='#' onclick=\"crudModal('" . $this->SAVE_ICON . "')\">add</a> one.";
+			}
 			
 			return $html;
 		}
@@ -429,34 +434,39 @@
 			// get all devices from the database
 			$devices = $mdb->getDevices();
 			
-			$html .= "<table class='table'>";
-				$html .= "<thead>";
-					$html .= "<tr>";
-						$html .= "<th class='col-sm-1'>Type</th>";
-						$html .= "<th class='col-sm-9'>Name</th>";
-						$html .= "<th class='col-sm-2'><button type='button' class='btn btn-primary' onclick=\"crudModal('" . $this->SAVE_DEVICE . "')\"><span class='glyphicon glyphicon-plus'></span></button></th>";
-					$html .= "</tr>";
-				$html .= "</thead>";
-				
-				$html .= "<tbody>";
-					foreach ($devices as $device) {
-						// get icon
-						$icon = $mdb->getIcon($device["DeviceDeviceTypeIconId"]);
-						
-						// row class (active devices are highlighted)
-						$highlight = $device["DeviceActive"] == 1 ? "info" : "";
-						
-						$html .= "<tr class='" . $highlight . "'>";
-							$html .= "<td>" . getIconRef($icon, $mdb->getConfig("img_path"), $device["DeviceDeviceTypeName"]) . "</td>";
-							$html .= "<td>" . $device["DeviceName"] . "</td>";
-							$html .= "<td><a href='#' role='button' class='btn btn-default' onclick=\"crudModal('" . $this->SAVE_DEVICE . "', '" . $device["DeviceId"] . "')\"><span class='glyphicon glyphicon-pencil'></span></td>";
+			if (!is_null($devices)) {
+				$html .= "<table class='table'>";
+					$html .= "<thead>";
+						$html .= "<tr>";
+							$html .= "<th class='col-sm-1'>Type</th>";
+							$html .= "<th class='col-sm-9'>Name</th>";
+							$html .= "<th class='col-sm-2'><button type='button' class='btn btn-primary' onclick=\"crudModal('" . $this->SAVE_DEVICE . "')\"><span class='glyphicon glyphicon-plus'></span></button></th>";
 						$html .= "</tr>";
-					}
-				$html .= "</tbody>";
-			$html .= "</table>";
-			
-			// adds the tooltip initialization to the body
-			$html .= getTooltipReadyFunction();
+					$html .= "</thead>";
+					
+					$html .= "<tbody>";
+						foreach ($devices as $device) {
+							// get icon
+							$icon = $mdb->getIcon($device["DeviceDeviceTypeIconId"]);
+							
+							// row class (active devices are highlighted)
+							$highlight = $device["DeviceActive"] == 1 ? "info" : "";
+							
+							$html .= "<tr class='" . $highlight . "'>";
+								$html .= "<td>" . getIconRef($icon, $mdb->getConfig("img_path"), $device["DeviceDeviceTypeName"]) . "</td>";
+								$html .= "<td>" . $device["DeviceName"] . "</td>";
+								$html .= "<td><a href='#' role='button' class='btn btn-default' onclick=\"crudModal('" . $this->SAVE_DEVICE . "', '" . $device["DeviceId"] . "')\"><span class='glyphicon glyphicon-pencil'></span></td>";
+							$html .= "</tr>";
+						}
+					$html .= "</tbody>";
+				$html .= "</table>";
+				
+				// adds the tooltip initialization to the body
+				$html .= getTooltipReadyFunction();
+			} else {
+				$html .= "<p>Currently, there are no devices saved.";
+				$html .= "<p>If you want, you can <a href='#' onclick=\"crudModal('" . $this->SAVE_DEVICE . "')\">add</a> one.";
+			}
 			
 			return $html;
 		}
@@ -470,28 +480,33 @@
 			// get all icons from the database
 			$device_types = $mdb->getDeviceTypes();
 			
-			$html .= "<table class='table table-striped'>";
-				$html .= "<thead>";
-					$html .= "<tr>";
-						$html .= "<th class='col-sm-1'>Icon</th>";
-						$html .= "<th class='col-sm-9'>Device type</th>";
-						$html .= "<th class='col-sm-2'><button type='button' class='btn btn-primary' onclick=\"crudModal('" . $this->SAVE_DEVICE_TYPE . "')\"><span class='glyphicon glyphicon-plus'></span></button></th>";
-					$html .= "</tr>";
-				$html .= "</thead>";
-				
-				$html .= "<tbody>";
-					foreach ($device_types as $device_type) {
-						// get icon
-						$icon = $mdb->getIcon($device_type["DeviceTypeIconId"]);
-						
+			if (!is_null($device_types)) {
+				$html .= "<table class='table table-striped'>";
+					$html .= "<thead>";
 						$html .= "<tr>";
-							$html .= "<td>" . getIconRef($icon, $mdb->getConfig("img_path")) . "</td>";
-							$html .= "<td>" . $device_type["DeviceTypeName"] . "</td>";
-							$html .= "<td><a href='#' role='button' class='btn btn-default' onclick=\"crudModal('" . $this->SAVE_DEVICE_TYPE . "', '" . $device_type["DeviceTypeId"] . "')\"><span class='glyphicon glyphicon-pencil'></span></td>";
+							$html .= "<th class='col-sm-1'>Icon</th>";
+							$html .= "<th class='col-sm-9'>Device type</th>";
+							$html .= "<th class='col-sm-2'><button type='button' class='btn btn-primary' onclick=\"crudModal('" . $this->SAVE_DEVICE_TYPE . "')\"><span class='glyphicon glyphicon-plus'></span></button></th>";
 						$html .= "</tr>";
-					}
-				$html .= "</tbody>";
-			$html .= "</table>";
+					$html .= "</thead>";
+					
+					$html .= "<tbody>";
+						foreach ($device_types as $device_type) {
+							// get icon
+							$icon = $mdb->getIcon($device_type["DeviceTypeIconId"]);
+							
+							$html .= "<tr>";
+								$html .= "<td>" . getIconRef($icon, $mdb->getConfig("img_path")) . "</td>";
+								$html .= "<td>" . $device_type["DeviceTypeName"] . "</td>";
+								$html .= "<td><a href='#' role='button' class='btn btn-default' onclick=\"crudModal('" . $this->SAVE_DEVICE_TYPE . "', '" . $device_type["DeviceTypeId"] . "')\"><span class='glyphicon glyphicon-pencil'></span></td>";
+							$html .= "</tr>";
+						}
+					$html .= "</tbody>";
+				$html .= "</table>";
+			} else {
+				$html .= "<p>Currently, there are no device types saved.";
+				$html .= "<p>If you want, you can <a href='#' onclick=\"crudModal('" . $this->SAVE_DEVICE_TYPE . "')\">add</a> one.";
+			}
 			
 			return $html;
 		}
@@ -542,42 +557,47 @@
 			// get all icons from the database
 			$record_types = $mdb->getRecordTypes();
 			
-			$html .= "<table class='table'>";
-				$html .= "<thead>";
-					$html .= "<tr>";
-						$html .= "<th class='col-sm-7'>Record type</th>";
-						
-						$html .= "<th class='col-sm-3'>";
-							// re-order record types
-							$html .= "<button type='button' id='btn-record-type-reorder' class='btn btn-primary' onclick='reorderRecordTypes()'><span class='glyphicon glyphicon-move'></span> Reorder</button>";
-							
-							// save or dismiss record types order
-							$html .= "<span id='btn-record-type-control'>";
-								// cancel
-								$html .= "<button type='button' id='btn-record-type-cancel' class='btn btn-default'><span class='glyphicon glyphicon-remove'></span> Cancel</button>";
-							
-								// save
-								$html .= "<button type='button' id='btn-record-type-save' class='btn btn-success'><span class='glyphicon glyphicon-ok'></span> Save</button>";
-							$html .= "</span>";
-						$html .= "</th>";
-						
-						$html .= "<th class='col-sm-2'>";
-							// add new record type
-							$html .= "<button type='button' id='btn-record-type-add' class='btn btn-primary' onclick=\"crudModal('" . $this->SAVE_RECORD_TYPE . "')\"><span class='glyphicon glyphicon-plus'></span></button>";
-						$html .= "</th>";
-					$html .= "</tr>";
-				$html .= "</thead>";
-				
-				$html .= "<tbody id='record-type-order'>";
-					foreach ($record_types as $record_type) {
+			if (!is_null($record_types)) {
+				$html .= "<table class='table'>";
+					$html .= "<thead>";
 						$html .= "<tr>";
-							$html .= "<td>" . $record_type["RecordTypeName"] . "</td>";
-							$html .= "<td> </td>";
-							$html .= "<td><a href='#' role='button' id='record-type-id-" . $record_type["RecordTypeId"] . "' class='btn btn-default record-type-edit' onclick=\"crudModal('" . $this->SAVE_RECORD_TYPE . "', '" . $record_type["RecordTypeId"] . "')\"><span class='glyphicon glyphicon-pencil'></span></td>";
+							$html .= "<th class='col-sm-7'>Record type</th>";
+							
+							$html .= "<th class='col-sm-3'>";
+								// re-order record types
+								$html .= "<button type='button' id='btn-record-type-reorder' class='btn btn-primary' onclick='reorderRecordTypes()'><span class='glyphicon glyphicon-move'></span> Reorder</button>";
+								
+								// save or dismiss record types order
+								$html .= "<span id='btn-record-type-control'>";
+									// cancel
+									$html .= "<button type='button' id='btn-record-type-cancel' class='btn btn-default'><span class='glyphicon glyphicon-remove'></span> Cancel</button>";
+								
+									// save
+									$html .= "<button type='button' id='btn-record-type-save' class='btn btn-success'><span class='glyphicon glyphicon-ok'></span> Save</button>";
+								$html .= "</span>";
+							$html .= "</th>";
+							
+							$html .= "<th class='col-sm-2'>";
+								// add new record type
+								$html .= "<button type='button' id='btn-record-type-add' class='btn btn-primary' onclick=\"crudModal('" . $this->SAVE_RECORD_TYPE . "')\"><span class='glyphicon glyphicon-plus'></span></button>";
+							$html .= "</th>";
 						$html .= "</tr>";
-					}
-				$html .= "</tbody>";
-			$html .= "</table>";
+					$html .= "</thead>";
+					
+					$html .= "<tbody id='record-type-order'>";
+						foreach ($record_types as $record_type) {
+							$html .= "<tr>";
+								$html .= "<td>" . $record_type["RecordTypeName"] . "</td>";
+								$html .= "<td> </td>";
+								$html .= "<td><a href='#' role='button' id='record-type-id-" . $record_type["RecordTypeId"] . "' class='btn btn-default record-type-edit' onclick=\"crudModal('" . $this->SAVE_RECORD_TYPE . "', '" . $record_type["RecordTypeId"] . "')\"><span class='glyphicon glyphicon-pencil'></span></td>";
+							$html .= "</tr>";
+						}
+					$html .= "</tbody>";
+				$html .= "</table>";
+			} else {
+				$html .= "<p>Currently, there are no record types saved.";
+				$html .= "<p>If you want, you can <a href='#' onclick=\"crudModal('" . $this->SAVE_RECORD_TYPE . "')\">add</a> one.";
+			}
 			
 			return $html;
 		}
