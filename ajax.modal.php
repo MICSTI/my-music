@@ -69,9 +69,6 @@
 					$body .= "</div>";
 				$body .= "</form>";
 				
-				// adds the selectpicker initialization to the body
-				$body .= getSelectpickerReadyFunction();
-				
 				$data["body"] = $body;
 				
 				// footer
@@ -161,9 +158,6 @@
 					
 				$body .= "</form>";
 				
-				// adds the selectpicker initialization to the body
-				$body .= getSelectpickerReadyFunction();
-				
 				$data["body"] = $body;
 				
 				// footer
@@ -240,9 +234,6 @@
 					$body .= "</div>";
 				$body .= "</form>";
 				
-				// adds the selectpicker initialization to the body
-				$body .= getSelectpickerReadyFunction();
-				
 				$data["body"] = $body;
 				
 				// footer
@@ -316,9 +307,6 @@
 						$body .= "</div>";
 					$body .= "</div>";
 				$body .= "</form>";
-				
-				// adds the selectpicker initialization to the body
-				$body .= getSelectpickerReadyFunction();
 				
 				$data["body"] = $body;
 				

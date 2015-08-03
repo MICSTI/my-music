@@ -7,9 +7,19 @@ function crudModal(_action, _id, _params) {
 	
 	var modal = $("#music-modal");
 	
-	// set autofocus for the modal
+	// fires before modal is shown
+	modal.on("show.bs.modal", function() {
+		// add selectpicker
+		$(".selectpicker").selectpicker( {} );
+	});
+
+	// fites when modal has completely finished loading
 	modal.on("shown.bs.modal", function() {
-		$('.autofocus').first().focus();
+		// handle autofocus element
+		$(".autofocus").first().focus();
+		
+		// add tooltips
+		addTooltips();
 	});
 	
 	$.ajax( {
@@ -122,6 +132,13 @@ function globalNotify(_text, _type, _position) {
 		className: type,
 		globalPosition: position
 	} );
+}
+
+/**
+	Assigns the bootstrap tooltip to all tooltip'd elements
+*/
+function addTooltips() {
+	$("[data-toggle='tooltip']").tooltip();
 }
 
 /**
@@ -241,6 +258,9 @@ $(document).ready( function () {
 			}).done(function(data) {
 				// set content
 				$("#settings-content").html(data);
+				
+				// add tooltips
+				addTooltips();
 			}).fail(function(error) {
 				// log error
 				console.log("ajax.settings.php", error);

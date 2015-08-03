@@ -65,20 +65,6 @@
 	}
 	
 	/**
-		Inits all elements that have the .selectpicker class attribute as a selectpicker
-	*/
-	function getSelectpickerReadyFunction() {
-		return "<script type='text/javascript'>$(document).ready(function() { $('.selectpicker').selectpicker({}); } );</script>";
-	}
-	
-	/**
-		Inits all elements that have the data-toggle='tooltip' attribute as a tooltip
-	*/
-	function getTooltipReadyFunction() {
-		return "<script type='text/javascript'>$(document).ready(function() { $('[data-toggle=\"tooltip\"]').tooltip(); } );</script>";
-	}
-	
-	/**
 		Compares two strings and returns "selected" if they are equal, and an empty string if they are not.
 		Useful for adding select box options.
 	*/

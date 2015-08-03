@@ -460,9 +460,6 @@
 						}
 					$html .= "</tbody>";
 				$html .= "</table>";
-				
-				// adds the tooltip initialization to the body
-				$html .= getTooltipReadyFunction();
 			} else {
 				$html .= "<p>Currently, there are no devices saved.";
 				$html .= "<p>If you want, you can <a href='#' onclick=\"crudModal('" . $this->SAVE_DEVICE . "')\">add</a> one.";
