@@ -19,6 +19,7 @@
 		private $SCRIPTS = array(
 								"external/jquery/jquery-2.1.4.min.js",
 								"external/jquery/jquery-ui.min.js",
+								"external/external.js",
 								"external/bootstrap/js/bootstrap.min.js",
 								"external/bootstrap-select/bootstrap-select.min.js",
 								"external/notifiy/notify-combined.min.js",
