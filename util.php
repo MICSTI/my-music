@@ -19,6 +19,10 @@
 		return $datetime->format('d.m.Y');
 	}
 	
+	function getMysqlDate($austrian_date) {
+		return substr($austrian_date, 6) . "-" . substr($austrian_date, 3, 2) . "-" . substr($austrian_date, 0, 2);
+	}
+	
 	function millisecondsToMinutes($ms) {
 		$time = $ms / 1000;
 		

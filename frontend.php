@@ -34,6 +34,7 @@
 		private $SAVE_DEVICE = "VnpguEAw";
 		private $SAVE_DEVICE_TYPE = "21Uww2Uj";
 		private $SAVE_RECORD_TYPE = "k2PZk2Zq";
+		private $SAVE_RECORD_DETAILS = "2HedLZAk";
 		
 		public function __construct() {
 			$this->page = new page();
@@ -253,20 +254,43 @@
 				
 				$html .= "<div class='panel-body'>";
 					$html .= "<div class='song-general-info col-sm-4'>";
+						// record name
 						$html .= "<div class='col-sm-3 bold'>Title:</div>";
 						$html .= "<div class='col-sm-9'>" . $record_info["RecordName"] . "</div>";
 						
+						// artist name
 						$html .= "<div class='col-sm-3 bold'>Artist:</div>";
 						$html .= "<div class='col-sm-9'>" . getArtistLink($record_info["ArtistId"], $record_info["ArtistName"]) . "</div>";
+						
+						// record type
+						$html .= "<div class='col-sm-3 bold'>Type:</div>";
+						$html .= "<div class='col-sm-9' id='record-info-type'>" . $record_info["RecordTypeName"] . "</div>";
 					$html .= "</div>";
 					
-					$html .= "<div class='song-general-info col-sm-8'>";
+					$html .= "<div class='song-general-info col-sm-7'>";
+						// record duration
 						$html .= "<div class='col-sm-3 bold'>Duration:</div>";
 						$html .= "<div class='col-sm-9'>" . millisecondsToMinutes($record_info["SongLengthCount"]) . " min</div>";
 					
+						// record play count
 						$html .= "<div class='col-sm-3 bold'>Played song total:</div>";
 						$html .= "<div class='col-sm-9'>" . $record_info["SongPlayedCount"] . "</div>";
+						
+						// publish date
+						$publish_date = $record_info["RecordPublishDate"];
+						
+						if ($publish_date != "0000-00-00") {
+							$publish = new MysqlDate($publish_date);
+							
+							$html .= "<div class='col-sm-3 bold'>Published:</div>";
+							$html .= "<div class='col-sm-9' id='record-info-publish'>" . $publish->convert2AustrianDate() . "</div>";
+						}
 					$html .= "</div>";
+					
+					// record details edit button
+					$html .= "<div class='song-general-info col-sm-1'>";
+						$html .= "<button type='button' id='btn-record-details-edit' class='btn btn-default pull-right' onclick=\"crudModal('" . $this->SAVE_RECORD_DETAILS . "', '" . $record_info["RecordId"] . "')\"><span class='glyphicon glyphicon-pencil'></span></button>";
+					$html .= "</div>";	
 				$html .= "</div>";
 			$html .= "</div>";
 			
@@ -398,7 +422,7 @@
 			$icons = $mdb->getIcons();
 			
 			if (!is_null($icons)) {
-				$html .= "<table class='table table-striped'>";
+				$html .= "<table class='table'>";
 					$html .= "<thead>";
 						$html .= "<tr>";
 							$html .= "<th class='col-sm-1'>Icon</th>";
@@ -478,7 +502,7 @@
 			$device_types = $mdb->getDeviceTypes();
 			
 			if (!is_null($device_types)) {
-				$html .= "<table class='table table-striped'>";
+				$html .= "<table class='table'>";
 					$html .= "<thead>";
 						$html .= "<tr>";
 							$html .= "<th class='col-sm-1'>Icon</th>";
@@ -518,7 +542,7 @@
 			$activities = $mdb->getActivities();
 			
 			if (!is_null($activities)) {
-				$html .= "<table class='table table-striped'>";
+				$html .= "<table class='table'>";
 					$html .= "<thead>";
 						$html .= "<tr>";
 							$html .= "<th class='col-sm-2'>Tag</th>";

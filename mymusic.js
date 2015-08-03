@@ -1,3 +1,8 @@
+var DATEPICKER_INIT_OPTIONS = {
+			format: "dd.mm.yyyy",
+			weekStart: 1
+		};
+
 function crudModal(_action, _id, _params) {
 	if (_id === undefined)
 		_id = 0;
@@ -17,6 +22,17 @@ function crudModal(_action, _id, _params) {
 	modal.on("shown.bs.modal", function() {
 		// handle autofocus element
 		$(".autofocus").first().focus();
+		
+		// init datepicker
+		$(".date-picker")
+			.datepicker(DATEPICKER_INIT_OPTIONS)
+			.on("changeDate", function(e) {
+				// changeDate fires when month or year selection of datepicker is clicked, so we have to check if the user actually selected a new date
+				if (e.viewMode === "days") {
+					// hide datepicker after date was changed
+					$(this).datepicker("hide");
+				}
+			});
 		
 		// add tooltips
 		addTooltips();
@@ -78,8 +94,19 @@ function persistCrud(_action, _id, _params, _tab) {
 				// show success message
 				globalNotify("Changes saved successfully");
 				
-				// update content
-				updateContent(_tab);
+				// success action
+				switch (content.onSuccess) {
+					case "updateSettings":
+						updateSettingsContent(_tab);
+						break;
+						
+					case "updateRecordInformation":
+						updateRecordInformation(_id);
+						break;
+						
+					default:
+						break;
+				}
 			} else {
 				// show error message
 				globalNotify("Changes could not be saved", "error");
@@ -98,9 +125,9 @@ function persistCrud(_action, _id, _params, _tab) {
 }
 
 /**
-	Update the content for the specified tab
+	Update the content for the specified tab.
 */
-function updateContent(target) {
+function updateSettingsContent(target) {
 	$.ajax( {
 		method: "GET",
 		url: "ajax.settings.php",
@@ -113,6 +140,30 @@ function updateContent(target) {
 			// set content
 			$(this).html(data).fadeIn(400);
 		});
+	}).fail(function(error) {
+		// log error
+		console.log("ajax.settings.php", error);
+	});
+}
+
+/**
+	Updates the detail information for a record.
+*/
+function updateRecordInformation(_id) {
+	$.ajax( {
+		method: "GET",
+		url: "ajax.modal.php",
+		data: {
+			action: "JOqlKanU",
+			id: _id
+		}
+	}).done(function(data) {
+		var record = JSON.parse(data);
+		
+		if (record.success) {
+			$("#record-info-type").html(record.record_type);
+			$("#record-info-publish").html(record.publish);
+		}
 	}).fail(function(error) {
 		// log error
 		console.log("ajax.settings.php", error);
@@ -207,7 +258,7 @@ function reorderRecordTypes() {
 			}
 						
 			// update content
-			updateContent(content.tab);
+			updateSettingsContent(content.tab);
 		}).fail(function(error) {
 			// log error
 			console.log("persistCrud", error);
@@ -224,15 +275,21 @@ $(document).ready( function () {
 	ac.setId("searchfield");
 	ac.setUrl("search.php");
 	
-	// datepicker
-	var datepicker = $("#pickdate");
-	if (datepicker.length > 0) {
-		datepicker.datepicker( {
-			format: "dd.mm.yyyy",
-			weekStart: 1
+	// init datepicker
+	$("#pickdate")
+		.datepicker(DATEPICKER_INIT_OPTIONS)
+		.on("changeDate", function(e) {
+			// changeDate fires when month or year selection of datepicker is clicked, so we have to check if the user actually selected a new date
+			if (e.viewMode === "days") {
+				// hide datepicker after date was changed
+				$(this).datepicker("hide");
+				
+				// call history page for this day
+				var formatted = $(this).val();
+				window.location.href = "history.php?date=" + formatted.substring(6) + "-" + formatted.substring(3, 5) + "-" + formatted.substring(0, 2);
+			}
 		});
-	}
-	
+
 	// settings
 	var settings = $("#settings");
 	if (settings.length > 0) {

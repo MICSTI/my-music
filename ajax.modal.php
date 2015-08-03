@@ -86,6 +86,9 @@
 				
 				// save the icon to the database
 				$success = $mc->getMDB()->saveIcon($id, $get["icon-name"], $get["icon-type"], $get["icon-path"]);
+				
+				// on success action
+				$data["onSuccess"] = "updateSettings";
 			
 				$data["success"] = $success;
 			
@@ -177,6 +180,9 @@
 				
 				// save the device type to the database
 				$success = $mc->getMDB()->saveDevice($id, $get["device-name"], $get["device-type"], $active);
+				
+				// on success action
+				$data["onSuccess"] = "updateSettings";
 			
 				$data["success"] = $success;
 				
@@ -251,6 +257,9 @@
 				
 				// save the device type to the database
 				$success = $mc->getMDB()->saveDeviceType($id, $get["device-type-name"], $get["device-type-icon"]);
+				
+				// on success action
+				$data["onSuccess"] = "updateSettings";
 			
 				$data["success"] = $success;
 				
@@ -325,6 +334,9 @@
 				
 				// save the activity to the database
 				$success = $mc->getMDB()->saveActivity($id, $get["activity-name"], $get["activity-color"]);
+				
+				// on success action
+				$data["onSuccess"] = "updateSettings";
 			
 				$data["success"] = $success;
 				
@@ -394,6 +406,9 @@
 				
 				// save the record type to the database
 				$success = $mc->getMDB()->saveRecordType($id, $get["record-type-name"], $level);
+				
+				// on success action
+				$data["onSuccess"] = "updateSettings";
 			
 				$data["success"] = $success;
 				
@@ -418,6 +433,119 @@
 				$data["tab"] = "record-types";
 				
 				$data["success"] = $success;
+			
+				break;
+				
+			// edit record details
+			case "2HedLZAk":
+				if ($id > 0) {
+					// get data
+					$record_details = $mc->getMDB()->getRecordDetails($id);
+					
+					// form name (for processing data in Javascript)
+					$form_name = "record-detail-data";
+					$data["form_name"] = $form_name;
+				
+					// title
+					$title = "Edit record details";
+					$data["title"] = $title;
+					
+					// body
+					$body = "";
+					
+					$body .= "<form class='form-horizontal' id='" . $form_name . "'>";
+						// artist (static)
+						$body .= "<div class='form-group'>";
+							$body .= "<label for='artist-name' class='control-label col-xs-3'>Artist</label>";
+							$body .= "<div class='col-xs-9'>";
+								$body .= "<p class='form-control-static' id='artist-name'>" . $record_details["ArtistName"] . "</p>";
+							$body .= "</div>";
+						$body .= "</div>";
+						
+						// name (static)
+						$body .= "<div class='form-group'>";
+							$body .= "<label for='record-name' class='control-label col-xs-3'>Title</label>";
+							$body .= "<div class='col-xs-9'>";
+								$body .= "<p class='form-control-static' id='record-name'>" . $record_details["RecordName"] . "</p>";
+							$body .= "</div>";
+						$body .= "</div>";
+						
+						// type
+						$body .= "<div class='form-group'>";
+							$body .= "<label for='record-type' class='control-label col-xs-3'>Type</label>";
+							$body .= "<div class='col-xs-9'>";
+								$body .= "<select class='selectpicker form-control' id='record-type' name='record-type'>";
+									// display all options
+									$record_types = $mc->getMDB()->getRecordTypes();
+									
+									foreach ($record_types as $record_type) {
+										$body .= "<option value='" . $record_type["RecordTypeId"] . "' " . compareOption($record_type["RecordTypeId"], $record_details["RecordTypeId"]) . ">" . $record_type["RecordTypeName"] . "</option>";
+									}
+								$body .= "</select>";
+							$body .= "</div>";
+						$body .= "</div>";
+						
+						// publish date
+						$publish_date = $record_details["RecordPublishDate"] != "0000-00-00" ? $record_details["RecordPublishDate"] : "";
+						
+						if ($record_details["RecordPublishDate"] != "0000-00-00") {
+							$mysql_date = new MysqlDate($record_details["RecordPublishDate"]);
+							$publish_date = $mysql_date->convert2AustrianDate();
+						} else {
+							$publish_date = "";
+						}
+						
+						$body .= "<div class='form-group'>";
+							$body .= "<label for='record-publish' class='control-label col-xs-3'>Publish date</label>";
+							$body .= "<div class='col-xs-9'>";
+								$body .= "<input type='text' class='form-control date-picker' id='record-publish' name='record-publish' placeholder='Date' value='" . $publish_date . "' />";
+							$body .= "</div>";
+						$body .= "</div>";
+						
+					$body .= "</form>";
+					
+					$data["body"] = $body;
+					
+					// footer
+					$footer = $mc->getFrontend()->getModalButtons(array("cancel", "save"));
+					$data["footer"] = $footer;
+					
+					// save method id
+					$data["save"] = "YocDZV0O";
+				} else {
+					$data["status"] = "error";
+					$data["message"] = "No valid id was passed";
+				}
+				
+				break;
+				
+			// save record details
+			case "YocDZV0O":
+				parse_str($params, $get);
+				
+				$typeid = $get["record-type"];
+				$publish = getMysqlDate($get["record-publish"]);
+				
+				// save the record type to the database
+				$success = $mc->getMDB()->updateRecordDetails($id, $typeid, $publish);
+				
+				// on success action
+				$data["onSuccess"] = "updateRecordInformation";
+			
+				$data["success"] = $success;
+				
+				break;
+				
+			// get record details JSON
+			case "JOqlKanU":
+				// get data
+				$record_details = $mc->getMDB()->getRecordDetails($id);
+				
+				$publish = new MysqlDate($record_details["RecordPublishDate"]);
+				
+				$data["record_type"] = $record_details["RecordTypeName"];
+				$data["publish"] = $publish->convert2AustrianDate();
+				$data["success"] = true;
 			
 				break;
 				

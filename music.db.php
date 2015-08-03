@@ -372,10 +372,14 @@
 						re.id AS 'RecordId',
 						re.name AS 'RecordName',
 						ar.id AS 'ArtistId',
-						ar.name AS 'ArtistName'
+						ar.name AS 'ArtistName',
+						re.publish AS 'RecordPublishDate',
+						re.typeid AS 'RecordTypeId',
+						rt.name AS 'RecordTypeName'
 					FROM
 						records re INNER JOIN
-						artists ar ON ar.id = re.aid
+						artists ar ON ar.id = re.aid INNER JOIN
+						record_type rt ON rt.id = re.typeid
 					WHERE
 						re.id = :id";
 						
@@ -389,6 +393,9 @@
 				$record["RecordName"] = $fetch["RecordName"];
 				$record["ArtistId"] = $fetch["ArtistId"];
 				$record["ArtistName"] = $fetch["ArtistName"];
+				$record["RecordPublishDate"] = $fetch["RecordPublishDate"];
+				$record["RecordTypeId"] = $fetch["RecordTypeId"];
+				$record["RecordTypeName"] = $fetch["RecordTypeName"];
 			}
 			
 			// get additional record infos like the song list, total playing time and total play count
@@ -470,6 +477,62 @@
 			$record["SongLengthCount"] = $song_length_count;
 			
 			return $record;
+		}
+		
+		/**
+			Returns an array containing details about a record (artist name, record title, record type, publish date)
+		*/
+		public function getRecordDetails($id) {
+			$record_details = array();
+			
+			// basic information
+			$sql = "SELECT
+						re.id AS 'RecordId',
+						re.name AS 'RecordName',
+						ar.id AS 'ArtistId',
+						ar.name AS 'ArtistName',
+						re.publish AS 'RecordPublishDate',
+						re.typeid AS 'RecordTypeId',
+						rt.name AS 'RecordTypeName'
+					FROM
+						records re INNER JOIN
+						artists ar ON ar.id = re.aid INNER JOIN
+						record_type rt ON rt.id = re.typeid
+					WHERE
+						re.id = :id";
+						
+			$query = $this->db->prepare($sql);
+			$query->execute( array(':id' => $id) );
+			
+			if ($query->rowCount() > 0) {
+				$fetch = $query->fetch(PDO::FETCH_ASSOC);
+				
+				$record_details["RecordId"] = $fetch["RecordId"];
+				$record_details["RecordName"] = $fetch["RecordName"];
+				$record_details["ArtistId"] = $fetch["ArtistId"];
+				$record_details["ArtistName"] = $fetch["ArtistName"];
+				$record_details["RecordPublishDate"] = $fetch["RecordPublishDate"];
+				$record_details["RecordTypeId"] = $fetch["RecordTypeId"];
+				$record_details["RecordTypeName"] = $fetch["RecordTypeName"];
+			}
+						
+			return $record_details;
+		}
+		
+		/**	
+			Updates the details for a record.
+			Returns true if operations was successful or nothing was changed, false if an error occurred.
+		*/
+		public function updateRecordDetails($id, $typeid, $publish) {
+			$sql = "UPDATE records SET typeid = :typeid, publish = :publish WHERE id = :id";
+			$query = $this->db->prepare($sql);
+			$success = $query->execute( array(':id' => $id, ':typeid' => $typeid, ':publish' => $publish) );
+			
+			if ($query->rowCount() > 0 OR $success !== false) {
+				return true;
+			} else {
+				return false;
+			}
 		}
 		
 		/**
@@ -689,9 +752,9 @@
 		public function updateRecordType ($id, $name, $level) {
 			$sql = "UPDATE record_type SET name = :name, level = :level WHERE id = :id";
 			$query = $this->db->prepare($sql);
-			$query->execute( array(':id' => $id, ':name' => $name, ':level' => $level) );
+			$success = $query->execute( array(':id' => $id, ':name' => $name, ':level' => $level) );
 			
-			if ($query->rowCount() > 0) {
+			if ($query->rowCount() > 0 OR $success !== false) {
 				if ($this->logging) {
 					$this->addLog(__FUNCTION__, "success", "updated tupel in record_type with id " . $id . " [ name: " . $name . ", importance level: " . $level . " ]");
 				}

@@ -9,7 +9,7 @@
 	
 	$songs = $mc->getMDB()->getPlayedHistoryForDate($date);
 	
-	$datepicker_elem = "<input type='text' id='pickdate' placeholder='Pick date' size='12' value='" . $mysql_date->convert2AustrianDate() . "' />";
+	$datepicker_elem = "<input type='text' id='pickdate' class='form-control date-picker' placeholder='Pick date' value='" . $mysql_date->convert2AustrianDate() . "' />";
 	
 	// Headline
 	$html .= "<h3>History</h3>";
