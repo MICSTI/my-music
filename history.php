@@ -9,6 +9,10 @@
 	
 	$songs = $mc->getMDB()->getPlayedHistoryForDate($date);
 	
+	// day name
+	$datetime = new DateTime($date);
+	$day_name = getDayName(date('N', $datetime->getTimestamp()));
+	
 	$datepicker_elem = "<input type='text' id='pickdate' class='form-control date-picker' placeholder='Pick date' value='" . $mysql_date->convert2AustrianDate() . "' />";
 	
 	// Headline
@@ -19,7 +23,7 @@
 	
 	if (substr($date, 5) == "02-29") {
 		// special case: 29th of February - Year before shows 4 years before
-		// we ignore the other special case of leap years that are divisible by 100 but not by 400 - like 2100, 2200, etc.
+		// we ignore the other special case of leap years that are divisible by 100 but not by 400 - like 2100, 2200, etc - these are not actually leap years but we ignore them.
 		$before_text = "4 years before";
 		$after_text = "4 years after";
 		
@@ -38,9 +42,9 @@
 		$html .= "<button type='button' class='btn btn-primary' onclick='window.location.href=\"history.php?date=" . $year_before . "\"'><span class='glyphicon glyphicon-chevron-left'></span> " . $before_text . "</button>";
 		
 		if (!empty($songs)) {
-			$html .= "<span id='history-dp'><strong>Played songs on </strong>" . $datepicker_elem . "</span>";
+			$html .= "<span id='history-dp'><strong>Played songs on " . $day_name . " </strong>" . $datepicker_elem . "</span>";
 		} else {
-			$html .= "<span id='history-dp'><strong>No songs were played on </strong>" . $datepicker_elem . "</span>";
+			$html .= "<span id='history-dp'><strong>No songs were played on " . $day_name . " </strong>" . $datepicker_elem . "</span>";
 		}		
 		$html .= "<button type='button' class='btn btn-primary' onclick='window.location.href=\"history.php?date=" . $year_after . "\"'>" . $after_text . " <span class='glyphicon glyphicon-chevron-right'></span></button>";
 	$html .= "</span>";

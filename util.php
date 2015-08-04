@@ -3,6 +3,12 @@
 		return array("brown", "coral", "cornflowerblue", "crimson", "green", "maroon", "orange", "tomato");
 	}
 	
+	function getDayName($day) {
+		$day_names = array(1 => "Monday", 2 => "Tuesday", 3 => "Wednesday", 4 => "Thursday", 5 => "Friday", 6 => "Saturday", 7 => "Sunday");
+		
+		return $day_names[$day];
+	}
+	
 	function capitalizeFirstLetter($text) {
 		return strtoupper(substr($text, 0, 1)) . substr($text, 1);
 	}
