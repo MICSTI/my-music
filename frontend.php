@@ -323,7 +323,7 @@
 										$html .= "<td class='rank'>" . $track_no . "</td>";
 										$html .= "<td>" . getSongLink($song["SongId"], $song["SongName"]) . "</td>";
 										$html .= "<td class='hidden-xs'>" . millisecondsToMinutes($song["SongLength"]) . "</td>";
-										$html .= "<td class='hidden-xs'>" . $song["SongRating"] . "</td>";
+										$html .= "<td class='hidden-xs'>" . getStarsRating($song["SongRating"]) . "</td>";
 										$html .= "<td>" . $song["PlayedCount"] . "</td>";
 										$html .= "<td>" . $song["MostRecentPlayed"] . "</td>";
 									$html .= "</tr>";

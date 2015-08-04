@@ -75,6 +75,61 @@
 	}
 	
 	/**
+		Returns a span containing the rating displayed in stars and half-stars
+	*/
+	function getStarsRating($rating) {
+		$html = "";
+		
+		$stars = 0;
+		
+		if ($rating >= 96) {
+			$stars = 5;
+		} else if ($rating >= 86) {
+			$stars = 4.5;
+		} else if ($rating >= 76) {
+			$stars = 4;
+		} else if ($rating >= 66) {
+			$stars = 3.5;
+		} else if ($rating >= 56) {
+			$stars = 3;
+		} else if ($rating >= 46) {
+			$stars = 2.5;
+		} else if ($rating >= 36) {
+			$stars = 2;
+		} else if ($rating >= 26) {
+			$stars = 1.5;
+		} else if ($rating >= 16) {
+			$stars = 1;
+		} else if ($rating >= 6) {
+			$stars = 0.5;
+		} else if ($rating >= 0) {
+			$stars = 0;
+		} else {
+			$stars = -1;
+		}
+		
+		$html .= "<span class='star-rating'>";
+			if ($stars < 0) {
+				// no rating
+			} else {
+				while ($stars > 0) {
+					if ($stars >= 1) {
+						// full star
+						$html .= "<span class='glyphicon glyphicon-star'></span>";
+					} else {
+						// half star
+						$html .= "<span class='glyphicon glyphicon-star half-star'></span>";
+					}
+					
+					$stars--;
+				}
+			}
+		$html .= "</span>";
+		
+		return $html;
+	}
+	
+	/**
 		Compares two strings and returns "selected" if they are equal, and an empty string if they are not.
 		Useful for adding select box options.
 	*/

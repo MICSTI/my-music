@@ -77,6 +77,26 @@ a {
 	display: inline !important;
 }
 
+/* ---- STAR RATING ---- */
+.star-rating span {
+	color: #f9bf3b;
+}
+
+.half-star {
+	position: relative;
+}
+
+.half-star:after {
+	content: '';
+    position: absolute;
+    z-index: 1;
+    background: white;
+    width: 50%;
+    height: 100%;
+    left: 47%;
+}
+/* --------------------- */
+
 /* ---- COLORS ---- */
 .label-brown {
 	background-color: brown;
