@@ -43,6 +43,11 @@
 			$html .= "<a href='#' id='settings-activities' class='list-group-item'>";
 				$html .= "<span>Activities</span>";
 			$html .= "</a>";
+			
+			// Countries
+			$html .= "<a href='#' id='settings-countries' class='list-group-item'>";
+				$html .= "<span>Countries</span>";
+			$html .= "</a>";
 		$html .= "</div>";
 	$html .= "</div>";
 	

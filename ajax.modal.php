@@ -342,6 +342,76 @@
 				
 				break;
 				
+			// add/edit country
+			case "9wgH0bsX":
+				// get data if edit
+				if ($id > 0) {
+					$country = $mc->getMDB()->getCountry($id);
+				} else {
+					$country = array();
+					
+					$country["CountryName"] = "";
+					$country["CountryShort"] = "";
+				}
+				
+				// form name (for processing data in Javascript)
+				$form_name = "country-data";
+				$data["form_name"] = $form_name;
+				
+				// tab name (for updating the content after saving)
+				$tab_name = "countries";
+				$data["tab_name"] = $tab_name;
+			
+				// title
+				$title = $id <= 0 ? "Add new country" : "Edit country";
+				$data["title"] = $title;
+				
+				// body
+				$body = "";
+				
+				$body .= "<form class='form-horizontal' id='" . $form_name . "'>";
+					// name
+					$body .= "<div class='form-group'>";
+						$body .= "<label for='country-name' class='control-label col-xs-2'>Name</label>";
+						$body .= "<div class='col-xs-10'>";
+							$body .= "<input type='text' class='form-control autofocus' id='country-name' name='country-name' placeholder='Name' value='" . $country["CountryName"] . "' />";
+						$body .= "</div>";
+					$body .= "</div>";
+					
+					// short (alpha2 code)
+					$body .= "<div class='form-group'>";
+						$body .= "<label for='country-short' class='control-label col-xs-2'>Short</label>";
+						$body .= "<div class='col-xs-10'>";
+							$body .= "<input type='text' class='form-control autofocus' id='country-short' name='country-short' placeholder='Short (Alpha2 code)' value='" . $country["CountryShort"] . "' />";
+						$body .= "</div>";
+					$body .= "</div>";
+				$body .= "</form>";
+				
+				$data["body"] = $body;
+				
+				// footer
+				$footer = $mc->getFrontend()->getModalButtons(array("cancel", "save"));
+				$data["footer"] = $footer;
+				
+				// save method id
+				$data["save"] = "ksBHxHq8";
+				
+				break;
+				
+			// save country
+			case "ksBHxHq8":
+				parse_str($params, $get);
+				
+				// save the country to the database
+				$success = $mc->getMDB()->saveCountry($id, $get["country-name"], $get["country-short"]);
+				
+				// on success action
+				$data["onSuccess"] = "updateSettings";
+			
+				$data["success"] = $success;
+				
+				break;
+				
 			// add/edit record type
 			case "k2PZk2Zq":
 				// get data if edit

@@ -32,6 +32,7 @@
 		// Action ids
 		private $SAVE_ICON = "TkTiW5a3";
 		private $SAVE_ACTIVITY = "pXBciVn6";
+		private $SAVE_COUNTRY = "9wgH0bsX";
 		private $SAVE_DEVICE = "VnpguEAw";
 		private $SAVE_DEVICE_TYPE = "21Uww2Uj";
 		private $SAVE_RECORD_TYPE = "k2PZk2Zq";
@@ -355,6 +356,10 @@
 					$html .= $this->getActivitySettings($mdb);
 					break;
 					
+				case "countries":
+					$html .= $this->getCountrySettings($mdb);
+					break;
+					
 				case "icons":
 					$html .= $this->getIconSettings($mdb);
 					break;
@@ -565,6 +570,45 @@
 			} else {
 				$html .= "<p>Currently, there are no activities saved.";
 				$html .= "<p>If you want, you can <a href='#' onclick=\"crudModal('" . $this->SAVE_ACTIVITY . "')\">add</a> one.";
+			}
+			
+			return $html;
+		}
+		
+		/**
+			Returns the content of the country settings tab
+		*/
+		private function getCountrySettings($mdb) {
+			$html = "";
+			
+			// get all countries from the database
+			$countries = $mdb->getCountries();
+			
+			if (!is_null($countries)) {
+				$html .= "<table class='table'>";
+					$html .= "<thead>";
+						$html .= "<tr>";
+							$html .= "<th class='col-sm-2'>Flag</th>";
+							$html .= "<th class='col-sm-4'>Name</th>";
+							$html .= "<th class='col-sm-4 hidden-xs'>Short</th>";
+							$html .= "<th class='col-sm-2'><button type='button' class='btn btn-primary' onclick=\"crudModal('" . $this->SAVE_COUNTRY . "')\"><span class='glyphicon glyphicon-plus'></span></button></th>";
+						$html .= "</tr>";
+					$html .= "</thead>";
+					
+					$html .= "<tbody>";
+						foreach ($countries as $country) {							
+							$html .= "<tr>";
+								$html .= "<td></td>";
+								$html .= "<td>" . $country["CountryName"] . "</td>";
+								$html .= "<td class='hidden-xs'>" . strtoupper($country["CountryShort"]) . "</td>";
+								$html .= "<td><a href='#' role='button' class='btn btn-default' onclick=\"crudModal('" . $this->SAVE_COUNTRY . "', '" . $country["CountryId"] . "')\"><span class='glyphicon glyphicon-pencil'></span></td>";
+							$html .= "</tr>";
+						}
+					$html .= "</tbody>";
+				$html .= "</table>";
+			} else {
+				$html .= "<p>Currently, there are no countries saved.";
+				$html .= "<p>If you want, you can <a href='#' onclick=\"crudModal('" . $this->SAVE_COUNTRY . "')\">add</a> one.";
 			}
 			
 			return $html;

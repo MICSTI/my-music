@@ -5,3 +5,5 @@ mm_db_devid
 version_number
 version_string
 img_path
+main_country_weight
+secondary_country_weight

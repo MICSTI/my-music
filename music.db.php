@@ -2073,9 +2073,7 @@
 					FROM
 						activities ac
 					WHERE
-						ac.id = :id
-					ORDER BY
-						ac.name";
+						ac.id = :id";
 						
 			$query = $this->db->prepare($sql);
 			$query->execute( array(':id' => $id) );
@@ -2103,7 +2101,7 @@
 					$success = true;
 				}
 			} else {
-				// update existing icon
+				// update existing activity
 				$success = $this->updateActivity($id, $name, $color);
 			}
 			
@@ -2153,6 +2151,128 @@
 			} else {
 				// update not successful
 				$this->addLog(__FUNCTION__, "error", "tried to update activity with id " . $id . " and name " . $name . ", color " . $color . "\n" . implode(" / ", $query->errorInfo()));
+				return false;
+			}
+		}
+		
+		/**
+			Returns an array containing all countries.
+			If no countries exist, null is returned.
+		*/
+		public function getCountries() {
+			// get all countries
+			$sql = "SELECT
+						co.id AS 'CountryId',
+						co.name AS 'CountryName',
+						co.short AS 'CountryShort'
+					FROM
+						countries co
+					ORDER BY
+						co.name";
+						
+			$query = $this->db->prepare($sql);
+			$query->execute();
+			
+			if ($query->rowCount() > 0) {
+				$fetch = $query->fetchAll(PDO::FETCH_ASSOC);
+	
+				return $fetch;
+			} else {
+				return null;
+			}
+		}
+		
+		/**
+			Returns the country with the matching id from the database.
+			If no country is found with this id, null is returned.
+		*/
+		public function getCountry($id) {
+			// get country
+			$sql = "SELECT
+						co.id AS 'CountryId',
+						co.name AS 'CountryName',
+						co.short AS 'CountryShort'
+					FROM
+						countries co
+					WHERE
+						co.id = :id";
+						
+			$query = $this->db->prepare($sql);
+			$query->execute( array(':id' => $id) );
+			
+			if ($query->rowCount() > 0) {
+				$fetch = $query->fetch(PDO::FETCH_ASSOC);
+	
+				return $fetch;
+			} else {
+				return null;
+			}
+		}
+		
+		/**
+			Persists a country. The function updates the country if it already exists or adds it to the database if it doesn't exist.
+			Returns true if the process was successful, false if it wasn't
+		*/
+		public function saveCountry($id, $name, $short) {
+			if ($id <= 0) {
+				// add new country
+				$success = $this->addCountry($name, $short);
+				
+				// set success to true if a correct id was returned
+				if ($success !== false AND $success > 0) {
+					$success = true;
+				}
+			} else {
+				// update existing country
+				$success = $this->updateCountry($id, $name, $short);
+			}
+			
+			return $success;
+		}
+		
+		/**
+			Adds a country to the database.
+			Returns true if the country was inserted successfully, false if an error occurred.
+		*/
+		public function addCountry($name, $short) {
+			$sql = "INSERT INTO countries (name, short) VALUES (:name, :short)";
+			
+			$query = $this->db->prepare($sql);
+			$success = $query->execute( array(':short' => $short, ':name' => $name) );
+			
+			if ($query->rowCount() > 0) {
+				$inserted = $this->db->lastInsertId();
+			
+				if ($this->logging) {
+					$this->addLog(__FUNCTION__, "success", "added new country [ name: " . $name . ", short: " . $short . " ] with id " . $inserted);
+				}
+			
+				return $inserted;
+			} else {
+				if ($this->logging) {
+					$this->addLog(__FUNCTION__, "error", "tried to add new country [ name: " . $name . ", short: " . $short . " ] \n" . implode(" / ", $query->errorInfo()));
+				}
+			
+				return false;
+			}
+		}
+		
+		/**
+			Updates an country in the database.
+			Returns true if the update process was successful or nothing was changed, false if an error occurred.
+		*/
+		public function updateCountry($id, $name, $short) {
+			$sql = "UPDATE countries SET name = :name, short = :short WHERE id = :id";
+			
+			$query = $this->db->prepare($sql);
+			$success = $query->execute( array(':id' => $id, ':short' => $short, ':name' => $name) );
+			
+			if ($query->rowCount() > 0 OR $success !== false) {
+				// update successful or nothing was changed
+				return true;
+			} else {
+				// update not successful
+				$this->addLog(__FUNCTION__, "error", "tried to update country with name " . $name . ", short " . $short . "\n" . implode(" / ", $query->errorInfo()));
 				return false;
 			}
 		}

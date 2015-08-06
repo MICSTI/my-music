@@ -19,6 +19,8 @@ TABLE songs
 TABLE artists
 	id			INT
 	name		VARCHAR
+	main_country VARCHAR
+	sec_country	VARCHAR
 	
 TABLE records
 	id			INT
@@ -65,6 +67,11 @@ TABLE activities
 	id			INT
 	name		VARCHAR
 	color		VARCHAR
+	
+TABLE countries
+	id			INT
+	name		VARCHAR(255)
+	short		VARCHAR(2)	(alpha2 code)
 	
 TABLE logs
 	id			INT
