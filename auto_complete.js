@@ -28,6 +28,7 @@ function AutoComplete() {
 	
 	// helper variable to keep track which choice is currently selected (for navigation with arrow keys)
 	var choice = -1;
+	var choicePointer;
 	
 	// class names for AJAX request result div
 	var choiceSelectId = "ac_r_";
@@ -35,6 +36,12 @@ function AutoComplete() {
 	
 	// array containing the accepted categories (* if all categories should be returned)
 	var acceptedCategories;
+	
+	// function to display a category item
+	var categoryItem;
+	
+	// function to handle the selection of an item
+	var onItemSelected;
 	
 	/**
 		Performs the initialization of the important elements.
@@ -99,6 +106,12 @@ function AutoComplete() {
 		
 		// set focus listener to get results if parent gets focus
 		parent.on("focus", getUpdate);
+		
+		// function to display items
+		categoryItem = options.itemDisplay;
+		
+		// on selected handler
+		onItemSelected = options.itemSelection;
 	}
 	
 	// perform keyhandler method to get updates and move through auto complete choices
@@ -122,22 +135,17 @@ function AutoComplete() {
 			// parse json
 			json = JSON.parse(msg);
 			
-			$("#search-response").html(msg);
+			if (json.data) {								
+				// clear choice pointer
+				choicePointer = undefined;
 			
-			// result choices
-			choice = -1;
-			
-			if (json.data) {
 				// set content of div
 				result.html(getHtml());
 				
-				// add onclick listener for choices
-				/*$("." + choiceClass).each(function (i, item) {
-					$(this).on("click", function() { 
-						choice = i;
-						selectResult();
-					});
-				});*/
+				// attach on click events for choices
+				$("." + choiceClass).on("click", function() {
+					selectChoice(this);
+				});
 				
 				// show result div
 				result.show();
@@ -165,13 +173,18 @@ function AutoComplete() {
 				case 13:
 					keyStroke.preventDefault();
 					
-					if (choice >= 0) {
-						// go to selected choice
-						selectResult();
-					} else if (json.data.length == 1) {
-						// special case: only one choice, go to that choice without having to select it first
-						choice = 0;
-						selectResult();
+					// is a choice selected?
+					if (choicePointer !== undefined) {
+						// yes, so select it
+						selectChoice(choicePointer[0]);
+					} else {
+						// nope, so we check how many choices there are currently
+						var currentChoices = $("." + choiceClass);
+						
+						if (currentChoices.length == 1) {
+							// if there's only one, go select that one
+							selectChoice(currentChoices.get(0));
+						}
 					}
 	
 					break;
@@ -183,33 +196,49 @@ function AutoComplete() {
 					
 				// Arrow up
 				case 38:
-					// remove active class from old choice
-					$("#" + choiceSelectId + choice).toggleClass("ac_active");
-				
-					choice--;
-					
-					if (choice < 0) {
-						choice = json.data.length - 1;
+					if (choicePointer === undefined) {
+						// select last choice
+						choicePointer = $("." + choiceClass).last();
+						choicePointer.toggleClass("ac_active");
+					} else {
+						// remove active from previous choice
+						choicePointer.toggleClass("ac_active");
+						
+						if (choicePointer.prev("." + choiceClass).length > 0) {
+							// select previous choice if there is one
+							choicePointer = choicePointer.prev("." + choiceClass);
+						} else {
+							// otherwise jump back to the first choice
+							choicePointer = $("." + choiceClass).last();
+						}
+						
+						// add active to new choice
+						choicePointer.toggleClass("ac_active");
 					}
-					
-					// add active class to new choice
-					$("#" + choiceSelectId + choice).toggleClass("ac_active");
 				
 					break;
 					
 				// Arrow down
 				case 40:
-					// remove active class from old choice
-					$("#" + choiceSelectId + choice).toggleClass("ac_active");
-				
-					choice++;
-					
-					if (choice >= json.data.length) {
-						choice = 0;
+					if (choicePointer === undefined) {
+						// select first choice
+						choicePointer = $("." + choiceClass).first();
+						choicePointer.toggleClass("ac_active");
+					} else {
+						// remove active from previous choice
+						choicePointer.toggleClass("ac_active");
+						
+						if (choicePointer.next().length > 0) {
+							// select next choice if there is one
+							choicePointer = choicePointer.next();
+						} else {
+							// otherwise jump back to the first choice
+							choicePointer = $("." + choiceClass).first();
+						}
+						
+						// add active to new choice
+						choicePointer.toggleClass("ac_active");
 					}
-					
-					// add active class to new choice
-					$("#" + choiceSelectId + choice).toggleClass("ac_active");
 					
 					break;
 					
@@ -231,14 +260,14 @@ function AutoComplete() {
 		
 		var count = 1;
 		
-		$.each(json.data, function (i, elements) {
+		$.each(json.data, function (category, elements) {
 			// category (displayed only if there are elements in it)
 			if (elements.length > 0) {
-				html += "<div>" + i.capitalizeFirstLetter() + "</div>";
+				html += "<div>" + category.capitalizeFirstLetter() + "</div>";
 				
 				// category elements
-				$.each(elements, function (j, item) {
-					html += "<div id='" + choiceSelectId + count + "' class='" + choiceClass + "'>" + item.SongName + "</div>";
+				$.each(elements, function (i, item) {
+					html += categoryItem(category, item, choiceClass);
 					count++;
 				});
 			}
@@ -250,8 +279,8 @@ function AutoComplete() {
 	/**
 		Handles the selection of a choice.
 	*/
-	var selectResult = function() {
-		window.location.href = "song.php?id=" + json.data[choice]["SongId"];
+	var selectChoice = function(elem) {
+		onItemSelected(elem);
 	}
 	
 	/**

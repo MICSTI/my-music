@@ -280,7 +280,29 @@ $(document).ready( function () {
 	var searchACOptions = {
 		id: "searching",
 		url: "search.php",
-		categories: ["*"]
+		categories: ["*"],
+		itemDisplay: function(_category, _item, _choiceClass) {
+			switch (_category) {
+				case "songs":
+					return "<div class='" + _choiceClass + "' data-category='" + _category + "' data-id='" + _item.SongId + "'>" + _item.SongName + "</div>";
+					
+					break;
+					
+				default:
+					return "";
+					break;
+			}
+		},
+		itemSelection: function(elem) {
+			switch (elem.dataset.category) {
+				case "songs":
+					window.location.href = "song.php?id=" + elem.dataset.id;
+					break;
+					
+				default:
+					break;
+			}
+		}
 	};
 	
 	searchAutoComplete.init(searchACOptions);
