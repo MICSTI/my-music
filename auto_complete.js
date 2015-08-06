@@ -15,7 +15,7 @@ function AutoComplete() {
 	var json;
 	
 	// result div id
-	var result_id;
+	var resultId;
 	
 	// result div
 	var result;
@@ -24,15 +24,16 @@ function AutoComplete() {
 	var typingTimer;
 	
 	// the time in milliseconds until the AJAX call is executed
-	var doneTypingInterval = 200;
+	var doneTypingInterval = 400;
 	
 	// helper variable to keep track which choice is currently selected (for navigation with arrow keys)
 	var choice = -1;
 	var choicePointer;
 	
 	// class names for AJAX request result div
-	var choiceSelectId = "ac_r_";
+	var categoryClass;
 	var choiceClass;
+	var choiceSelectedClass;
 	
 	// array containing the accepted categories (* if all categories should be returned)
 	var acceptedCategories;
@@ -62,25 +63,23 @@ function AutoComplete() {
 		parent = $("#" + id);
 		
 		// result div id
-		result_id = id + "_result";
+		resultId = id + "_result";
 		
 		// class name for normal and selected choice
-		choiceClass = options.choice || "ac_choice";
-		choiceSelectedClass = options.choiceSelected || "ac_choice_selected";
+		resultClass = options.classResult || "ac_result";
+		categoryClass = options.classCategory || "ac_category";
+		choiceClass = options.classChoice || "ac_choice";
+		choiceSelectedClass = options.classChoiceSelected || "ac_choice_selected";
 		
 		// accepted categories
 		acceptedCategories = options.categories || ["*"];
 		
 		// add hidden result div
-		parent.after("<div id='" + result_id + "'></div>");
+		parent.after("<div class='" + resultClass + "' id='" + resultId + "'></div>");
 		
 		// get reference for result div and hide it
-		result = $("#" + result_id);
+		result = $("#" + resultId);
 		result.hide();
-		
-		// position result div correctly
-		result.css("position", "absolute")
-			  .css("background-color", "teal");
 			  
 		// make choice divs as wide as parent for good looks
 		$("." + choiceClass).css("width", parent.outerWidth + "px");
@@ -199,10 +198,10 @@ function AutoComplete() {
 					if (choicePointer === undefined) {
 						// select last choice
 						choicePointer = $("." + choiceClass).last();
-						choicePointer.toggleClass("ac_active");
+						choicePointer.toggleClass(choiceSelectedClass);
 					} else {
 						// remove active from previous choice
-						choicePointer.toggleClass("ac_active");
+						choicePointer.toggleClass(choiceSelectedClass);
 						
 						if (choicePointer.prev("." + choiceClass).length > 0) {
 							// select previous choice if there is one
@@ -213,7 +212,7 @@ function AutoComplete() {
 						}
 						
 						// add active to new choice
-						choicePointer.toggleClass("ac_active");
+						choicePointer.toggleClass(choiceSelectedClass);
 					}
 				
 					break;
@@ -223,10 +222,10 @@ function AutoComplete() {
 					if (choicePointer === undefined) {
 						// select first choice
 						choicePointer = $("." + choiceClass).first();
-						choicePointer.toggleClass("ac_active");
+						choicePointer.toggleClass(choiceSelectedClass);
 					} else {
 						// remove active from previous choice
-						choicePointer.toggleClass("ac_active");
+						choicePointer.toggleClass(choiceSelectedClass);
 						
 						if (choicePointer.next().length > 0) {
 							// select next choice if there is one
@@ -237,7 +236,7 @@ function AutoComplete() {
 						}
 						
 						// add active to new choice
-						choicePointer.toggleClass("ac_active");
+						choicePointer.toggleClass(choiceSelectedClass);
 					}
 					
 					break;
@@ -263,7 +262,7 @@ function AutoComplete() {
 		$.each(json.data, function (category, elements) {
 			// category (displayed only if there are elements in it)
 			if (elements.length > 0) {
-				html += "<div>" + category.capitalizeFirstLetter() + "</div>";
+				html += "<div class='" + categoryClass + "'>" + category.capitalizeFirstLetter() + "</div>";
 				
 				// category elements
 				$.each(elements, function (i, item) {
@@ -280,6 +279,7 @@ function AutoComplete() {
 		Handles the selection of a choice.
 	*/
 	var selectChoice = function(elem) {
+		// call on item selected handler
 		onItemSelected(elem);
 	}
 	

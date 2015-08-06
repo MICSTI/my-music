@@ -97,6 +97,16 @@ a {
 }
 /* --------------------- */
 
+/* ---- SEARCH FIELD ---- */
+.search_artist_name {
+	font-size: 85%;
+}
+
+.search_record_name {
+	font-size: 70%;
+}
+/* --------------------- */
+
 /* ---- COLORS ---- */
 .label-brown {
 	background-color: brown;

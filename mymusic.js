@@ -270,21 +270,21 @@ $(document).ready( function () {
 	// make sure you can't submit the search form (would interfere with enter listener of auto complete)
 	$("#form-search").on("keypress", function(event) { return event.keyCode != 13; });
 	
-	// auto complete
-	/*var ac = new AutoComplete();
-	ac.setId("searchfield");
-	ac.setUrl("search.php");*/
-	
+	// auto complete for search
 	var searchAutoComplete = new AutoComplete();
 	
 	var searchACOptions = {
-		id: "searching",
+		id: "search-field",
 		url: "search.php",
 		categories: ["*"],
 		itemDisplay: function(_category, _item, _choiceClass) {
 			switch (_category) {
 				case "songs":
-					return "<div class='" + _choiceClass + "' data-category='" + _category + "' data-id='" + _item.SongId + "'>" + _item.SongName + "</div>";
+					return "<div class='" + _choiceClass + "' data-category='" + _category + "' data-id='" + _item.SongId + "'>" +
+								"<div class='search_artist_name'>" + _item.ArtistName + "</div>" +
+								"<div>" + _item.SongName + "</div>" +
+								"<div class='search_record_name'>" + _item.RecordName + "</div>" +
+							"</div>";
 					
 					break;
 					

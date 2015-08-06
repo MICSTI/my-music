@@ -1,7 +1,30 @@
-.ac_r {
-	padding: 1px 4px;
+.ac_result {
+	position: absolute;
+	background-color: #ddd;
+	z-index: 10000;
 }
 
-.ac_active{
+.ac_category {
+	background-color: #e74c3c;
+	color: #ddd;
+	padding: 3px 5px;
 	font-weight: bold;
+}
+
+.ac_choice {
+	padding: 2px 4px;
+	border-bottom: 1px solid coral;
+}
+
+.ac_choice:last-child {
+	border-bottom: none !important;
+}
+
+.ac_choice_selected, .ac_choice:hover {
+	font-weight: bold;
+	background-color: cornflowerblue;
+}
+
+.ac_choice:hover {
+	cursor: pointer;
 }

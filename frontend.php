@@ -112,7 +112,7 @@
 					// Search field
 					$menu .= "<form id='form-search' role='search' class='navbar-form navbar-left'>";
 						$menu .= "<div class='form-group'>";
-							$menu .= "<input type='text' id='searchfield' class='form-control' placeholder='Search for songs or artists' size='34' autocomplete='off' />";
+							$menu .= "<input type='text' id='search-field' class='form-control' placeholder='Search for songs, artists or records' size='34' autocomplete='off' />";
 						$menu .= "</div>";
 					$menu .= "</form>";
 				$menu .= "</div>";
