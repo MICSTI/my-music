@@ -271,9 +271,19 @@ $(document).ready( function () {
 	$("#form-search").on("keypress", function(event) { return event.keyCode != 13; });
 	
 	// auto complete
-	var ac = new AutoComplete();
+	/*var ac = new AutoComplete();
 	ac.setId("searchfield");
-	ac.setUrl("search.php");
+	ac.setUrl("search.php");*/
+	
+	var searchAutoComplete = new AutoComplete();
+	
+	var searchACOptions = {
+		id: "searching",
+		url: "search.php",
+		categories: ["*"]
+	};
+	
+	searchAutoComplete.init(searchACOptions);
 	
 	// init datepicker
 	$("#pickdate")

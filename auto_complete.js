@@ -31,31 +31,43 @@ function AutoComplete() {
 	
 	// class names for AJAX request result div
 	var choiceSelectId = "ac_r_";
-	var choiceClass = "ac_r";
+	var choiceClass;
 	
-	this.setId = function(_id) {
-		id = _id;
-		
-		// init jQuery selectors for parent and result div and bind key listeners
-		init();
-	}
-	
-	this.setUrl = function(_url) {
-		url = _url;
-	}
+	// array containing the accepted categories (* if all categories should be returned)
+	var acceptedCategories;
 	
 	/**
 		Performs the initialization of the important elements.
 		Selectors for parent and result elements as well as key listeners.
 	*/
-	var init = function() {
-		result_id = id + "_result";
+	this.init = function(options) {
+		// if no parent id or url was passed, abort iinit
+		if (options.id === undefined || options.url === undefined)
+			return;
+		
+		// parent element id
+		id = options.id;
+		
+		// update url
+		url = options.url;
+		
+		// parent reference
 		parent = $("#" + id);
+		
+		// result div id
+		result_id = id + "_result";
+		
+		// class name for normal and selected choice
+		choiceClass = options.choice || "ac_choice";
+		choiceSelectedClass = options.choiceSelected || "ac_choice_selected";
+		
+		// accepted categories
+		acceptedCategories = options.categories || ["*"];
 		
 		// add hidden result div
 		parent.after("<div id='" + result_id + "'></div>");
 		
-		// get reference for result div
+		// get reference for result div and hide it
 		result = $("#" + result_id);
 		result.hide();
 		
@@ -63,7 +75,8 @@ function AutoComplete() {
 		result.css("position", "absolute")
 			  .css("background-color", "teal");
 			  
-		$("." + choiceClass).css("width", parent.outerWidth + "px")
+		// make choice divs as wide as parent for good looks
+		$("." + choiceClass).css("width", parent.outerWidth + "px");
 		
 		// set keyup listener 
 		parent.on("keyup", function(event) {
@@ -101,12 +114,15 @@ function AutoComplete() {
 			method: "GET",
 			url: url,
 			data: {
-				search: parent.val()
+				search: parent.val(),
+				categories: acceptedCategories.join(",")
 			}
 		})
 		 .done( function (msg) { 
 			// parse json
 			json = JSON.parse(msg);
+			
+			$("#search-response").html(msg);
 			
 			// result choices
 			choice = -1;
