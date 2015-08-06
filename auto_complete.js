@@ -127,17 +127,17 @@ function AutoComplete() {
 			// result choices
 			choice = -1;
 			
-			if (json.data && json.data.length > 0) {
+			if (json.data) {
 				// set content of div
 				result.html(getHtml());
 				
 				// add onclick listener for choices
-				$("." + choiceClass).each(function (i, item) {
+				/*$("." + choiceClass).each(function (i, item) {
 					$(this).on("click", function() { 
 						choice = i;
 						selectResult();
 					});
-				});
+				});*/
 				
 				// show result div
 				result.show();
@@ -229,8 +229,19 @@ function AutoComplete() {
 	var getHtml = function() {
 		var html = "";
 		
-		$.each(json.data, function (i, item) {
-			html += "<div id='" + choiceSelectId + i + "' class='" + choiceClass + "'>" + item.SongName + "</div>";
+		var count = 1;
+		
+		$.each(json.data, function (i, elements) {
+			// category (displayed only if there are elements in it)
+			if (elements.length > 0) {
+				html += "<div>" + i.capitalizeFirstLetter() + "</div>";
+				
+				// category elements
+				$.each(elements, function (j, item) {
+					html += "<div id='" + choiceSelectId + count + "' class='" + choiceClass + "'>" + item.SongName + "</div>";
+					count++;
+				});
+			}
 		});
 		
 		return html;

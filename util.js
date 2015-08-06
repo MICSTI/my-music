@@ -12,4 +12,13 @@ function getUrlParameter(sParam) {
             return sParameterName[1];
         }
     }
-}    
+}
+
+/**
+	Capitalizes the first letter in a string
+*/
+if (!String.prototype.capitalizeFirstLetter) {
+	String.prototype.capitalizeFirstLetter = function() {
+		return this.charAt(0).toUpperCase() + this.slice(1);
+	};
+}
