@@ -424,4 +424,13 @@ $(document).ready( function () {
 	
 	// add tooltips
 	addTooltips();
+	
+	// add hotkey listener
+	$(document).bind("keydown", "ctrl+f", function() {
+		// set focus to search field
+		$("#search-field").focus();
+		
+		// catch event to prevent it from bubbling to the browser
+		return false;
+	});
 } );

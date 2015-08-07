@@ -24,6 +24,7 @@
 								"external/bootstrap/js/bootstrap.min.js",
 								"external/bootstrap-select/bootstrap-select.min.js",
 								"external/notifiy/notify-combined.min.js",
+								"external/jquery/jquery.hotkeys.js",
 								"auto_complete.js",
 								"bootstrap-datepicker.js",
 								"util.js",
