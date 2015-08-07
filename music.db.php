@@ -1480,13 +1480,18 @@
 			foreach ($search_array as $term) {
 				$term = mysql_real_escape_string($term);
 				
+				// for multi-search, we always match like "%XXX%"
+				$tq = "( SELECT SongId FROM SongsView WHERE SongName LIKE '%" . $term . "%' OR ArtistName LIKE '%" . $term . "%' )";
+				
+				// OLD: Do it like we do in short and long search
+				/*
 				if (strlen($term) <= 3) {
 					// short word
-					$tq = "( SELECT SongId FROM SongsView WHERE SongName LIKE '" . $term . "%' OR ArtistName LIKE '" . $term . "%' )";
+					$tq = "( SELECT SongId FROM SongsView WHERE SongName LIKE '%" . $term . "%' OR ArtistName LIKE '%" . $term . "%' )";
 				} else {
 					// long word
 					$tq = "( SELECT SongId FROM SongsView WHERE SongName LIKE '%" . $term . "%' OR ArtistName LIKE '%" . $term . "%' )";
-				}
+				}*/
 				
 				if ($term_query != "") {
 					$term_query .= " UNION ALL ";
