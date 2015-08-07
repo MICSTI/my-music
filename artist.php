@@ -22,14 +22,31 @@
 				$html .= "<div class='panel-heading bold'>General information</div>";
 				
 				$html .= "<div class='panel-body'>";
+					// Name
 					$html .= "<div class='song-general-info col-sm-4'>";
 						$html .= "<div class='col-sm-3 bold'>Name:</div>";
 						$html .= "<div class='col-sm-9'>" . $artist_info["ArtistName"] . "</div>";
 					$html .= "</div>";
 					
+					// # times played
 					$html .= "<div class='song-general-info col-sm-8'>";
 						$html .= "<div class='col-sm-3 bold'>Played:</div>";
 						$html .= "<div class='col-sm-9'>" . $play_count . " times</div>";
+					$html .= "</div>";
+					
+					// origin country
+					$main_country_code = $artist_info["ArtistMainCountry"];
+					$main_country_name = $mc->getMDB()->getCountryNameByCode($main_country_code);
+					
+					$secondary_country_code = $artist_info["ArtistSecondaryCountry"];
+					$secondary_country_name = $mc->getMDB()->getCountryNameByCode($secondary_country_code);
+					
+					$main_country_flag = getCountryFlag($main_country_code, $main_country_name);
+					$secondary_country_flag = getCountryFlag($secondary_country_code, $secondary_country_name);
+					
+					$html .= "<div class='song-general-info col-sm-4'>";
+						$html .= "<div class='col-sm-3 bold'>Origin:</div>";
+						$html .= "<div class='col-sm-9'>" . $main_country_flag . " " . $secondary_country_flag . "</div>";
 					$html .= "</div>";
 				$html .= "</div>";
 			$html .= "</div>";

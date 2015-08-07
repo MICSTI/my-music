@@ -195,7 +195,9 @@
 			// basic information
 			$sql = "SELECT
 						ar.id AS 'ArtistId',
-						ar.name AS 'ArtistName'
+						ar.name AS 'ArtistName',
+						ar.main_country AS 'ArtistMainCountry',
+						ar.sec_country AS 'ArtistSecondaryCountry'
 					FROM
 						artists ar
 					WHERE
@@ -209,6 +211,8 @@
 	
 				$artist["ArtistId"] = $fetch["ArtistId"];
 				$artist["ArtistName"] = $fetch["ArtistName"];
+				$artist["ArtistMainCountry"] = $fetch["ArtistMainCountry"];
+				$artist["ArtistSecondaryCountry"] = $fetch["ArtistSecondaryCountry"];
 			}
 			
 			// artist play count
@@ -2204,6 +2208,31 @@
 				$fetch = $query->fetch(PDO::FETCH_ASSOC);
 	
 				return $fetch;
+			} else {
+				return null;
+			}
+		}
+		
+		/**
+			Returns the country name with the matching alpha2 code from the database.
+			If no country is found with this code, null is returned.
+		*/
+		public function getCountryNameByCode($short) {
+			// get country
+			$sql = "SELECT
+						co.name AS 'CountryName'
+					FROM
+						countries co
+					WHERE
+						co.short = :short";
+						
+			$query = $this->db->prepare($sql);
+			$query->execute( array(':short' => $short) );
+			
+			if ($query->rowCount() > 0) {
+				$fetch = $query->fetch(PDO::FETCH_ASSOC);
+	
+				return $fetch["CountryName"];
 			} else {
 				return null;
 			}

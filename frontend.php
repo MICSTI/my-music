@@ -9,6 +9,7 @@
 		private $STYLESHEETS = array(
 								"http://fonts.googleapis.com/css?family=Oxygen",
 								"external/bootstrap/css/bootstrap.min.css",
+								"external/flags/css/flag-icon.min.css",
 								"external/jquery/jquery-ui.min.css",
 								"external/bootstrap-select/bootstrap-select.min.css",
 								"auto_complete.css",

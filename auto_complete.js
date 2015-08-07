@@ -80,9 +80,6 @@ function AutoComplete() {
 		// get reference for result div and hide it
 		result = $("#" + resultId);
 		result.hide();
-			  
-		// make choice divs as wide as parent for good looks
-		$("." + choiceClass).css("width", parent.outerWidth + "px");
 		
 		// set keyup listener 
 		parent.on("keyup", function(event) {
@@ -145,6 +142,9 @@ function AutoComplete() {
 				$("." + choiceClass).on("click", function() {
 					selectChoice(this);
 				});
+				
+				// make choice divs as wide as parent for good looks
+				result.css("width", parent.innerWidth() + "px");
 				
 				// show result div
 				result.show();

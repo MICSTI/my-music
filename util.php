@@ -64,6 +64,17 @@
 		return "<a href='record.php?id=" . $id . "'>" . $text . "</a>";
 	}
 	
+	/**
+		Returns the country flag span with a tooltip
+	*/
+	function getCountryFlag($alpha2, $name) {
+		if (empty($alpha2)) {
+			return "";
+		}
+		
+		return "<span class='flag-icon flag-icon-" . $alpha2 . "' data-toggle='tooltip' data-original-title='" . $name . "'></span>";
+	}
+	
 	function getIconRef($icon, $img_path = "", $tooltip = "") {
 		$add_tooltip = " data-toggle='tooltip' data-original-title='" . $tooltip . "'";
 		

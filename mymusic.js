@@ -360,4 +360,7 @@ $(document).ready( function () {
 	var removeSettingsActive = function() {
 		$("#settings a").removeClass("active");
 	}
+	
+	// add tooltips
+	addTooltips();
 } );
