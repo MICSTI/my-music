@@ -599,7 +599,7 @@
 					$html .= "<tbody>";
 						foreach ($countries as $country) {							
 							$html .= "<tr>";
-								$html .= "<td></td>";
+								$html .= "<td>" . getCountryFlag($country) . "</td>";
 								$html .= "<td>" . $country["CountryName"] . "</td>";
 								$html .= "<td class='hidden-xs'>" . strtoupper($country["CountryShort"]) . "</td>";
 								$html .= "<td><a href='#' role='button' class='btn btn-default' onclick=\"crudModal('" . $this->SAVE_COUNTRY . "', '" . $country["CountryId"] . "')\"><span class='glyphicon glyphicon-pencil'></span></td>";

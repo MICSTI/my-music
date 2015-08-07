@@ -104,6 +104,9 @@ function persistCrud(_action, _id, _params, _tab) {
 						updateRecordInformation(_id);
 						break;
 						
+					case "updateArtistInformation":
+						updateArtistInformation(_id);
+						
 					default:
 						break;
 				}
@@ -163,6 +166,32 @@ function updateRecordInformation(_id) {
 		if (record.success) {
 			$("#record-info-type").html(record.record_type);
 			$("#record-info-publish").html(record.publish);
+		}
+	}).fail(function(error) {
+		// log error
+		console.log("ajax.settings.php", error);
+	});
+}
+
+/**
+	Updates the detail information for a record.
+*/
+function updateArtistInformation(_id) {
+	$.ajax( {
+		method: "GET",
+		url: "ajax.modal.php",
+		data: {
+			action: "v8g8frcj",
+			id: _id
+		}
+	}).done(function(data) {
+		var artist = JSON.parse(data);
+		
+		if (artist.success) {
+			$("#artist-main-country-flag").html(artist.main_country);
+			$("#artist-secondary-country-flag").html(artist.secondary_country);
+			
+			addTooltips();
 		}
 	}).fail(function(error) {
 		// log error

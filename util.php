@@ -65,14 +65,23 @@
 	}
 	
 	/**
-		Returns the country flag span with a tooltip
+		Returns the country flag span with a tooltip.
+		If the extended option is set to true, instead of the tooltip the country name is displayed next to the flag.
 	*/
-	function getCountryFlag($alpha2, $name) {
-		if (empty($alpha2)) {
+	function getCountryFlag($country, $extended = false) {
+		if (empty($country)) {
 			return "";
 		}
 		
-		return "<span class='flag-icon flag-icon-" . $alpha2 . "' data-toggle='tooltip' data-original-title='" . $name . "'></span>";
+		if ($extended) {
+			$data_tooltip = "";
+			$country_name = " <span>" . $country["CountryName"] . "</span>";
+		} else {
+			$data_tooltip = " data-toggle='tooltip' data-original-title='" . $country["CountryName"] . "'";
+			$country_name = "";
+		}
+		
+		return "<span class='flag-icon flag-icon-" . $country["CountryShort"] . "'" . $data_tooltip . "></span>" . $country_name;
 	}
 	
 	function getIconRef($icon, $img_path = "", $tooltip = "") {

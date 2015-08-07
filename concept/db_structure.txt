@@ -19,8 +19,8 @@ TABLE songs
 TABLE artists
 	id			INT
 	name		VARCHAR
-	main_country VARCHAR
-	sec_country	VARCHAR
+	main_country_id INT
+	sec_country_id	INT
 	
 TABLE records
 	id			INT

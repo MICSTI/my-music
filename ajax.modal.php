@@ -606,6 +606,101 @@
 				
 				break;
 				
+			// edit artist details
+			case "DVDT2mad":
+				if ($id > 0) {
+					// get data
+					$artist_details = $mc->getMDB()->getArtist($id);
+					
+					// form name (for processing data in Javascript)
+					$form_name = "artist-detail-data";
+					$data["form_name"] = $form_name;
+				
+					// title
+					$title = "Edit artist details";
+					$data["title"] = $title;
+					
+					// body
+					$body = "";
+					
+					$body .= "<form class='form-horizontal' id='" . $form_name . "'>";
+						// name (static)
+						$body .= "<div class='form-group'>";
+							$body .= "<label for='artist-name' class='control-label col-xs-3'>Name</label>";
+							$body .= "<div class='col-xs-9'>";
+								$body .= "<p class='form-control-static' id='artist-name'>" . $artist_details["ArtistName"] . "</p>";
+							$body .= "</div>";
+						$body .= "</div>";
+						
+						// countries
+						$countries = $mc->getMDB()->getCountries();
+						
+						// main country
+						$body .= "<div class='form-group'>";
+							$body .= "<label for='record-type' class='control-label col-xs-3'>Origin</label>";
+							$body .= "<div class='col-xs-9'>";
+								$body .= "<select class='selectpicker form-control' id='artist-main-country' name='artist-main-country'>";
+									// blank option
+									$body .= "<option value='0'>None</option>";
+									
+									// display all country options
+									foreach ($countries as $country) {
+										$body .= "<option value='" . $country["CountryId"] . "' data-content=\"" . getCountryFlag($country, true) . "\" " . compareOption($country["CountryId"], $artist_details["ArtistMainCountryId"]) . ">" . $country["CountryName"] . "</option>";
+									}
+								$body .= "</select>";
+							$body .= "</div>";
+						$body .= "</div>";
+						
+						// secondary country
+						$body .= "<div class='form-group'>";
+							$body .= "<label for='record-type' class='control-label col-xs-3'> </label>";
+							$body .= "<div class='col-xs-9'>";
+								$body .= "<select class='selectpicker form-control' id='artist-secondary-country' name='artist-secondary-country'>";
+									// blank option
+									$body .= "<option value='0'>None</option>";
+									
+									// display all country options
+									foreach ($countries as $country) {
+										$body .= "<option value='" . $country["CountryId"] . "' data-content=\"" . getCountryFlag($country, true) . "\" " . compareOption($country["CountryId"], $artist_details["ArtistSecondaryCountryId"]) . ">" . $country["CountryName"] . "</option>";
+									}
+								$body .= "</select>";
+							$body .= "</div>";
+						$body .= "</div>";
+						
+					$body .= "</form>";
+					
+					$data["body"] = $body;
+					
+					// footer
+					$footer = $mc->getFrontend()->getModalButtons(array("cancel", "save"));
+					$data["footer"] = $footer;
+					
+					// save method id
+					$data["save"] = "CJqGfoAL";
+				} else {
+					$data["status"] = "error";
+					$data["message"] = "No valid id was passed";
+				}
+				
+				break;
+				
+			// save artist details
+			case "CJqGfoAL":
+				parse_str($params, $get);
+				
+				$main_country_id = $get["artist-main-country"];
+				$secondary_country_id = $get["artist-secondary-country"];
+				
+				// save the record type to the database
+				$success = $mc->getMDB()->updateArtistDetails($id, $main_country_id, $secondary_country_id);
+				
+				// on success action
+				$data["onSuccess"] = "updateArtistInformation";
+				
+				$data["success"] = $success;
+				
+				break;
+				
 			// get record details JSON
 			case "JOqlKanU":
 				// get data
@@ -615,6 +710,17 @@
 				
 				$data["record_type"] = $record_details["RecordTypeName"];
 				$data["publish"] = $publish->convert2AustrianDate();
+				$data["success"] = true;
+			
+				break;
+				
+			// get artist details JSON
+			case "v8g8frcj":
+				// get data
+				$artist = $mc->getMDB()->getArtist($id);
+				
+				$data["main_country"] = getCountryFlag($mc->getMDB()->getCountry($artist["ArtistMainCountryId"]));
+				$data["secondary_country"] = getCountryFlag($mc->getMDB()->getCountry($artist["ArtistSecondaryCountryId"]));
 				$data["success"] = true;
 			
 				break;

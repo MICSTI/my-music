@@ -196,8 +196,8 @@
 			$sql = "SELECT
 						ar.id AS 'ArtistId',
 						ar.name AS 'ArtistName',
-						ar.main_country AS 'ArtistMainCountry',
-						ar.sec_country AS 'ArtistSecondaryCountry'
+						ar.main_country_id AS 'ArtistMainCountryId',
+						ar.sec_country_id AS 'ArtistSecondaryCountryId'
 					FROM
 						artists ar
 					WHERE
@@ -211,8 +211,8 @@
 	
 				$artist["ArtistId"] = $fetch["ArtistId"];
 				$artist["ArtistName"] = $fetch["ArtistName"];
-				$artist["ArtistMainCountry"] = $fetch["ArtistMainCountry"];
-				$artist["ArtistSecondaryCountry"] = $fetch["ArtistSecondaryCountry"];
+				$artist["ArtistMainCountryId"] = $fetch["ArtistMainCountryId"];
+				$artist["ArtistSecondaryCountryId"] = $fetch["ArtistSecondaryCountryId"];
 			}
 			
 			// artist play count
@@ -596,8 +596,36 @@
 			Adds a new artist to the database.
 			If insert was successful, the newly assigned id is returned, otherwise false.
 		*/
-		public function addArtist ($name) {
-			return $this->addGenericByName('artists', $name);
+		public function addArtist ($name, $main_country = 0, $secondary_country = 0) {
+			// strip input from code tags
+			$name = strip_tags($name);
+			$main_country = strip_tags($main_country);
+			$secondary_country = strip_tags($secondary_country);
+			
+			$sql = "INSERT INTO artists (name, main_country_id, sec_country_id) VALUES (:name, :main_country_id, :sec_country_id)";
+			$query = $this->db->prepare($sql);
+			$success = $query->execute( array(':name' => $name, ':main_country_id' => $main_country, ':sec_country_id' => $secondary_country) );
+			
+			if ($query->rowCount() > 0) {
+				$inserted = $this->db->lastInsertId();
+				
+				// Mobile database entry
+				$mobile_sql = "INSERT INTO artists (_id, name) VALUES (:id, :name)";
+				$mobile_query = $this->mobile_db->prepare($mobile_sql);
+				$mobile_query->execute( array(':id' => $inserted, ':name' => $name) );
+			
+				if ($this->logging) {
+					$this->addLog(__FUNCTION__, "success", "added new tupel in artists [ name: '" . $name . "', main_country_id: " . $main_country . ", sec_country_id: " . $secondary_country . " ] with id " . $inserted);
+				}
+			
+				return $inserted;
+			} else {
+				if ($this->logging) {
+					$this->addLog(__FUNCTION__, "error", "tried to add new tupel in artists [ name: '" . $name . "', main_country_id: " . $main_country . ", sec_country_id: " . $secondary_country . " ] with \n" . implode(" / ", $query->errorInfo()));
+				}
+			
+				return false;
+			}
 		}
 		
 		/**
@@ -1064,11 +1092,35 @@
 		}
 
 		/**
-			Updates name of specified artist id.
+			Updates the artist with the specified id.
 			Returns true if update was successful, false otherwise.
 		*/
 		public function updateArtist ($id, $name) {
-			return $this->updateGeneric('artists', $id, $name);
+			return $this->updateGeneric("artists", $id, $name);
+		}
+		
+		/**
+			Updates the details of the artist with the specified id.
+			Details entail main and secondary country.
+		*/
+		public function updateArtistDetails ($id, $main_country = 0, $secondary_country = 0) {
+			$sql = "UPDATE artists SET main_country_id = :main_country_id, sec_country_id = :secondary_country_id WHERE id = :id";
+			$query = $this->db->prepare($sql);
+			$success = $query->execute( array(':id' => $id, ':main_country_id' => $main_country, ':secondary_country_id' => $secondary_country) );
+			
+			if ($query->rowCount() > 0 OR $success !== false) {
+				if ($this->logging) {
+					$this->addLog(__FUNCTION__, "success", "updated tupel in artists [ main_country_id: " . $main_country . ", sec_country_id: " . $secondary_country . " ] with id " . $id);
+				}
+			
+				return true;
+			} else {
+				if ($this->logging) {
+					$this->addLog(__FUNCTION__, "error", "tried to update tupel in artists [ main_country_id: " . $main_country . ", sec_country_id: " . $secondary_country . " ] with id " . $id . "\n" . implode(" / ", $query->errorInfo()));
+				}
+			
+				return false;
+			}
 		}
 		
 		/**
@@ -2208,31 +2260,6 @@
 				$fetch = $query->fetch(PDO::FETCH_ASSOC);
 	
 				return $fetch;
-			} else {
-				return null;
-			}
-		}
-		
-		/**
-			Returns the country name with the matching alpha2 code from the database.
-			If no country is found with this code, null is returned.
-		*/
-		public function getCountryNameByCode($short) {
-			// get country
-			$sql = "SELECT
-						co.name AS 'CountryName'
-					FROM
-						countries co
-					WHERE
-						co.short = :short";
-						
-			$query = $this->db->prepare($sql);
-			$query->execute( array(':short' => $short) );
-			
-			if ($query->rowCount() > 0) {
-				$fetch = $query->fetch(PDO::FETCH_ASSOC);
-	
-				return $fetch["CountryName"];
 			} else {
 				return null;
 			}

@@ -1,6 +1,9 @@
 <?php
 	include('resources.php');
 	
+	// Action ids
+	$SAVE_ARTIST_DETAILS = "DVDT2mad";
+	
 	$html = "";
 	
 	if ($_GET) {
@@ -29,24 +32,30 @@
 					$html .= "</div>";
 					
 					// # times played
-					$html .= "<div class='song-general-info col-sm-8'>";
+					$html .= "<div class='song-general-info col-sm-7'>";
 						$html .= "<div class='col-sm-3 bold'>Played:</div>";
 						$html .= "<div class='col-sm-9'>" . $play_count . " times</div>";
 					$html .= "</div>";
 					
+					// artist details edit button
+					$html .= "<div class='song-general-info col-sm-1'>";
+						$html .= "<button type='button' id='btn-artist-details-edit' class='btn btn-default pull-right' onclick=\"crudModal('" . $SAVE_ARTIST_DETAILS . "', '" . $artist_info["ArtistId"] . "')\"><span class='glyphicon glyphicon-pencil'></span></button>";
+					$html .= "</div>";	
+					
 					// origin country
-					$main_country_code = $artist_info["ArtistMainCountry"];
-					$main_country_name = $mc->getMDB()->getCountryNameByCode($main_country_code);
+					$main_country = $mc->getMDB()->getCountry($artist_info["ArtistMainCountryId"]);
+					$secondary_country = $mc->getMDB()->getCountry($artist_info["ArtistSecondaryCountryId"]);
 					
-					$secondary_country_code = $artist_info["ArtistSecondaryCountry"];
-					$secondary_country_name = $mc->getMDB()->getCountryNameByCode($secondary_country_code);
-					
-					$main_country_flag = getCountryFlag($main_country_code, $main_country_name);
-					$secondary_country_flag = getCountryFlag($secondary_country_code, $secondary_country_name);
+					$main_country_flag = getCountryFlag($main_country);
+					$secondary_country_flag = getCountryFlag($secondary_country);
 					
 					$html .= "<div class='song-general-info col-sm-4'>";
 						$html .= "<div class='col-sm-3 bold'>Origin:</div>";
-						$html .= "<div class='col-sm-9'>" . $main_country_flag . " " . $secondary_country_flag . "</div>";
+						
+						$html .= "<div class='col-sm-9'>";
+							$html .= "<span id='artist-main-country-flag'>" . $main_country_flag . "</span> ";
+							$html .= "<span id='artist-secondary-country-flag'>" . $secondary_country_flag . "</span>";
+						$html .= "</div>";
 					$html .= "</div>";
 				$html .= "</div>";
 			$html .= "</div>";
