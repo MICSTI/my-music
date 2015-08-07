@@ -107,6 +107,13 @@ a {
 }
 /* --------------------- */
 
+/* ---- SETTINGS ---- */
+#settings.affix {
+	position: fixed;
+	top: 16px;
+}
+/* --------------------- */
+
 /* ---- COLORS ---- */
 .label-brown {
 	background-color: brown;

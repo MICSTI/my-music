@@ -8,7 +8,7 @@
 	
 	// List selection on the left
 	$html .= "<div class='col-sm-3'>";
-		$html .= "<div id='settings' class='list-group'>";
+		$html .= "<div id='settings' class='list-group' data-spy='affix' data-offset-top='230'>";
 			// General
 			$html .= "<a href='#' id='settings-general' class='list-group-item active'>";
 				$html .= "<span>General</span>";

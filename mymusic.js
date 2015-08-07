@@ -384,6 +384,19 @@ $(document).ready( function () {
 				console.log("ajax.settings.php", error);
 			});
 		});
+		
+		// affix for settings nav always to be visible
+		settings.on("affix.bs.affix", function() {
+			// a small hack to contain the width of the settings nav div
+			var settingsWidth = settings.innerWidth();
+			
+			settings.on("affixed.bs.affix", function() {
+				settings.css("width", settingsWidth + "px");
+				
+				// remove the listener immediately so we don't attach it over and over again if we scroll up and down
+				settings.off("affixed.bs.affix");
+			});
+		});
 	}
 	
 	var removeSettingsActive = function() {
