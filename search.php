@@ -80,7 +80,7 @@
 						
 						// songs category
 						if (in_array($CATEGORY_WILDCARD, $category_array) OR in_array($KEY_CATEGORY_SONGS, $category_array)) {
-							$data[$KEY_CATEGORY_SONGS] = $mc->getMDB()->shortSingleSearch($term);
+							$data[$KEY_CATEGORY_SONGS] = $mc->getMDB()->shortSingleSearch($KEY_CATEGORY_SONGS, $term);
 							
 							if ($data[$KEY_CATEGORY_SONGS] === false) {
 								$success = false;
@@ -89,23 +89,27 @@
 						
 						// artists category
 						if (in_array($CATEGORY_WILDCARD, $category_array) OR in_array($KEY_CATEGORY_ARTISTS, $category_array)) {
-							// actual query!
+							$data[$KEY_CATEGORY_ARTISTS] = $mc->getMDB()->shortSingleSearch($KEY_CATEGORY_ARTISTS, $term);
 							
-							$data[$KEY_CATEGORY_ARTISTS] = array();
+							if ($data[$KEY_CATEGORY_ARTISTS] === false) {
+								$success = false;
+							}
 						}
 						
 						// records category
 						if (in_array($CATEGORY_WILDCARD, $category_array) OR in_array($KEY_CATEGORY_RECORDS, $category_array)) {
-							// actual query!
+							$data[$KEY_CATEGORY_RECORDS] = $mc->getMDB()->shortSingleSearch($KEY_CATEGORY_RECORDS, $term);
 							
-							$data[$KEY_CATEGORY_RECORDS] = array();
+							if ($data[$KEY_CATEGORY_RECORDS] === false) {
+								$success = false;
+							}
 						}
 					} else {
 						// Case 1b (see above)
 						
 						// songs category
 						if (in_array($CATEGORY_WILDCARD, $category_array) OR in_array($KEY_CATEGORY_SONGS, $category_array)) {
-							$data[$KEY_CATEGORY_SONGS] = $mc->getMDB()->longSingleSearch($term);
+							$data[$KEY_CATEGORY_SONGS] = $mc->getMDB()->longSingleSearch($KEY_CATEGORY_SONGS, $term);
 							
 							if ($data[$KEY_CATEGORY_SONGS] === false) {
 								$success = false;
@@ -114,16 +118,20 @@
 						
 						// artists category
 						if (in_array($CATEGORY_WILDCARD, $category_array) OR in_array($KEY_CATEGORY_ARTISTS, $category_array)) {
-							// actual query!
+							$data[$KEY_CATEGORY_ARTISTS] = $mc->getMDB()->longSingleSearch($KEY_CATEGORY_ARTISTS, $term);
 							
-							$data[$KEY_CATEGORY_ARTISTS] = array();
+							if ($data[$KEY_CATEGORY_ARTISTS] === false) {
+								$success = false;
+							}
 						}
 						
 						// records category
 						if (in_array($CATEGORY_WILDCARD, $category_array) OR in_array($KEY_CATEGORY_RECORDS, $category_array)) {
-							// actual query!
+							$data[$KEY_CATEGORY_RECORDS] = $mc->getMDB()->longSingleSearch($KEY_CATEGORY_RECORDS, $term);
 							
-							$data[$KEY_CATEGORY_RECORDS] = array();
+							if ($data[$KEY_CATEGORY_RECORDS] === false) {
+								$success = false;
+							}
 						}
 					}
 				} else {
@@ -132,7 +140,7 @@
 					
 					// songs category
 					if (in_array($CATEGORY_WILDCARD, $category_array) OR in_array($KEY_CATEGORY_SONGS, $category_array)) {
-						$data[$KEY_CATEGORY_SONGS] = $mc->getMDB()->multiSearch($split_query);					
+						$data[$KEY_CATEGORY_SONGS] = $mc->getMDB()->multiSearch($KEY_CATEGORY_SONGS, $split_query);					
 						
 						if ($data[$KEY_CATEGORY_SONGS] === false) {
 							$success = false;
@@ -141,16 +149,20 @@
 					
 					// artists category
 					if (in_array($CATEGORY_WILDCARD, $category_array) OR in_array($KEY_CATEGORY_ARTISTS, $category_array)) {
-						// actual query!
+						$data[$KEY_CATEGORY_ARTISTS] = $mc->getMDB()->multiSearch($KEY_CATEGORY_ARTISTS, $split_query);					
 						
-						$data[$KEY_CATEGORY_ARTISTS] = array();
+						if ($data[$KEY_CATEGORY_ARTISTS] === false) {
+							$success = false;
+						}
 					}
 					
 					// records category
 					if (in_array($CATEGORY_WILDCARD, $category_array) OR in_array($KEY_CATEGORY_RECORDS, $category_array)) {
-						// actual query!
+						$data[$KEY_CATEGORY_RECORDS] = $mc->getMDB()->multiSearch($KEY_CATEGORY_RECORDS, $split_query);					
 						
-						$data[$KEY_CATEGORY_RECORDS] = array();
+						if ($data[$KEY_CATEGORY_RECORDS] === false) {
+							$success = false;
+						}
 					}
 				}
 				

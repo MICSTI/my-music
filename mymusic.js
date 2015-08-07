@@ -317,6 +317,17 @@ $(document).ready( function () {
 					
 					break;
 					
+				case "artists":
+					return "<div class='" + _choiceClass + "' data-category='" + _category + "' data-id='" + _item.ArtistId + "'>" +
+								"<div>" + _item.ArtistName + "</div>" +
+							"</div>";
+							
+				case "records":
+					return "<div class='" + _choiceClass + "' data-category='" + _category + "' data-id='" + _item.RecordId + "'>" +
+								"<div class='search_artist_name'>" + _item.ArtistName + "</div>" +
+								"<div>" + _item.RecordName + "</div>" +
+							"</div>";
+					
 				default:
 					return "";
 					break;
@@ -326,6 +337,14 @@ $(document).ready( function () {
 			switch (elem.dataset.category) {
 				case "songs":
 					window.location.href = "song.php?id=" + elem.dataset.id;
+					break;
+					
+				case "artists":
+					window.location.href = "artist.php?id=" + elem.dataset.id;
+					break;
+					
+				case "records":
+					window.location.href = "record.php?id=" + elem.dataset.id;
 					break;
 					
 				default:

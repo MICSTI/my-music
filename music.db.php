@@ -1425,19 +1425,59 @@
 			
 			Returned is an array containing the results, or false if an error occurred during the SQL query.
 		*/
-		public function shortSingleSearch ($search, $limit = 10) {
+		public function shortSingleSearch ($mode, $search, $limit = 10) {
 			// escape string in case there's any apostrophes in it
 			$search = mysql_real_escape_string($search);
 			
-			$sql = "SELECT SongId, SongName, ArtistName, RecordName FROM SongsView WHERE SongName LIKE '" . $search . "%' OR ArtistName LIKE '" . $search . "%' LIMIT :limit";
+			switch ($mode) {
+				case "songs":
+					$sql = "SELECT SongId, SongName, ArtistName, RecordName FROM SongsView WHERE SongName LIKE '" . $search . "%' OR ArtistName LIKE '" . $search . "%' LIMIT :limit";
 			
-			try {
-				$query = $this->db->prepare($sql);
-				$query->execute( array(':limit' => $limit) );
-				
-				return $query->fetchAll(PDO::FETCH_ASSOC);
-			} catch (Exception $e) {
-				return false;
+					try {
+						$query = $this->db->prepare($sql);
+						$query->execute( array(':limit' => $limit) );
+						
+						return $query->fetchAll(PDO::FETCH_ASSOC);
+					} catch (Exception $e) {
+						return false;
+					}
+					
+					break;
+					
+				case "artists":
+					$sql = "SELECT id AS 'ArtistId', name AS 'ArtistName' FROM artists WHERE name LIKE '" . $search . "%' LIMIT :limit";
+			
+					try {
+						$query = $this->db->prepare($sql);
+						$query->execute( array(':limit' => $limit) );
+						
+						return $query->fetchAll(PDO::FETCH_ASSOC);
+					} catch (Exception $e) {
+						return false;
+					}
+					
+					break;
+					
+				case "records":
+					$sql = "SELECT re.id AS 'RecordId', re.name AS 'RecordName', ar.name AS 'ArtistName' FROM records re INNER JOIN artists ar ON re.aid = ar.id WHERE re.name LIKE '" . $search . "%' LIMIT :limit";
+			
+					try {
+						$query = $this->db->prepare($sql);
+						$query->execute( array(':limit' => $limit) );
+						
+						return $query->fetchAll(PDO::FETCH_ASSOC);
+					} catch (Exception $e) {
+						return false;
+					}
+					
+					break;
+					
+					break;
+					
+				default:
+					return false;
+					
+					break;
 			}
 		}
 		
@@ -1449,19 +1489,57 @@
 			
 			Returned is an array containing the results, or false if an error occurred during the SQL query.
 		*/
-		public function longSingleSearch ($search, $limit = 10) {
+		public function longSingleSearch ($mode, $search, $limit = 10) {
 			// escape string in case there's any apostrophes in it
 			$search = mysql_real_escape_string($search);
 			
-			$sql = "SELECT SongId, SongName, ArtistName, RecordName FROM SongsView WHERE SongName LIKE '%" . $search . "%' OR ArtistName LIKE '%" . $search . "%' LIMIT :limit";
+			switch ($mode) {
+				case "songs":
+					$sql = "SELECT SongId, SongName, ArtistName, RecordName FROM SongsView WHERE SongName LIKE '%" . $search . "%' OR ArtistName LIKE '%" . $search . "%' LIMIT :limit";
 			
-			try {
-				$query = $this->db->prepare($sql);
-				$query->execute( array(':limit' => $limit) );
-				
-				return $query->fetchAll(PDO::FETCH_ASSOC);
-			} catch (Exception $e) {
-				return false;
+					try {
+						$query = $this->db->prepare($sql);
+						$query->execute( array(':limit' => $limit) );
+						
+						return $query->fetchAll(PDO::FETCH_ASSOC);
+					} catch (Exception $e) {
+						return false;
+					}
+					
+					break;
+					
+				case "artists":
+					$sql = "SELECT id AS 'ArtistId', name AS 'ArtistName' FROM artists WHERE name LIKE '%" . $search . "%' LIMIT :limit";
+			
+					try {
+						$query = $this->db->prepare($sql);
+						$query->execute( array(':limit' => $limit) );
+						
+						return $query->fetchAll(PDO::FETCH_ASSOC);
+					} catch (Exception $e) {
+						return false;
+					}
+					
+					break;
+					
+				case "records":
+					$sql = "SELECT re.id AS 'RecordId', re.name AS 'RecordName', ar.name AS 'ArtistName' FROM records re INNER JOIN artists ar ON re.aid = ar.id WHERE re.name LIKE '%" . $search . "%' LIMIT :limit";
+			
+					try {
+						$query = $this->db->prepare($sql);
+						$query->execute( array(':limit' => $limit) );
+						
+						return $query->fetchAll(PDO::FETCH_ASSOC);
+					} catch (Exception $e) {
+						return false;
+					}
+					
+					break;
+					
+				default:
+					return false;
+					
+					break;
 			}
 		}
 		
@@ -1474,43 +1552,101 @@
 			
 			Returned is an array containing the results, or false if an error occurred during the SQL query.
 		*/
-		public function multiSearch ($search_array, $limit = 10) {
+		public function multiSearch ($mode, $search_array, $limit = 10) {
 			$term_query = "";
 			
-			foreach ($search_array as $term) {
-				$term = mysql_real_escape_string($term);
+			switch ($mode) {
+				case "songs":
+					foreach ($search_array as $term) {
+						$term = mysql_real_escape_string($term);
+						
+						// for multi-search, we always match like "%XXX%"
+						$tq = "( SELECT SongId FROM SongsView WHERE SongName LIKE '%" . $term . "%' OR ArtistName LIKE '%" . $term . "%' )";
+						
+						if ($term_query != "") {
+							$term_query .= " UNION ALL ";
+						}
+						
+						$term_query .= $tq;
+					}
+					
+					$count_query = " SELECT SongId, COUNT(SongId) AS 'SongCount' FROM ( " . $term_query . " ) count_query GROUP BY SongId HAVING COUNT(SongId) >= :term_count ";
 				
-				// for multi-search, we always match like "%XXX%"
-				$tq = "( SELECT SongId FROM SongsView WHERE SongName LIKE '%" . $term . "%' OR ArtistName LIKE '%" . $term . "%' )";
+					$main_sql = "SELECT sv.SongId, sv.SongName, sv.ArtistName, sv.RecordName FROM ( " . $count_query . " ) sub_query INNER JOIN SongsView sv ON sv.SongId = sub_query.SongId LIMIT :limit";
+					
+					try {
+						$query = $this->db->prepare($main_sql);
+						$query->execute( array(':limit' => $limit, ':term_count' => count($search_array)) );
+						
+						return $query->fetchAll(PDO::FETCH_ASSOC);
+					} catch (Exception $e) {
+						return false;
+					}
+					
+					break;
+					
+				case "artists":
+					foreach ($search_array as $term) {
+						$term = mysql_real_escape_string($term);
+						
+						// for multi-search, we always match like "%XXX%"
+						$tq = "( SELECT id FROM artists WHERE name LIKE '%" . $term . "%' )";
+						
+						if ($term_query != "") {
+							$term_query .= " UNION ALL ";
+						}
+						
+						$term_query .= $tq;
+					}
+					
+					$count_query = " SELECT id, COUNT(id) AS 'ArtistCount' FROM ( " . $term_query . " ) count_query GROUP BY id HAVING COUNT(ArtistCount) >= :term_count ";
 				
-				// OLD: Do it like we do in short and long search
-				/*
-				if (strlen($term) <= 3) {
-					// short word
-					$tq = "( SELECT SongId FROM SongsView WHERE SongName LIKE '%" . $term . "%' OR ArtistName LIKE '%" . $term . "%' )";
-				} else {
-					// long word
-					$tq = "( SELECT SongId FROM SongsView WHERE SongName LIKE '%" . $term . "%' OR ArtistName LIKE '%" . $term . "%' )";
-				}*/
+					$main_sql = "SELECT ar.id AS 'ArtistId', ar.name AS 'ArtistName' FROM ( " . $count_query . " ) sub_query INNER JOIN artists ar ON ar.id = sub_query.id LIMIT :limit";
+					
+					try {
+						$query = $this->db->prepare($main_sql);
+						$query->execute( array(':limit' => $limit, ':term_count' => count($search_array)) );
+						
+						return $query->fetchAll(PDO::FETCH_ASSOC);
+					} catch (Exception $e) {
+						return false;
+					}
+					
+					break;
+					
+				case "records":
+					foreach ($search_array as $term) {
+						$term = mysql_real_escape_string($term);
+						
+						// for multi-search, we always match like "%XXX%"
+						$tq = "( SELECT id FROM records WHERE name LIKE '%" . $term . "%' )";
+						
+						if ($term_query != "") {
+							$term_query .= " UNION ALL ";
+						}
+						
+						$term_query .= $tq;
+					}
+					
+					$count_query = " SELECT id, COUNT(id) AS 'RecordCount' FROM ( " . $term_query . " ) count_query GROUP BY id HAVING COUNT(RecordCount) >= :term_count ";
 				
-				if ($term_query != "") {
-					$term_query .= " UNION ALL ";
-				}
-				
-				$term_query .= $tq;
-			}
-			
-			$count_query = " SELECT SongId, COUNT(SongId) AS 'SongCount' FROM ( " . $term_query . " ) count_query GROUP BY SongId HAVING COUNT(SongId) >= :term_count ";
-		
-			$main_sql = "SELECT sv.SongId, sv.SongName, sv.ArtistName, sv.RecordName FROM ( " . $count_query . " ) sub_query INNER JOIN SongsView sv ON sv.SongId = sub_query.SongId LIMIT :limit";
-			
-			try {
-				$query = $this->db->prepare($main_sql);
-				$query->execute( array(':limit' => $limit, ':term_count' => count($search_array)) );
-				
-				return $query->fetchAll(PDO::FETCH_ASSOC);
-			} catch (Exception $e) {
-				return false;
+					$main_sql = "SELECT re.id AS 'RecordId', re.name AS 'RecordName', ar.id AS 'ArtistId', ar.name AS 'ArtistName' FROM ( " . $count_query . " ) sub_query INNER JOIN records re ON re.id = sub_query.id INNER JOIN artists ar ON re.aid = ar.id LIMIT :limit";
+					
+					try {
+						$query = $this->db->prepare($main_sql);
+						$query->execute( array(':limit' => $limit, ':term_count' => count($search_array)) );
+						
+						return $query->fetchAll(PDO::FETCH_ASSOC);
+					} catch (Exception $e) {
+						return false;
+					}
+					
+					break;
+					
+				default:
+					return false;
+					
+					break;
 			}
 		}
 		
