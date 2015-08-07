@@ -71,7 +71,7 @@ TABLE activities
 TABLE countries
 	id			INT
 	name		VARCHAR(255)
-	short		VARCHAR(2)	(alpha2 code) + UNIQUE INDEX
+	short		VARCHAR(2)	(alpha2 code)
 	
 TABLE logs
 	id			INT
