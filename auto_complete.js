@@ -203,11 +203,27 @@ function AutoComplete() {
 						// remove active from previous choice
 						choicePointer.toggleClass(choiceSelectedClass);
 						
-						if (choicePointer.prev("." + choiceClass).length > 0) {
-							// select previous choice if there is one
-							choicePointer = choicePointer.prev("." + choiceClass);
+						if (choicePointer.prev().length > 0) {
+							// what class has the previous element?
+							if (choicePointer.prev().hasClass(choiceClass)) {
+								choicePointer = choicePointer.prev();
+							} else {
+								// is it a category?
+								if (choicePointer.prev().hasClass(categoryClass)) {
+									// is the previous previous element a choice?
+									if (choicePointer.prev().prev().hasClass(choiceClass)) {
+										choicePointer = choicePointer.prev().prev();
+									} else {
+										// otherwise jump back to the last choice
+										choicePointer = $("." + choiceClass).last();
+									}
+								} else {
+									// nope, so we're at the very top and go to the bottom
+									choicePointer = $("." + choiceClass).last();
+								}
+							}
 						} else {
-							// otherwise jump back to the first choice
+							// otherwise jump back to the last choice
 							choicePointer = $("." + choiceClass).last();
 						}
 						
@@ -228,8 +244,24 @@ function AutoComplete() {
 						choicePointer.toggleClass(choiceSelectedClass);
 						
 						if (choicePointer.next().length > 0) {
-							// select next choice if there is one
-							choicePointer = choicePointer.next();
+							// what class has the next element?
+							if (choicePointer.next().hasClass(choiceClass)) {
+								choicePointer = choicePointer.next();
+							} else {
+								// is it a category?
+								if (choicePointer.next().hasClass(categoryClass)) {
+									// is the next next element a choice?
+									if (choicePointer.next().next().hasClass(choiceClass)) {
+										choicePointer = choicePointer.next().next();
+									} else {
+										// otherwise jump back to the first choice
+										choicePointer = $("." + choiceClass).first();
+									}
+								} else {
+									// nope, so we're at the very bottom and go to the top
+									choicePointer = $("." + choiceClass).first();
+								}
+							}
 						} else {
 							// otherwise jump back to the first choice
 							choicePointer = $("." + choiceClass).first();
