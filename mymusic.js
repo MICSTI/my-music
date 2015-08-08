@@ -426,7 +426,7 @@ $(document).ready( function () {
 	addTooltips();
 	
 	// add hotkey listener
-	$(document).bind("keydown", "ctrl+f", function() {
+	$(document).bind("keydown", "alt+f", function() {
 		// set focus to search field
 		$("#search-field").focus();
 		
