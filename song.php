@@ -50,12 +50,6 @@
 					$html .= "</div>";
 					
 					$html .= "<div class='song-general-info col-sm-8'>";
-						$html .= "<div class='col-sm-3 bold'>First time played:</div>";
-						$html .= "<div class='col-sm-9'>" . $first_played . "</div>";
-						
-						$html .= "<div class='col-sm-3 bold'>Last time played:</div>";
-						$html .= "<div class='col-sm-9'>" . $last_played . "</div>";
-						
 						$html .= "<div class='col-sm-3 bold'>Added to library:</div>";
 						$html .= "<div class='col-sm-9'>" . $added_date->convert2AustrianDate() . "</div>";
 						
@@ -63,6 +57,12 @@
 						
 						$html .= "<div class='col-sm-3 bold'>Played:</div>";
 						$html .= "<div class='col-sm-9'>" . $play_count . " " . $times . "</div>";
+					
+						$html .= "<div class='col-sm-3 bold'>First time played:</div>";
+						$html .= "<div class='col-sm-9'>" . $first_played . "</div>";
+						
+						$html .= "<div class='col-sm-3 bold'>Last time played:</div>";
+						$html .= "<div class='col-sm-9'>" . $last_played . "</div>";
 					$html .= "</div>";
 				$html .= "</div>";
 			$html .= "</div>";
