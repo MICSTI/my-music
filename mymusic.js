@@ -2,6 +2,37 @@ var DATEPICKER_INIT_OPTIONS = {
 			format: "dd.mm.yyyy",
 			weekStart: 1
 		};
+		
+var ADD_SONG_AC_OPTIONS = {
+	url: "search.php",
+	categories: ["songs"],
+	itemDisplay: function(_category, _item, _choiceClass) {
+		switch (_category) {
+			case "songs":
+				return "<div class='" + _choiceClass + "' data-category='" + _category + "' data-id='" + _item.SongId + "'>" +
+							"<div class='search_artist_name'>" + _item.ArtistName + "</div>" +
+							"<div>" + _item.SongName + "</div>" +
+							"<div class='search_record_name'>" + _item.RecordName + "</div>" +
+						"</div>";
+				
+				break;
+				
+			default:
+				return "";
+				break;
+		}
+	},
+	itemSelection: function(elem) {
+		switch (elem.dataset.category) {
+			case "songs":
+				alert(elem.dataset.id);
+				break;
+				
+			default:
+				break;
+		}
+	}
+};
 
 function crudModal(_action, _id, _params) {
 	if (_id === undefined)
@@ -72,7 +103,9 @@ function getStatic(_content, onSuccess) {
 		data: {
 			content: _content
 		}
-	}).done(function(data) {
+	}).done(function(response) {
+		var data = JSON.parse(response);
+		
 		onSuccess(data);
 	}).fail(function(error) {
 		// log error
@@ -350,6 +383,10 @@ function reorderRecordTypes() {
 	});
 }
 
+function addPlayedSongAddAutoComplete() {
+	
+}
+
 $(document).ready( function () {
 	// make sure you can't submit the search form (would interfere with enter listener of auto complete)
 	$("#form-search").on("keypress", function(event) { return event.keyCode != 13; });
@@ -538,12 +575,28 @@ $(document).ready( function () {
 	var addPlayedSongAdd = function() {
 		$("#add-played-song-add").on("click", function() {
 			getStatic("add_played_song_add", function(data) {
-				$(".add-played-song-div").last().after(data);
+				$(".add-played-song-div").last().after(data.content);
+				
+				// auto complete for song adding
+				var addSongAC = new AutoComplete();
+				
+				// add id to static options array
+				ADD_SONG_AC_OPTIONS["id"] = data.id;
+				
+				addSongAC.init(ADD_SONG_AC_OPTIONS);
 			});
 		});
 	}
 	
+	// immediately add the function to the already pre-existing element
 	addPlayedSongAdd();
+	
+	// ... and add the auto complete handler to it as well
+	var addSongACFirst = new AutoComplete();
+	
+	ADD_SONG_AC_OPTIONS["id"] = "add-played-song-1";
+	
+	addSongACFirst.init(ADD_SONG_AC_OPTIONS);
 	
 	// add tooltips
 	addTooltips();

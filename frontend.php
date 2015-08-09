@@ -758,7 +758,7 @@
 			// input form
 			$html .= "<div class='row'>";
 				$html .= "<form id='add-played-song-form'>";
-					$html .= $this->getAddPlayedSongLine(true);
+					$html .= $this->getAddPlayedSongLine("add-played-song-1", true);
 				$html .= "</form>";
 			$html .= "</div>";
 			
@@ -777,7 +777,7 @@
 			return $html;
 		}
 		
-		public function getAddPlayedSongLine($fill_time = false) {
+		public function getAddPlayedSongLine($id, $fill_time = false) {
 			$time = $fill_time ? date("H:s") : "";
 			
 			return "<div class='form-group add-played-song-div'>
@@ -786,7 +786,7 @@
 						</div>
 						
 						<div class='col-sm-10'>
-							<input type='text' class='form-control add-played-song' placeholder='Choose song' />
+							<input type='text' id='" . $id . "' class='form-control add-played-song' placeholder='Choose song' />
 						</div>
 					</div>";
 		}
