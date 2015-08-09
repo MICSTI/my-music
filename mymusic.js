@@ -9,7 +9,7 @@ var ADD_SONG_AC_OPTIONS = {
 	itemDisplay: function(_category, _item, _choiceClass) {
 		switch (_category) {
 			case "songs":
-				return "<div class='" + _choiceClass + "' data-category='" + _category + "' data-id='" + _item.SongId + "'>" +
+				return "<div class='" + _choiceClass + "' data-category='" + _category + "' data-id='" + _item.SongId + "' data-artist='" + _item.ArtistName + "' data-song='" + _item.SongName + "' data-record='" + _item.RecordName + "'>" +
 							"<div class='search_artist_name'>" + _item.ArtistName + "</div>" +
 							"<div>" + _item.SongName + "</div>" +
 							"<div class='search_record_name'>" + _item.RecordName + "</div>" +
@@ -23,9 +23,13 @@ var ADD_SONG_AC_OPTIONS = {
 		}
 	},
 	itemSelection: function(elem) {
+		var parent_id = elem["parent-id"];
+		
 		switch (elem.dataset.category) {
 			case "songs":
-				alert(elem.dataset.id);
+				$("#" + parent_id + "-result").hide();
+				$("#" + parent_id + "-container .add-played-song-input").hide();
+				$("#" + parent_id + "-container .add-played-song-display").html(elem.dataset.song + "<br/>" + elem.dataset.artist).show();
 				break;
 				
 			default:
@@ -584,6 +588,12 @@ $(document).ready( function () {
 				ADD_SONG_AC_OPTIONS["id"] = data.id;
 				
 				addSongAC.init(ADD_SONG_AC_OPTIONS);
+				
+				// add onclick for editing the entered song
+				$("#" + data.id + "-container .add-played-song-display").on("click", function() {
+					$(this).hide();
+					$("#" + data.id + "-container .add-played-song-input").show();
+				});
 			});
 		});
 	}

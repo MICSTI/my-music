@@ -311,6 +311,9 @@ function AutoComplete() {
 		Handles the selection of a choice.
 	*/
 	var selectChoice = function(elem) {
+		// add parent id to element
+		elem["parent-id"] = id;
+		
 		// call on item selected handler
 		onItemSelected(elem);
 	}
@@ -322,9 +325,5 @@ function AutoComplete() {
 		choice = -1;
 		result.hide();
 		result.html("");
-	}
-	
-	this.selectChoice = function (i) {
-		selectResult(i);
 	}
 }

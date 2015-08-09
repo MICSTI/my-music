@@ -72,6 +72,10 @@ a {
 	
 }
 
+.add-played-song-display {
+	display: none;
+}
+
 /* --- datepicker z-index (otherwise it is not visible in modal window) --- */
 .datepicker {
 	z-index: 1150 !important;
