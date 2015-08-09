@@ -47,7 +47,7 @@ function crudModal(_action, _id, _params) {
 			modal.find(".modal-title").html(content.title);
 			modal.find(".modal-body").html(content.body);
 			modal.find(".modal-footer").html(content.footer);
-			-
+			
 			// attach save button handler
 			modal.find(".modal-action-save").on("click", function() {
 				persistCrud(content.save, _id, $("#" + content.form_name).serialize(), content.tab_name);
@@ -62,6 +62,21 @@ function crudModal(_action, _id, _params) {
 	}).fail(function(error) {
 		// log error
 		console.log("crudModal", error);
+	});
+}
+
+function getStatic(_content, onSuccess) {
+	$.ajax( {
+		method: "GET",
+		url: "ajax.static.php",
+		data: {
+			content: _content
+		}
+	}).done(function(data) {
+		onSuccess(data);
+	}).fail(function(error) {
+		// log error
+		console.log("ajax.static.php", error);
 	});
 }
 
@@ -519,6 +534,16 @@ $(document).ready( function () {
 	var removeAdministrationActive = function() {
 		$("#administration a").removeClass("active");
 	}
+	
+	var addPlayedSongAdd = function() {
+		$("#add-played-song-add").on("click", function() {
+			getStatic("add_played_song_add", function(data) {
+				$(".add-played-song-div").last().after(data);
+			});
+		});
+	}
+	
+	addPlayedSongAdd();
 	
 	// add tooltips
 	addTooltips();

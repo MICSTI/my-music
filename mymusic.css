@@ -64,6 +64,14 @@ a {
 	cursor: move;
 }
 
+#add-played-song-submit {
+	margin-top: 12px;
+}
+
+.add-played-song-div {
+	
+}
+
 /* --- datepicker z-index (otherwise it is not visible in modal window) --- */
 .datepicker {
 	z-index: 1150 !important;

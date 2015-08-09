@@ -704,55 +704,90 @@
 		private function getPlayedAdministration($mdb) {
 			$html = "";
 			
-			// Top bar
-			$html .= "<div>";
-				// datepicker
-				$html .= "<div class='col-sm-2'>";
-					$html .= "<div class='bold'>Date</div>";
-					$html .= "<div><input type='text' id='played-date' class='form-control date-picker' placeholder='Date' value='" . date("d.m.Y") . "' /></div>";
-				$html .= "</div>";
-				
-				// device
-				$html .= "<div class='col-sm-3'>";
-					$html .= "<div class='bold'>Device</div>";
-					$html .= "<div><select class='selectpicker form-control' id='administration-device' name='administration-device'>";
-						// display all options
-						$devices = $mdb->getDevices();
-						
-						$default_device = $mdb->getConfig("default_device");
-						
-						// keep track of active state to add a divider between active and non-active devices
-						$dev_active = true;
-						
-						foreach ($devices as $device) {
-							$icon = $mdb->getIcon($device["DeviceDeviceTypeIconId"]);
+			$html .= "<div class='row'>";
+				// Top bar
+				$html .= "<div>";
+					// datepicker
+					$html .= "<div class='col-sm-2'>";
+						$html .= "<div class='bold'>Date</div>";
+						$html .= "<div><input type='text' id='played-date' class='form-control date-picker' placeholder='Date' value='" . date("d.m.Y") . "' /></div>";
+					$html .= "</div>";
+					
+					// device
+					$html .= "<div class='col-sm-3'>";
+						$html .= "<div class='bold'>Device</div>";
+						$html .= "<div><select class='selectpicker form-control' id='administration-device' name='administration-device'>";
+							// display all options
+							$devices = $mdb->getDevices();
 							
-							if ($device["DeviceActive"] != $dev_active) {
-								$dev_active = $device["DeviceActive"];
-								$html .= "<option data-divider='true'></option>";
+							$default_device = $mdb->getConfig("default_device");
+							
+							// keep track of active state to add a divider between active and non-active devices
+							$dev_active = true;
+							
+							foreach ($devices as $device) {
+								$icon = $mdb->getIcon($device["DeviceDeviceTypeIconId"]);
+								
+								if ($device["DeviceActive"] != $dev_active) {
+									$dev_active = $device["DeviceActive"];
+									$html .= "<option data-divider='true'></option>";
+								}
+								
+								$html .= "<option value='" . $device["DeviceId"] . "' data-icon='" . $icon["IconPath"] . "' " . compareOption($default_device, $device["DeviceId"]) . ">" . $device["DeviceName"] . "</option>";
 							}
+						$html .= "</select></div>";
+					$html .= "</div>";
+					
+					// activity
+					$html .= "<div class='col-sm-7'>";
+						$html .= "<div class='bold'>Activity</div>";
+						$html .= "<div><select class='selectpicker form-control' id='administration-activity' name='administration-activity'>";
+							// display all options
+							$activities = $mdb->getActivities();
 							
-							$html .= "<option value='" . $device["DeviceId"] . "' data-icon='" . $icon["IconPath"] . "' " . compareOption($default_device, $device["DeviceId"]) . ">" . $device["DeviceName"] . "</option>";
-						}
-					$html .= "</select></div>";
+							$default_activity = $mdb->getConfig("default_activity");
+							
+							foreach ($activities as $activity) {
+								$html .= "<option value='" . $activity["ActivityId"] . "' data-content=\"<span class='label label-big label-" . $activity["ActivityColor"] . "'>#" . $activity["ActivityName"] . "</span> \" " . compareOption($default_activity, $activity["ActivityId"]) . ">"  . "</option>";
+							}
+						$html .= "</select></div>";
+					$html .= "</div>";
 				$html .= "</div>";
+			$html .= "</div>";
 				
-				// activity
-				$html .= "<div class='col-sm-3'>";
-					$html .= "<div class='bold'>Activity</div>";
-					$html .= "<div><select class='selectpicker form-control' id='administration-activity' name='administration-activity'>";
-						// display all options
-						$activities = $mdb->getActivities();
-						
-						$default_activity = $mdb->getConfig("default_activity");
-						
-						foreach ($activities as $activity) {
-							$html .= "<option value='" . $activity["ActivityId"] . "' data-content=\"<span class='label label-big label-" . $activity["ActivityColor"] . "'>#" . $activity["ActivityName"] . "</span> \" " . compareOption($default_activity, $activity["ActivityId"]) . ">"  . "</option>";
-						}
-					$html .= "</select></div>";
+			// input form
+			$html .= "<div class='row'>";
+				$html .= "<form id='add-played-song-form'>";
+					$html .= $this->getAddPlayedSongLine(true);
+				$html .= "</form>";
+			$html .= "</div>";
+			
+			// add more songs and submit
+			$html .= "<div class='row'>";
+				$html .= "<div class='form-group'>";
+					$html .= "<div id='add-played-song-submit' class='col-sm-12'>";
+						$html .= "<div>";
+							$html .= "<span><button type='button' id='add-played-song-add' class='btn btn-info'>Add song</button></span> ";
+							$html .= "<span><button type='button' id='add-played-song-save' class='btn btn-success'>Save</button></span>";
+						$html .= "</div>";
+					$html .= "</div>";
 				$html .= "</div>";
 			$html .= "</div>";
 			
 			return $html;
+		}
+		
+		public function getAddPlayedSongLine($fill_time = false) {
+			$time = $fill_time ? date("H:s") : "";
+			
+			return "<div class='form-group add-played-song-div'>
+						<div class='col-sm-2'>
+							<input type='text' class='form-control' placeholder='Time' value='" . $time . "' />
+						</div>
+						
+						<div class='col-sm-10'>
+							<input type='text' class='form-control add-played-song' placeholder='Choose song' />
+						</div>
+					</div>";
 		}
 	}
