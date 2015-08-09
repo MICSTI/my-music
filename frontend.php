@@ -719,10 +719,12 @@
 						// display all options
 						$devices = $mdb->getDevices();
 						
+						$default_device = $mdb->getConfig("default_device");
+						
 						foreach ($devices as $device) {
 							$icon = $mdb->getIcon($device["DeviceDeviceTypeIconId"]);
 							
-							$html .= "<option value='" . $device["DeviceId"] . "' data-icon='" . $icon["IconPath"] . "' " . compareOption("yes", "no") . ">" . $device["DeviceName"] . "</option>";
+							$html .= "<option value='" . $device["DeviceId"] . "' data-icon='" . $icon["IconPath"] . "' " . compareOption($default_device, $device["DeviceId"]) . ">" . $device["DeviceName"] . "</option>";
 						}
 					$html .= "</select></div>";
 				$html .= "</div>";
@@ -734,8 +736,10 @@
 						// display all options
 						$activities = $mdb->getActivities();
 						
+						$default_activity = $mdb->getConfig("default_activity");
+						
 						foreach ($activities as $activity) {
-							$html .= "<option value='" . $activity["ActivityId"] . "' data-content=\"<span class='label label-big label-" . $activity["ActivityColor"] . "'>#" . $activity["ActivityName"] . "</span> \" " . compareOption("yes", "no") . ">"  . "</option>";
+							$html .= "<option value='" . $activity["ActivityId"] . "' data-content=\"<span class='label label-big label-" . $activity["ActivityColor"] . "'>#" . $activity["ActivityName"] . "</span> \" " . compareOption($default_activity, $activity["ActivityId"]) . ">"  . "</option>";
 						}
 					$html .= "</select></div>";
 				$html .= "</div>";

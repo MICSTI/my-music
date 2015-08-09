@@ -7,3 +7,5 @@ version_string
 img_path
 main_country_weight
 secondary_country_weight
+default_device
+default_activity
