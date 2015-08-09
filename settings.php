@@ -24,11 +24,6 @@
 				$html .= "<span>Icons</span>";
 			$html .= "</a>";
 			
-			// Devices
-			$html .= "<a href='#' id='settings-devices' class='list-group-item'>";
-				$html .= "<span>Devices</span>";
-			$html .= "</a>";
-			
 			// Device types
 			$html .= "<a href='#' id='settings-device-types' class='list-group-item'>";
 				$html .= "<span>Device types</span>";
@@ -37,11 +32,6 @@
 			// Record types
 			$html .= "<a href='#' id='settings-record-types' class='list-group-item'>";
 				$html .= "<span>Record types</span>";
-			$html .= "</a>";
-			
-			// Activities
-			$html .= "<a href='#' id='settings-activities' class='list-group-item'>";
-				$html .= "<span>Activities</span>";
 			$html .= "</a>";
 			
 			// Countries

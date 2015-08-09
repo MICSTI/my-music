@@ -107,8 +107,8 @@
 							$menu .= "</ul>";
 							
 						$menu .= "<li class='" . $this->getActiveText("history", $selected) . "'><a href='history.php'>History</a></li>";
-						$menu .= "<li><a href='#'>Input</a></li>";
 						$menu .= "<li><a href='#'>Concerts</a></li>";
+						$menu .= "<li class='" . $this->getActiveText("administration", $selected) . "'><a href='administration.php'>Administration</a></li>";
 						$menu .= "<li class='" . $this->getActiveText("settings", $selected) . "'><a href='settings.php'>Settings</a></li>";
 					$menu .= "</ul>";
 					
@@ -354,20 +354,12 @@
 					$html .= $group;
 					break;
 					
-				case "activities":
-					$html .= $this->getActivitySettings($mdb);
-					break;
-					
 				case "countries":
 					$html .= $this->getCountrySettings($mdb);
 					break;
 					
 				case "icons":
 					$html .= $this->getIconSettings($mdb);
-					break;
-					
-				case "devices":
-					$html .= $this->getDeviceSettings($mdb);
 					break;
 					
 				case "device-types":
@@ -666,6 +658,53 @@
 				$html .= "<p>Currently, there are no record types saved.";
 				$html .= "<p>If you want, you can <a href='#' onclick=\"crudModal('" . $this->SAVE_RECORD_TYPE . "')\">add</a> one.";
 			}
+			
+			return $html;
+		}
+		
+		public function getAdministrationContent($mdb, $group = "played") {
+			$html = "";
+			
+			switch ($group) {
+				case "played":
+					$html .= $this->getPlayedAdministration($mdb);
+					break;
+					
+				case "songs":
+					$html .= $group;
+					break;
+					
+				case "artists":
+					$html .= $group;
+					break;
+					
+				case "records":
+					$html .= $group;
+					break;
+					
+				case "devices":
+					$html .= $this->getDeviceSettings($mdb);
+					break;
+					
+				case "activities":
+					$html .= $this->getActivitySettings($mdb);
+					break;
+					
+				default:
+					$html .= "Unknown group";
+					break;
+			}
+			
+			return $html;
+		}
+		
+		/**
+			Returns the content of the played administration tab
+		*/
+		private function getPlayedAdministration($mdb) {
+			$html = "";
+			
+			$html .= "Played!!";
 			
 			return $html;
 		}

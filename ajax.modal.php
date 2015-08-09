@@ -182,7 +182,7 @@
 				$success = $mc->getMDB()->saveDevice($id, $get["device-name"], $get["device-type"], $active);
 				
 				// on success action
-				$data["onSuccess"] = "updateSettings";
+				$data["onSuccess"] = "updateAdministration";
 			
 				$data["success"] = $success;
 				
@@ -336,7 +336,7 @@
 				$success = $mc->getMDB()->saveActivity($id, $get["activity-name"], $get["activity-color"]);
 				
 				// on success action
-				$data["onSuccess"] = "updateSettings";
+				$data["onSuccess"] = "updateAdministration";
 			
 				$data["success"] = $success;
 				

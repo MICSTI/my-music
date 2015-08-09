@@ -100,6 +100,10 @@ function persistCrud(_action, _id, _params, _tab) {
 						updateSettingsContent(_tab);
 						break;
 						
+					case "updateAdministration":
+						updateAdministrationContent(_tab);
+						break;
+						
 					case "updateRecordInformation":
 						updateRecordInformation(_id);
 						break;
@@ -146,6 +150,28 @@ function updateSettingsContent(target) {
 	}).fail(function(error) {
 		// log error
 		console.log("ajax.settings.php", error);
+	});
+}
+
+/**
+	Update the content for the specified tab.
+*/
+function updateAdministrationContent(target) {
+	$.ajax( {
+		method: "GET",
+		url: "ajax.administration.php",
+		data: {
+			action: "tab",
+			id: target
+		}
+	}).done(function(data) {
+		$("#administration-content").fadeOut(400, function() {
+			// set content
+			$(this).html(data).fadeIn(400);
+		});
+	}).fail(function(error) {
+		// log error
+		console.log("ajax.administration.php", error);
 	});
 }
 
@@ -418,8 +444,60 @@ $(document).ready( function () {
 		});
 	}
 	
+	// administration
+	var administration = $("#administration");
+	if (administration.length > 0) {
+		// list navigation (load content of clicked tab via AJAX)
+		$("#administration a").on("click", function(e) {
+			// remove active class
+			removeAdministrationActive();
+			
+			// get target
+			var target = this.id.substring(+this.id.indexOf("-") + 1);
+			
+			// mark new active
+			$(this).addClass("active");
+			
+			// get content
+			$.ajax( {
+				method: "GET",
+				url: "ajax.administration.php",
+				data: {
+					action: "tab",
+					id: target
+				}
+			}).done(function(data) {
+				// set content
+				$("#administration-content").html(data);
+				
+				// add tooltips
+				addTooltips();
+			}).fail(function(error) {
+				// log error
+				console.log("ajax.administration.php", error);
+			});
+		});
+		
+		// affix for nav always to be visible
+		administration.on("affix.bs.affix", function() {
+			// a small hack to contain the width of the settings nav div
+			var administrationWidth = administration.innerWidth();
+			
+			administration.on("affixed.bs.affix", function() {
+				administration.css("width", settingsWidth + "px");
+				
+				// remove the listener immediately so we don't attach it over and over again if we scroll up and down
+				administration.off("affixed.bs.affix");
+			});
+		});
+	}
+	
 	var removeSettingsActive = function() {
 		$("#settings a").removeClass("active");
+	}
+	
+	var removeAdministrationActive = function() {
+		$("#administration a").removeClass("active");
 	}
 	
 	// add tooltips
