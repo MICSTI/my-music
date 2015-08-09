@@ -721,8 +721,16 @@
 						
 						$default_device = $mdb->getConfig("default_device");
 						
+						// keep track of active state to add a divider between active and non-active devices
+						$dev_active = true;
+						
 						foreach ($devices as $device) {
 							$icon = $mdb->getIcon($device["DeviceDeviceTypeIconId"]);
+							
+							if ($device["DeviceActive"] != $dev_active) {
+								$dev_active = $device["DeviceActive"];
+								$html .= "<option data-divider='true'></option>";
+							}
 							
 							$html .= "<option value='" . $device["DeviceId"] . "' data-icon='" . $icon["IconPath"] . "' " . compareOption($default_device, $device["DeviceId"]) . ">" . $device["DeviceName"] . "</option>";
 						}

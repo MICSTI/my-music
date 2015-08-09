@@ -11,7 +11,7 @@
 		$html .= "<div id='administration' class='list-group' data-spy='affix' data-offset-top='230'>";
 			// Played
 			$html .= "<a href='#' id='administration-played' class='list-group-item active'>";
-				$html .= "<span>Played</span>";
+				$html .= "<span>Add played songs</span>";
 			$html .= "</a>";
 			
 			// Songs
