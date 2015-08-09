@@ -15,7 +15,7 @@ function crudModal(_action, _id, _params) {
 	// fires before modal is shown
 	modal.on("show.bs.modal", function() {
 		// add selectpicker
-		$(".selectpicker").selectpicker( {} );
+		initSelectpicker();
 	});
 
 	// fites when modal has completely finished loading
@@ -24,15 +24,7 @@ function crudModal(_action, _id, _params) {
 		$(".autofocus").first().focus().putCursorAtEnd();
 		
 		// init datepicker
-		$(".date-picker")
-			.datepicker(DATEPICKER_INIT_OPTIONS)
-			.on("changeDate", function(e) {
-				// changeDate fires when month or year selection of datepicker is clicked, so we have to check if the user actually selected a new date
-				if (e.viewMode === "days") {
-					// hide datepicker after date was changed
-					$(this).datepicker("hide");
-				}
-			});
+		initDatepicker();
 		
 		// add tooltips
 		addTooltips();
@@ -55,7 +47,7 @@ function crudModal(_action, _id, _params) {
 			modal.find(".modal-title").html(content.title);
 			modal.find(".modal-body").html(content.body);
 			modal.find(".modal-footer").html(content.footer);
-			
+			-
 			// attach save button handler
 			modal.find(".modal-action-save").on("click", function() {
 				persistCrud(content.save, _id, $("#" + content.form_name).serialize(), content.tab_name);
@@ -71,6 +63,28 @@ function crudModal(_action, _id, _params) {
 		// log error
 		console.log("crudModal", error);
 	});
+}
+
+/**
+	basic initialization for a datepicker
+*/
+function initDatepicker() {
+	$(".date-picker")
+		.datepicker(DATEPICKER_INIT_OPTIONS)
+		.on("changeDate", function(e) {
+			// changeDate fires when month or year selection of datepicker is clicked, so we have to check if the user actually selected a new date
+			if (e.viewMode === "days") {
+				// hide datepicker after date was changed
+				$(this).datepicker("hide");
+			}
+		});
+}
+
+/**
+	basic initialization for select picker
+*/
+function initSelectpicker() {
+	$(".selectpicker").selectpicker( {} );
 }
 
 function persistCrud(_action, _id, _params, _tab) {
@@ -472,6 +486,12 @@ $(document).ready( function () {
 				
 				// add tooltips
 				addTooltips();
+				
+				// init selects
+				initSelectpicker();
+				
+				// init datepicker
+				initDatepicker();
 			}).fail(function(error) {
 				// log error
 				console.log("ajax.administration.php", error);
@@ -502,6 +522,9 @@ $(document).ready( function () {
 	
 	// add tooltips
 	addTooltips();
+	
+	// init datepicker
+	initDatepicker();
 	
 	// add hotkey listener
 	$(document).bind("keydown", "alt+f", function() {

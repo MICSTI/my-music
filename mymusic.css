@@ -75,6 +75,7 @@ a {
 
 #pickdate {
 	display: inline !important;
+	width: 96px;
 }
 
 /* ---- STAR RATING ---- */

@@ -709,7 +709,7 @@
 				// datepicker
 				$html .= "<div class='col-sm-2'>";
 					$html .= "<div class='bold'>Date</div>";
-					$html .= "<div><input type='text' id='played-date' class='form-control date-picker' placeholder='Date' /></div>";
+					$html .= "<div><input type='text' id='played-date' class='form-control date-picker' placeholder='Date' value='" . date("d.m.Y") . "' /></div>";
 				$html .= "</div>";
 				
 				// device
