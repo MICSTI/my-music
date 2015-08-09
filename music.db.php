@@ -2043,8 +2043,12 @@
 		/**
 			Returns an array containing all devices.
 			If no devices exist, null is returned.
+			By passing true as the $active flag, active devices
+			will be returned before the in-active ones.
 		*/
-		public function getDevices() {
+		public function getDevices($active = true) {
+			$order = $active ? "de.active DESC, de.name" : "de.name";
+			
 			// get all devices
 			$sql = "SELECT
 						de.id AS 'DeviceId',
@@ -2057,7 +2061,7 @@
 						devices de INNER JOIN
 						device_type dt ON dt.id = de.typeid
 					ORDER BY
-						de.name";
+						" . $order;
 						
 			$query = $this->db->prepare($sql);
 			$query->execute();

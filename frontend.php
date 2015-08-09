@@ -704,7 +704,42 @@
 		private function getPlayedAdministration($mdb) {
 			$html = "";
 			
-			$html .= "Played!!";
+			// Top bar
+			$html .= "<div>";
+				// datepicker
+				$html .= "<div class='col-sm-2'>";
+					$html .= "<div class='bold'>Date</div>";
+					$html .= "<div><input type='text' id='played-date' class='form-control date-picker' placeholder='Date' /></div>";
+				$html .= "</div>";
+				
+				// device
+				$html .= "<div class='col-sm-3'>";
+					$html .= "<div class='bold'>Device</div>";
+					$html .= "<div><select class='selectpicker form-control' id='administration-device' name='administration-device'>";
+						// display all options
+						$devices = $mdb->getDevices();
+						
+						foreach ($devices as $device) {
+							$icon = $mdb->getIcon($device["DeviceDeviceTypeIconId"]);
+							
+							$html .= "<option value='" . $device["DeviceId"] . "' data-icon='" . $icon["IconPath"] . "' " . compareOption("yes", "no") . ">" . $device["DeviceName"] . "</option>";
+						}
+					$html .= "</select></div>";
+				$html .= "</div>";
+				
+				// activity
+				$html .= "<div class='col-sm-3'>";
+					$html .= "<div class='bold'>Activity</div>";
+					$html .= "<div><select class='selectpicker form-control' id='administration-activity' name='administration-activity'>";
+						// display all options
+						$activities = $mdb->getActivities();
+						
+						foreach ($activities as $activity) {
+							$html .= "<option value='" . $activity["ActivityId"] . "' data-content=\"<span class='label label-big label-" . $activity["ActivityColor"] . "'>#" . $activity["ActivityName"] . "</span> \" " . compareOption("yes", "no") . ">"  . "</option>";
+						}
+					$html .= "</select></div>";
+				$html .= "</div>";
+			$html .= "</div>";
 			
 			return $html;
 		}
