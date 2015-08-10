@@ -29,12 +29,28 @@ var ADD_SONG_AC_OPTIONS = {
 			case "songs":
 				$("#" + parent_id + "-result").hide();
 				$("#" + parent_id + "-container .add-played-song-input").hide();
-				$("#" + parent_id + "-container .add-played-song-display").html(elem.dataset.song + "<br/>" + elem.dataset.artist).show();
+				$("#" + parent_id + "-container .add-played-song-display").html("<div class='pull-right'>" +
+																					"<button type='button' class='btn btn-danger' onclick=\"$('#" + parent_id + "-container').remove()\">Remove</button>" +
+																				"</div>" +
+																				"<div>" +
+																					"<input type='hidden' id='" + parent_id + "-song-id" + "' value='" + elem.dataset.id + "' />" + 
+																					"<div>" + elem.dataset.song + "</div>" + 
+																					"<div>" + elem.dataset.artist + "</div>" + 
+																					"<div>" + elem.dataset.record + "</div>" +
+																				"</div>"
+																				)
+																		  .show();
 				break;
 				
 			default:
 				break;
 		}
+		
+		// hide result divs
+		$(".ac_result").empty();
+		
+		// set focus to "Add song" button to easily add another song (or go to "Save" by hitting tab once)
+		$("#add-played-song-add").focus();
 	}
 };
 
@@ -566,6 +582,61 @@ $(document).ready( function () {
 				administration.off("affixed.bs.affix");
 			});
 		});
+		
+		var addPlayedSongAdd = function() {
+			$("#add-played-song-add").on("click", function() {
+				getStatic("add_played_song_add", function(data) {
+					if ($(".add-played-song-div").length > 0) {
+						// append the new div after the last div
+						$(".add-played-song-div").last().after(data.content);
+					} else {
+						// if all divs have been deleted, append it to the form instead
+						$("#add-played-song-form").append(data.content);
+					}
+					
+					// auto complete for song adding
+					var addSongAC = new AutoComplete();
+					
+					// add id to static options array
+					ADD_SONG_AC_OPTIONS["id"] = data.id;
+					
+					addSongAC.init(ADD_SONG_AC_OPTIONS);
+					
+					// add onclick for editing the entered song
+					addPlayedSongInputControl(data.id);
+					
+					// set focus to the last song text input field
+					$("#" + data.id).focus();
+				});
+			});
+		}
+		
+		var addPlayedSongInputControl = function(_id) {
+			$("#" + _id + "-container .add-played-song-display").on("dblclick", function() {
+				// hide display div and delete the saved values
+				$(this).hide().empty();
+				
+				$("#" + _id + "-container .add-played-song-input").show();
+			});
+		}
+		
+		// immediately add the function to the already existing element
+		addPlayedSongAdd();
+		
+		// add the container click function to the pre-existing add div
+		addPlayedSongInputControl("add-played-song-1");
+		
+		// set the focus to this element if it's visible
+		if ($("#add-played-song-1").length > 0) {
+			$("#add-played-song-1").focus();
+		}
+		
+		// ... and add the auto complete handler to it as well
+		var addSongACFirst = new AutoComplete();
+		
+		ADD_SONG_AC_OPTIONS["id"] = "add-played-song-1";
+		
+		addSongACFirst.init(ADD_SONG_AC_OPTIONS);
 	}
 	
 	var removeSettingsActive = function() {
@@ -575,38 +646,6 @@ $(document).ready( function () {
 	var removeAdministrationActive = function() {
 		$("#administration a").removeClass("active");
 	}
-	
-	var addPlayedSongAdd = function() {
-		$("#add-played-song-add").on("click", function() {
-			getStatic("add_played_song_add", function(data) {
-				$(".add-played-song-div").last().after(data.content);
-				
-				// auto complete for song adding
-				var addSongAC = new AutoComplete();
-				
-				// add id to static options array
-				ADD_SONG_AC_OPTIONS["id"] = data.id;
-				
-				addSongAC.init(ADD_SONG_AC_OPTIONS);
-				
-				// add onclick for editing the entered song
-				$("#" + data.id + "-container .add-played-song-display").on("click", function() {
-					$(this).hide();
-					$("#" + data.id + "-container .add-played-song-input").show();
-				});
-			});
-		});
-	}
-	
-	// immediately add the function to the already pre-existing element
-	addPlayedSongAdd();
-	
-	// ... and add the auto complete handler to it as well
-	var addSongACFirst = new AutoComplete();
-	
-	ADD_SONG_AC_OPTIONS["id"] = "add-played-song-1";
-	
-	addSongACFirst.init(ADD_SONG_AC_OPTIONS);
 	
 	// add tooltips
 	addTooltips();

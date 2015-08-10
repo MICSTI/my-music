@@ -713,7 +713,7 @@
 					break;
 					
 				case "songs":
-					$html .= $group;
+					$html .= $this->getSongAdministration($mdb);
 					break;
 					
 				case "artists":
@@ -745,7 +745,7 @@
 		}
 		
 		/**
-			Returns the content of the played administration tab
+			Returns the content of the add played song administration tab
 		*/
 		private function getAddPlayedAdministration($mdb) {
 			$html = "";
@@ -813,7 +813,7 @@
 			$html .= "<div class='row'>";
 				$html .= "<div class='form-group'>";
 					$html .= "<div id='add-played-song-submit' class='col-sm-12'>";
-						$html .= "<div>";
+						$html .= "<div class='pull-right'>";
 							$html .= "<span><button type='button' id='add-played-song-add' class='btn btn-info'>Add song</button></span> ";
 							$html .= "<span><button type='button' id='add-played-song-save' class='btn btn-success'>Save</button></span>";
 						$html .= "</div>";
@@ -838,5 +838,24 @@
 						
 						<div class='add-played-song-display col-sm-10'></div>
 					</div>";
+		}
+		
+		/**
+			Returns the content of the song administration tab
+		*/
+		private function getSongAdministration($mdb) {
+			$html = "";
+			
+			// Top bar with search field
+			$html .= "<div class='row'>";
+				$html .= "<input type='text' id='song-admin-search' class='autofocus' />";
+			$html .= "</div>";
+			
+			// result div
+			$html .= "<div class='row'>";
+				
+			$html .= "</div>";
+			
+			return $html;
 		}
 	}
