@@ -1191,6 +1191,57 @@
 		}
 		
 		/**
+			Adds an array of played songs to the database.
+			Returns true if the operation was successful, false if it was not.
+		*/
+		public function addPlayedSongs($date, $device_id, $activity_id, $songs) {
+			$success = true;
+			
+			$last_timestamp = 0;
+			
+			foreach ($songs as $song) {
+				$time = $song["time"];
+				$id = $song["id"];
+				
+				// check if a time was passed
+				if ($time != "") {
+					// build timestamp
+					$day = substr($date, 0, 2);
+					$month = substr($date, 3, 2);
+					$year = substr($date, 6);
+					
+					$hour = substr($time, 0, 2);
+					$minute = substr($time, 3, 2);
+					
+					// timestamp of start time
+					$timestamp = mktime($hour, $minute, 0, $month, $day, $year);
+				} else {
+					// no time was passed (it is ensured from the frontend that there will be a valid time for the first element)
+					$timestamp = $last_timestamp;
+				}
+				
+				// get song length (because the timestamp is the start time)
+				$song_length = $this->getSongDetailById($id, "length");
+				
+				// add song length to get the end time
+				$timestamp += floor($song_length / 1000);
+				
+				// save new last timestamp for the next element
+				$last_timestamp = $timestamp;
+				
+				// make it a UnixTimestamp for easier conversion to MySQL date time format
+				$unix_timestamp = new UnixTimestamp($timestamp);
+				
+				// check for error while executing
+				if (!$this->addPlayed($id, $device_id, $activity_id, $unix_timestamp->convert2MysqlDateTime())) {
+					$success = false;
+				}
+			}
+			
+			return $success;
+		}
+		
+		/**
 			Returns all entries for the played song, false if song id was not found.
 		*/
 		public function getPlayedBySongId ($sid) {

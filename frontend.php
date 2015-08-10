@@ -25,9 +25,9 @@
 								"external/bootstrap-select/bootstrap-select.min.js",
 								"external/notifiy/notify-combined.min.js",
 								"external/jquery/jquery.hotkeys.js",
+								"util.js",
 								"auto_complete.js",
 								"bootstrap-datepicker.js",
-								"util.js",
 								"mymusic.js"
 							);
 							
@@ -829,7 +829,7 @@
 			
 			return "<div id='" . $id . "-container' class='form-group add-played-song-div'>
 						<div class='col-sm-2'>
-							<input type='text' class='form-control' placeholder='Time' value='" . $time . "' />
+							<input type='text' class='form-control add-played-song-time' placeholder='Time' value='" . $time . "' />
 						</div>
 						
 						<div class='add-played-song-input col-sm-10'>
