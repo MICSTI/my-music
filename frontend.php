@@ -704,12 +704,12 @@
 			return $html;
 		}
 		
-		public function getAdministrationContent($mdb, $group = "played") {
+		public function getAdministrationContent($mdb, $group = "add-played") {
 			$html = "";
 			
 			switch ($group) {
-				case "played":
-					$html .= $this->getPlayedAdministration($mdb);
+				case "add-played":
+					$html .= $this->getAddPlayedAdministration($mdb);
 					break;
 					
 				case "songs":
@@ -721,6 +721,10 @@
 					break;
 					
 				case "records":
+					$html .= $group;
+					break;
+					
+				case "played":
 					$html .= $group;
 					break;
 					
@@ -743,7 +747,7 @@
 		/**
 			Returns the content of the played administration tab
 		*/
-		private function getPlayedAdministration($mdb) {
+		private function getAddPlayedAdministration($mdb) {
 			$html = "";
 			
 			$html .= "<div class='row'>";
@@ -821,7 +825,7 @@
 		}
 		
 		public function getAddPlayedSongLine($id, $fill_time = false) {
-			$time = $fill_time ? date("H:s") : "";
+			$time = $fill_time ? date("H:i") : "";
 			
 			return "<div id='" . $id . "-container' class='form-group add-played-song-div'>
 						<div class='col-sm-2'>

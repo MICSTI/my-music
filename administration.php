@@ -9,8 +9,8 @@
 	// List selection on the left
 	$html .= "<div class='col-sm-3'>";
 		$html .= "<div id='administration' class='list-group' data-spy='affix' data-offset-top='230'>";
-			// Played
-			$html .= "<a href='#' id='administration-played' class='list-group-item active'>";
+			// Add played song
+			$html .= "<a href='#' id='administration-add-played' class='list-group-item active'>";
 				$html .= "<span>Add played songs</span>";
 			$html .= "</a>";
 			
@@ -27,6 +27,11 @@
 			// Records
 			$html .= "<a href='#' id='administration-records' class='list-group-item'>";
 				$html .= "<span>Records</span>";
+			$html .= "</a>";
+			
+			// Played
+			$html .= "<a href='#' id='administration-played' class='list-group-item'>";
+				$html .= "<span>Played</span>";
 			$html .= "</a>";
 			
 			// Devices
