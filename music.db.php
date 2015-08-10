@@ -3040,6 +3040,8 @@
 			
 			$sql = "SELECT
 						pl.timestamp AS 'Timestamp',
+						pl.actid AS 'ActivityId',
+						pl.devid AS 'DeviceId',
 						so.id AS 'SongId',
 						so.name AS 'SongName',
 						ar.id AS 'ArtistId',

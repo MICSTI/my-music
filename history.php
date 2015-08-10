@@ -53,20 +53,31 @@
 		$html .= "<table class='table table-striped'>";
 			$html .= "<thead>";
 				$html .= "<tr>";
-					$html .= "<th>Time</th>";
-					$html .= "<th>Song</th>";
-					$html .= "<th>Artist</th>";
-					$html .= "<th class='hidden-xs'>Record</th>";
+					$html .= "<th class='col-sm-1'>Time</th>";
+					$html .= "<th class='col-sm-3'>Song</th>";
+					$html .= "<th class='col-sm-3'>Artist</th>";
+					$html .= "<th class='col-sm-3 hidden-xs'>Record</th>";
+					$html .= "<th class='col-sm-1 hidden-xs'>Device</th>";
+					$html .= "<th class='col-sm-1 hidden-xs'>Activity</th>";
 				$html .= "</tr>";
 			$html .= "</thead>";
 			
 			$html .= "<tbody>";
 				foreach ($songs as $song) {
+					$device = $mc->getMDB()->getDevice($song["DeviceId"]);
+					$device_icon = $mc->getMDB()->getIcon($device["DeviceDeviceTypeIconId"]);
+					$device_string = getIconRef($device_icon, "", $device["DeviceName"]);
+					
+					$activity = $mc->getMDB()->getActivity($song["ActivityId"]);
+					$activity_string = getActivitySpan($activity);
+					
 					$html .= "<tr>";
 						$html .= "<td>" . getTimeFromTimestamp($song["Timestamp"]) . "</td>";
 						$html .= "<td>" . getSongLink($song["SongId"], $song["SongName"]) . "</td>";
 						$html .= "<td>" . getArtistLink($song["ArtistId"], $song["ArtistName"]) . "</td>";
 						$html .= "<td class='hidden-xs'>" . getRecordLink($song["RecordId"], $song["RecordName"]) . "</td>";
+						$html .= "<td class='hidden-xs'>" . $device_string . "</td>";
+						$html .= "<td class='hidden-xs'>" . $activity_string . "</td>";
 					$html .= "</tr>";
 				}
 			$html .= "</tbody>";
