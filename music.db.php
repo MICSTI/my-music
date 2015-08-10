@@ -2235,6 +2235,128 @@
 		}
 		
 		/**
+			Returns an array containing all config properties.
+			If no properties exist, null is returned.
+		*/
+		public function getConfigProperties() {
+			// get all config properties
+			$sql = "SELECT
+						co.id AS 'ConfigId',
+						co.property AS 'ConfigProperty',
+						co.value AS 'ConfigValue'
+					FROM
+						config co
+					ORDER BY
+						co.property";
+						
+			$query = $this->db->prepare($sql);
+			$query->execute();
+			
+			if ($query->rowCount() > 0) {
+				$fetch = $query->fetchAll(PDO::FETCH_ASSOC);
+	
+				return $fetch;
+			} else {
+				return null;
+			}
+		}
+		
+		/**
+			Returns the config property with the matching id from the database.
+			If no property is found with this id, null is returned.
+		*/
+		public function getConfigProperty($id) {
+			// get config property
+			$sql = "SELECT
+						co.id AS 'ConfigId',
+						co.property AS 'ConfigProperty',
+						co.value AS 'ConfigValue'
+					FROM
+						config co
+					WHERE
+						co.id = :id";
+						
+			$query = $this->db->prepare($sql);
+			$query->execute( array(':id' => $id) );
+			
+			if ($query->rowCount() > 0) {
+				$fetch = $query->fetch(PDO::FETCH_ASSOC);
+	
+				return $fetch;
+			} else {
+				return null;
+			}
+		}
+		
+		/**
+			Persists a config property. The function updates the property if it already exists or adds it to the database if it doesn't exist.
+			Returns true if the process was successful, false if it wasn't
+		*/
+		public function saveConfigProperty($id, $property, $value) {
+			if ($id <= 0) {
+				// add new config property
+				$success = $this->addConfigProperty($property, $value);
+				
+				// set success to true if a correct id was returned
+				if ($success !== false AND $success > 0) {
+					$success = true;
+				}
+			} else {
+				// update existing config property
+				$success = $this->updateConfigProperty($id, $property, $value);
+			}
+			
+			return $success;
+		}
+		
+		/**
+			Adds a config property to the database.
+			Returns the id of the newly inserted property, false if an error occurred.
+		*/
+		public function addConfigProperty($property, $value) {
+			$sql = "INSERT INTO config (property, value) VALUES (:property, :value)";
+			
+			$query = $this->db->prepare($sql);
+			$success = $query->execute( array(':property' => $property, ':value' => $value) );
+			
+			if ($query->rowCount() > 0) {
+				$inserted = $this->db->lastInsertId();
+			
+				if ($this->logging) {
+					$this->addLog(__FUNCTION__, "success", "added new config property [ property: " . $property . ", value: " . $value . " ] with id " . $inserted);
+				}
+			
+				return $inserted;
+			} else {
+				if ($this->logging) {
+					$this->addLog(__FUNCTION__, "error", "tried to add new config property [ property: " . $property . ", value: " . $value . " ] \n" . implode(" / ", $query->errorInfo()));
+				}
+			
+				return false;
+			}
+		}
+		
+		/**
+			Updates a config property in the database.
+			Returns true if the update process was successful or nothing was changed, false if an error occurred.
+		*/
+		public function updateConfigProperty($id, $property, $value) {
+			$sql = "UPDATE config SET property = :property, value = :value WHERE id = :id";
+			
+			$query = $this->db->prepare($sql);
+			$success = $query->execute( array(':id' => $id, ':property' => $property, ':value' => $value) );
+			
+			if ($query->rowCount() > 0 OR $success !== false) {
+				// update successful or nothing was changed
+				return true;
+			} else {
+				// update not successful
+				$this->addLog(__FUNCTION__, "error", "tried to update config property with id " . $id . " and property " . $property . ", value " . $value . "\n" . implode(" / ", $query->errorInfo()));
+				return false;
+			}
+		}
+		
+		/**
 			Returns an array containing all activities.
 			If no activities exist, null is returned.
 		*/

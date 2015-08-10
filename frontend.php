@@ -34,6 +34,7 @@
 		// Action ids
 		private $SAVE_ICON = "TkTiW5a3";
 		private $SAVE_ACTIVITY = "pXBciVn6";
+		private $SAVE_CONFIG = "VACJ1wZn";
 		private $SAVE_COUNTRY = "9wgH0bsX";
 		private $SAVE_DEVICE = "VnpguEAw";
 		private $SAVE_DEVICE_TYPE = "21Uww2Uj";
@@ -354,6 +355,10 @@
 					$html .= $group;
 					break;
 					
+				case "configuration":
+					$html .= $this->getConfigurationSettings($mdb);
+					break;
+					
 				case "countries":
 					$html .= $this->getCountrySettings($mdb);
 					break;
@@ -408,6 +413,43 @@
 				$html .= "<div><strong>Version</strong></div>";
 				$html .= "<div>" . $version_string . " (#" . $version_number . ")</div>";
 			$html .= "</div>";
+			
+			return $html;
+		}
+		
+		/**
+			Returns the content of the configuration settings tab
+		*/
+		private function getConfigurationSettings($mdb) {
+			$html = "";
+			
+			// get all configuration values from the database
+			$configs = $mdb->getConfigProperties();
+			
+			if (!is_null($configs)) {
+				$html .= "<table class='table'>";
+					$html .= "<thead>";
+						$html .= "<tr>";
+							$html .= "<th class='col-sm-4'>Property</th>";
+							$html .= "<th class='col-sm-6'>Value</th>";
+							$html .= "<th class='col-sm-2'><button type='button' class='btn btn-primary' onclick=\"crudModal('" . $this->SAVE_CONFIG . "')\"><span class='glyphicon glyphicon-plus'></span></button></th>";
+						$html .= "</tr>";
+					$html .= "</thead>";
+					
+					$html .= "<tbody>";
+						foreach ($configs as $config) {
+							$html .= "<tr>";
+								$html .= "<td>" . $config["ConfigProperty"] . "</td>";
+								$html .= "<td>" . $config["ConfigValue"] . "</td>";
+								$html .= "<td><a href='#' role='button' class='btn btn-default' onclick=\"crudModal('" . $this->SAVE_CONFIG . "', '" . $config["ConfigId"] . "')\"><span class='glyphicon glyphicon-pencil'></span></td>";
+							$html .= "</tr>";
+						}
+					$html .= "</tbody>";
+				$html .= "</table>";
+			} else {
+				$html .= "<p>Currently, there are no config values saved.";
+				$html .= "<p>If you want, you can <a href='#' onclick=\"crudModal('" . $this->SAVE_CONFIG . "')\">add</a> one.";
+			}
 			
 			return $html;
 		}

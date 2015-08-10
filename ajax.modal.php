@@ -382,7 +382,7 @@
 					$body .= "<div class='form-group'>";
 						$body .= "<label for='country-short' class='control-label col-xs-2'>Short</label>";
 						$body .= "<div class='col-xs-10'>";
-							$body .= "<input type='text' class='form-control autofocus' id='country-short' name='country-short' placeholder='Short (Alpha2 code)' value='" . $country["CountryShort"] . "' />";
+							$body .= "<input type='text' class='form-control' id='country-short' name='country-short' placeholder='Short (Alpha2 code)' value='" . $country["CountryShort"] . "' />";
 						$body .= "</div>";
 					$body .= "</div>";
 				$body .= "</form>";
@@ -404,6 +404,76 @@
 				
 				// save the country to the database
 				$success = $mc->getMDB()->saveCountry($id, $get["country-name"], $get["country-short"]);
+				
+				// on success action
+				$data["onSuccess"] = "updateSettings";
+			
+				$data["success"] = $success;
+				
+				break;
+				
+			// add/edit config property
+			case "VACJ1wZn":
+				// get data if edit
+				if ($id > 0) {
+					$config = $mc->getMDB()->getConfigProperty($id);
+				} else {
+					$config = array();
+					
+					$config["ConfigProperty"] = "";
+					$config["ConfigValue"] = "";
+				}
+				
+				// form name (for processing data in Javascript)
+				$form_name = "config-data";
+				$data["form_name"] = $form_name;
+				
+				// tab name (for updating the content after saving)
+				$tab_name = "configuration";
+				$data["tab_name"] = $tab_name;
+			
+				// title
+				$title = $id <= 0 ? "Add new config property" : "Edit config property";
+				$data["title"] = $title;
+				
+				// body
+				$body = "";
+				
+				$body .= "<form class='form-horizontal' id='" . $form_name . "'>";
+					// property
+					$body .= "<div class='form-group'>";
+						$body .= "<label for='config-property' class='control-label col-xs-2'>Property</label>";
+						$body .= "<div class='col-xs-10'>";
+							$body .= "<input type='text' class='form-control autofocus' id='config-property' name='config-property' placeholder='Property' value='" . $config["ConfigProperty"] . "' />";
+						$body .= "</div>";
+					$body .= "</div>";
+					
+					// value
+					$body .= "<div class='form-group'>";
+						$body .= "<label for='config-value' class='control-label col-xs-2'>Value</label>";
+						$body .= "<div class='col-xs-10'>";
+							$body .= "<input type='text' class='form-control' id='config-value' name='config-value' placeholder='Value' value='" . $config["ConfigValue"] . "' />";
+						$body .= "</div>";
+					$body .= "</div>";
+				$body .= "</form>";
+				
+				$data["body"] = $body;
+				
+				// footer
+				$footer = $mc->getFrontend()->getModalButtons(array("cancel", "save"));
+				$data["footer"] = $footer;
+				
+				// save method id
+				$data["save"] = "JBOETIN7";
+				
+				break;
+				
+			// save config property
+			case "JBOETIN7":
+				parse_str($params, $get);
+				
+				// save the country to the database
+				$success = $mc->getMDB()->saveConfigProperty($id, $get["config-property"], $get["config-value"]);
 				
 				// on success action
 				$data["onSuccess"] = "updateSettings";
