@@ -8,3 +8,4 @@ img_path
 secondary_country_weight
 default_device
 default_activity
+default_mobile_activity

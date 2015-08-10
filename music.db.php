@@ -1162,15 +1162,16 @@
 			Adds a new entry to the played table.
 			Inserted id is returned if insert was successful, false if otherwise.
 		*/
-		public function addPlayed ($sid, $devid, $timestamp) {
+		public function addPlayed ($sid, $devid, $actid, $timestamp) {
 			// strip input from code tags
 			$sid = strip_tags($sid);
 			$devid = strip_tags($devid);
+			$actid = strip_tags($actid);
 			$timestamp = strip_tags($timestamp);
 			
-			$sql = "INSERT INTO played (sid, devid, timestamp) VALUES (:sid, :devid, :timestamp)";
+			$sql = "INSERT INTO played (sid, devid, actid, timestamp) VALUES (:sid, :devid, :actid, :timestamp)";
 			$query = $this->db->prepare($sql);
-			$query->execute( array(':sid' => $sid, ':devid' => $devid, ':timestamp' => $timestamp) );
+			$query->execute( array(':sid' => $sid, ':devid' => $devid, ':actid' => $actid, ':timestamp' => $timestamp) );
 			
 			if ($query->rowCount() > 0) {
 				$inserted = $this->db->lastInsertId();

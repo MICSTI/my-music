@@ -44,6 +44,7 @@ TABLE played
 	id			INT
 	sid			INT
 	devid		INT		(device id)
+	actid		INT		(activity id)
 	timestamp	TIMESTAMP
 	
 TABLE devices

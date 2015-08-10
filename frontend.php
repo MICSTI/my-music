@@ -787,7 +787,8 @@
 							// display all options
 							$activities = $mdb->getActivities();
 							
-							$default_activity = $mdb->getConfig("default_activity");
+							// get default web activity
+							$default_activity = $mdb->getConfig("default_web_activity");
 							
 							foreach ($activities as $activity) {
 								$html .= "<option value='" . $activity["ActivityId"] . "' data-content=\"<span class='label label-big label-" . $activity["ActivityColor"] . "'>#" . $activity["ActivityName"] . "</span> \" " . compareOption($default_activity, $activity["ActivityId"]) . ">"  . "</option>";

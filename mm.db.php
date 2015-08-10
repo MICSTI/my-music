@@ -295,12 +295,15 @@
 				// Get song id from MediaMonkey id
 				$sid = $this->music_db->getSidFromMMId($mmid);
 				
+				// get default desktop activity
+				$actid = $this->music_db->getConfig("default_desktop_activity");
+				
 				// Convert MM datetime to mysql datetime
 				$mm_date = new MMDate($timestamp);
 				$timestamp = $mm_date->convert2MysqlDateTime();
 				
 				// Write tupel to database
-				$this->music_db->addPlayed($sid, $devid, $timestamp);
+				$this->music_db->addPlayed($sid, $devid, $actid, $timestamp);
 				
 				// Save played id (for returning last one)
 				$last_played_id = $pldid;
@@ -323,12 +326,15 @@
 				$devid = strip_tags($devid);
 				$timestamp = strip_tags($timestamp);
 				
+				// get default mobile activity
+				$actid = $this->music_db->getConfig("default_mobile_activity");
+				
 				// Convert Unix timestamp to mysql datetime
 				$unix = new UnixTimestamp($timestamp);
 				$timestamp = $unix->convert2MysqlDateTime();
 				
 				// Write tupel to database
-				$insert_success = $this->music_db->addPlayed($sid, $devid, $timestamp);
+				$insert_success = $this->music_db->addPlayed($sid, $devid, $actid, $timestamp);
 				
 				if ($insert_success === false) {
 					$success = false;
