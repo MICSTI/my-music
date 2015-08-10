@@ -54,10 +54,11 @@
 		$content .= "<table class='table table-striped'>";
 			$content .= "<thead>";
 				$content .= "<tr>";
-					$content .= "<th class='col-sm-2 rank'>Place</th>";
-					$content .= "<th class='col-sm-4'>Song</th>";
-					$content .= "<th class='col-sm-4'>Artist</th>";
-					$content .= "<th class='col-sm-2'>Count</th>";
+					$content .= "<th class='col-sm-1 rank'>Place</th>";
+					$content .= "<th class='col-sm-3'>Song</th>";
+					$content .= "<th class='col-sm-3'>Artist</th>";
+					$content .= "<th class='col-sm-1'>Count</th>";
+					$content .= "<th class='col-sm-4'> </th>";
 				$content .= "</tr>";
 			$content .= "</thead>";
 			
@@ -83,6 +84,7 @@
 						$content .= "<td><a href='song.php?id=" . $song["SongId"] . "'>" . $song["SongName"] . "</a></td>";
 						$content .= "<td><a href='artist.php?id=" . $song["ArtistId"] . "'>" . $song["ArtistName"] . "</a></td>";
 						$content .= "<td>" . $played_count . "</td>";
+						$content .= "<td> </td>";
 					$content .= "</tr>";
 				}
 			$content .= "</tbody>";
@@ -103,9 +105,10 @@
 		$content .= "<table class='table table-striped'>";
 			$content .= "<thead>";
 				$content .= "<tr>";
-					$content .= "<th class='col-sm-3 rank'>Place</th>";
-					$content .= "<th class='col-sm-8'>Artist</th>";
-					$content .= "<th class='col-sm-3'>Count</th>";
+					$content .= "<th class='col-sm-1 rank'>Place</th>";
+					$content .= "<th class='col-sm-3'>Artist</th>";
+					$content .= "<th class='col-sm-1'>Count</th>";
+					$content .= "<th class='col-sm-7'> </th>";
 				$content .= "</tr>";
 			$content .= "</thead>";
 			
@@ -130,6 +133,7 @@
 						$content .= "<td class='rank'>" . $rank . "</td>";
 						$content .= "<td><a href='artist.php?id=" . $artist["ArtistId"] . "'>" . $artist["ArtistName"] . "</a></td>";
 						$content .= "<td>" . $played_count . "</td>";
+						$content .= "<td> </td>";
 					$content .= "</tr>";
 				}
 			$content .= "</tbody>";
@@ -150,10 +154,11 @@
 		$content .= "<table class='table table-striped'>";
 			$content .= "<thead>";
 				$content .= "<tr>";
-					$content .= "<th class='col-sm-2 rank'>Place</th>";
-					$content .= "<th class='col-sm-4'>Record</th>";
-					$content .= "<th class='col-sm-4'>Artist</th>";
-					$content .= "<th class='col-sm-2'>Count</th>";
+					$content .= "<th class='col-sm-1 rank'>Place</th>";
+					$content .= "<th class='col-sm-3'>Record</th>";
+					$content .= "<th class='col-sm-3'>Artist</th>";
+					$content .= "<th class='col-sm-1'>Count</th>";
+					$content .= "<th class='col-sm-4'> </th>";
 				$content .= "</tr>";
 			$content .= "</thead>";
 			
@@ -179,6 +184,7 @@
 						$content .= "<td><a href='record.php?id=" . $record["RecordId"] . "'>" . $record["RecordName"] . "</a></td>";
 						$content .= "<td><a href='artist.php?id=" . $record["ArtistId"] . "'>" . $record["ArtistName"] . "</a></td>";
 						$content .= "<td>" . $played_count . "</td>";
+						$content .= "<td> </td>";
 					$content .= "</tr>";
 				}
 			$content .= "</tbody>";
