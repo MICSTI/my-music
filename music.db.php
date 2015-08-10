@@ -2893,6 +2893,7 @@
 			
 			$sql = "SELECT
 						devid,
+						actid,
 						timestamp
 					FROM
 						played

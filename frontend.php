@@ -596,7 +596,7 @@
 					$html .= "<tbody>";
 						foreach ($activities as $activity) {							
 							$html .= "<tr>";
-								$html .= "<td><span class='label label-big label-" . $activity["ActivityColor"] . "'>#" . $activity["ActivityName"] . "</span></td>";
+								$html .= "<td>" . getActivitySpan($activity) . "</td>";
 								$html .= "<td>" . $activity["ActivityName"] . "</td>";
 								$html .= "<td><a href='#' role='button' class='btn btn-default' onclick=\"crudModal('" . $this->SAVE_ACTIVITY . "', '" . $activity["ActivityId"] . "')\"><span class='glyphicon glyphicon-pencil'></span></td>";
 							$html .= "</tr>";

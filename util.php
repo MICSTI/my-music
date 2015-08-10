@@ -94,6 +94,10 @@
 		}
 	}
 	
+	function getActivitySpan($activity) {
+		return "<span class='label label-big label-" . $activity["ActivityColor"] . "'>#" . $activity["ActivityName"] . "</span>";
+	}
+	
 	/**
 		Returns a span containing the rating displayed in stars and half-stars
 	*/

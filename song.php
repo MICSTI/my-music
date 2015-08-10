@@ -78,18 +78,27 @@
 								$html .= "<tr>";
 									$html .= "<th class='col-sm-1'>Date</th>";
 									$html .= "<th class='col-sm-1'>Time</th>";
-									$html .= "<th class='col-sm-5'>Device</th>";
-									$html .= "<th class='col-sm-5'>Activity</th>";
+									$html .= "<th class='col-sm-1'>Device</th>";
+									$html .= "<th class='col-sm-2'>Activity</th>";
+									$html .= "<th class='col-sm-7'> </th>";
 								$html .= "</tr>";
 							$html .= "</thead>";
 							
 							$html .= "<tbody>";
 								foreach ($history as $played) {
+									$device = $mc->getMDB()->getDevice($played["devid"]);
+									$device_icon = $mc->getMDB()->getIcon($device["DeviceDeviceTypeIconId"]);
+									$device_string = getIconRef($device_icon, "", $device["DeviceName"]);
+									
+									$activity = $mc->getMDB()->getActivity($played["actid"]);
+									$activity_string = getActivitySpan($activity);
+									
 									$html .= "<tr>";
 										$html .= "<td>" . getDateFromTimestamp($played["timestamp"]) . "</td>";
 										$html .= "<td>" . getTimeFromTimestamp($played["timestamp"]) . "</td>";
-										$html .= "<td>" . "</td>";
-										$html .= "<td>" . "</td>";
+										$html .= "<td>" . $device_string . "</td>";
+										$html .= "<td>" . $activity_string . "</td>";
+										$html .= "<td> </td>";
 									$html .= "</tr>";
 								}
 							$html .= "</tbody>";
