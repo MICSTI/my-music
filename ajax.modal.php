@@ -790,7 +790,9 @@
 						
 						$body .= "<div class='panel panel-default' id='mm-link-suggestions'>";
 							$body .= "<div class='panel-heading bold'>Link suggestions</div>";
-								if (count($candidates) > 0) {
+							
+							$body .= "<div class='panel-body'>";
+									if (count($candidates) > 0) {
 									foreach ($candidates as $candidate) {
 										$candidate_song = $mc->getMDB()->getSong($candidate);
 										
@@ -834,6 +836,13 @@
 								} else {
 									$body .= "We couldn't find any link suggestions for this song. You can add a song yourself below.";
 								}
+							$body .= "</div>";
+						$body .= "</div>";
+						
+						// "add your own" panel
+						$body .= "<div class='panel panel-default' id='mm-link-suggestions'>";
+							$body .= "<div class='panel-heading bold'>Add song manually</div>";
+							
 							$body .= "<div class='panel-body'>";
 								
 							$body .= "</div>";

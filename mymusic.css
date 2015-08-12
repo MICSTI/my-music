@@ -84,10 +84,6 @@ a {
 	margin-top: 12px;
 }
 
-.mm-link-suggestion  {
-	padding-top: 10px;
-}
-
 /* --- datepicker z-index (otherwise it is not visible in modal window) --- */
 .datepicker {
 	z-index: 1150 !important;
