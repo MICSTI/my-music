@@ -247,6 +247,7 @@
 		*/
 		public function getSong ($id) {
 			$sql = "SELECT
+						so.id AS 'SongId',
 						so.name AS 'SongName',
 						ar.id AS 'ArtistId',
 						ar.name AS 'ArtistName',
