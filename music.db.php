@@ -2566,56 +2566,70 @@
 		}
 		
 		/**
-			Confirms a MediaMonkey link candidate.
-			As a result, the child song is removed from the database and the MM link is added to the database.
-			With the second (boolean) parameter you can choose to keep the child song meta info and delete the parent song's info.
+			Adds a MediaMonkey link connection.
+			The child will be removed from this database, the played history is added to the parent.
 		*/
-		public function confirmMMLinkCandidate ($mcid, $push_child_meta_info = false) {
-			// strip input from code tags
-			$mcid = strip_tags($mcid);
+		public function addMMLinkConnection ($parent_id, $child_id) {
+			// add connection (necessary if there's an upload from an old local database that has the old sid)
+			$added = date("Y-m-d");
 			
-			// Determine which song's info should be stored
-			$candidate = $this->getMMLinkCandidate($mcid);
-			
-			$sid = $candidate['sid'];
-			$sid_candidate = $candidate['sid_candidate'];
-			
-			if ($push_child_meta_info) {
-				$parent = $sid_candidate;
-				$child = $sid;
-			} else {
-				$parent = $sid;
-				$child = $sid_candidate;
-			}
-			
-			// Correct MM link entry
-			$sql = "UPDATE mmlink SET sid = :mlc_parent WHERE sid = :mlc_child";
+			$sql = "INSERT INTO song_connection (parent_id, child_id, added) VALUES (:parent_id, :child_id, :added)";
 			$query = $this->db->prepare($sql);
-			$success_1 = $query->execute( array(':mlc_parent' => $parent, ':mlc_child' => $child ) );
+			$exec_connection = $query->execute( array(':parent_id' => $parent_id, ':child_id' => $child_id, ':added' => $added) );
 			
-			// Delete redundant song entry
-			$sql_del = "DELETE FROM songs WHERE id = :id";
-			$query_del = $this->db->prepare($sql_del);
-			$success_2 = $query_del->execute( array(':id' => $child) );
-			
-			// Delete all MM link candidate entries for this song id
-			$sql_del2 = "DELETE FROM mmlink_candidates WHERE sid_candidate = :sid_candidate";
-			$query_del2 = $this->db->prepare($sql_del2);
-			$success_3 = $query_del2->execute( array(':sid_candidate' => $sid_candidate) );
-			
-			if ($success_1 AND $success_2 AND $success_3) {
-				if ($this->logging) {
-					$this->addLog(__FUNCTION__, "success", "confirmed MM link candidate with id " . $mcid . ", new MM link between songs with id " . $parent . " (parent) and " . $child . " (child) established");
-				}
-			
-				return true;
+			if ($query->rowCount() > 0 OR $exec_connection !== false) {
+				$success_connection = true;
 			} else {
-				if ($this->logging) {
-					$this->addLog(__FUNCTION__, "error", "tried to establish new MM link for candidate with id " . $mcid . " for songs with id " . $parent . " (parent) and " . $child . " (child).\n" . implode(" / ", $query->errorInfo()));
-				}
-			
-				return false;
+				$success_connection = false;
 			}
+			
+			// correct mmlink
+			$sql = "UPDATE mmlink SET sid = :parent_id WHERE sid = :child_id";
+			$query = $this->db->prepare($sql);
+			$exec_mmlink = $query->execute( array(':parent_id' => $parent_id, ':child_id' => $child_id) );
+			
+			if ($query->rowCount() > 0 OR $exec_mmlink !== false) {
+				$success_mmlink = true;
+			} else {
+				$success_mmlink = false;
+			}
+			
+			// correct played
+			$sql = "UPDATE played SET sid = :parent_id WHERE sid = :child_id";
+			$query = $this->db->prepare($sql);
+			$exec_played = $query->execute( array(':parent_id' => $parent_id, ':child_id' => $child_id) );
+			
+			if ($query->rowCount() > 0 OR $exec_played !== false) {
+				$success_played = true;
+			} else {
+				$success_played = false;
+			}
+		
+			// add comment to parent
+			$comment = "merged song with id " . $child_id;
+			
+			$sql = "UPDATE songs SET comment = :comment WHERE id = :parent_id";
+			$query = $this->db->prepare($sql);
+			$exec_comment = $query->execute( array(':comment' => $comment, ':parent_id' => $parent_id) );
+			
+			if ($query->rowCount() > 0 OR $exec_comment !== false) {
+				$success_comment = true;
+			} else {
+				$success_comment = false;
+			}
+			
+			// delete child
+			$sql = "DELETE FROM songs WHERE id = :child_id";
+			$query = $this->db->prepare($sql);
+			$exec_delete = $query->execute( array(':child_id' => $child_id) );
+			
+			if ($query->rowCount() > 0 OR $exec_delete !== false) {
+				$success_delete = true;
+			} else {
+				$success_delete = false;
+			}
+			
+			return $success_connection AND $success_mmlink AND $success_played AND $success_comment AND $success_delete;
 		}
 		
 		/**

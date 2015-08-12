@@ -79,6 +79,12 @@ TABLE logs
 	action		VARCHAR
 	status		VARCHAR
 	description	VARCHAR
+	
+TABLE song_connection
+	id			INT
+	parent_id	INT
+	child_id	INT
+	added		DATE
 
 
 CREATE VIEW SongsView AS
