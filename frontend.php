@@ -239,7 +239,7 @@
 			}
 			
 			// save button
-			if (in_array("cancel", $button_array)) {
+			if (in_array("save", $button_array)) {
 				$html .= "<button type='button' class='btn btn-primary modal-action-save'>Save</button>";
 			}
 			
