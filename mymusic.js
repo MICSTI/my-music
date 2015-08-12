@@ -606,7 +606,7 @@ $(document).ready( function () {
 					addPlayedSongInputControl(data.id);
 					
 					// set focus to the last song text input field
-					$("#" + data.id).focus();
+					$(".add-played-song-time").last().focus();
 				});
 			});
 		}
