@@ -85,7 +85,7 @@ function crudModal(_action, _id, _params) {
 			
 			// attach save button handler
 			modal.find(".modal-action-save").on("click", function() {
-				persistCrud(content.save, _id, $("#" + content.form_name).serialize(), content.tab_name);
+				persistCrud(content.save, _id, $("#" + con-tent.form_name).serialize(), content.tab_name);
 			});
 			
 			// show modal
@@ -385,6 +385,10 @@ function reorderRecordTypes() {
 			console.log("persistCrud", error);
 		});
 	});
+}
+
+function addMMLinkConnection(_parent_id, _child_id) {
+	// call ajax.db.php
 }
 
 function addPlayedSongAddAutoComplete() {

@@ -827,7 +827,7 @@
 											$body .= "</div>";
 											
 											$body .= "<div class='col-xs-3'>";
-												$body .= "<button type='button' class='btn btn-success'>Add link</button>";
+												$body .= "<button type='button' class='btn btn-success' onclick=\"addMMLinkConnection('" . $song_details["SongId"] . "', '" . $candidate_song["SongId"] . "')\">Add link</button>";
 											$body .= "</div>";
 										$body .= "</div>";
 									}
