@@ -860,4 +860,13 @@
 			
 			return $html;
 		}
+		
+		/**
+			Returns the right class for the MediaMonkey link confirmation page.
+			The song that has a later added date gets the success class, all other one the warning class.
+			The dates have to be passed as UNIX timestamps.
+		*/
+		public function getMMLinkConfirmButtonClass($parent_added, $child_added) {
+			return ($parent_added > $child_added) ? "success" : "danger";
+		}
 	}

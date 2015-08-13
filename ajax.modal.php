@@ -884,7 +884,7 @@
 												$body .= "</div>";
 											$body .= "</div>";
 											
-											$body .= "<div class='col-xs-4'>";
+											$body .= "<div class='col-xs-5'>";
 												// Date added
 												$candidate_added = new MysqlDate($mc->getMDB()->getSongAddedDate($candidate_song["SongId"]));
 												
@@ -898,8 +898,11 @@
 												$body .= "</div>";
 											$body .= "</div>";
 											
-											$body .= "<div class='col-xs-3'>";
-												$body .= "<button type='button' class='btn btn-success' onclick=\"addMMLinkConnection('" . $song_details["SongId"] . "', '" . $candidate_song["SongId"] . "')\">Add link</button>";
+											$body .= "<div class='col-xs-2'>";
+												// get right class for button
+												$button_class = $mc->getFrontend()->getMMLinkConfirmButtonClass($date_added->convert2UnixTimestamp(), $candidate_added->convert2UnixTimestamp());
+											
+												$body .= "<button type='button' class='btn btn-" . $button_class . "' onclick=\"addMMLinkConnection('" . $song_details["SongId"] . "', '" . $candidate_song["SongId"] . "')\">Add link</button>";
 											$body .= "</div>";
 										$body .= "</div>";
 									}
