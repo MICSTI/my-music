@@ -1,6 +1,9 @@
 <?php
 	include('resources.php');
 	
+	// Action ids
+	$SAVE_SONG_MMLINK = "5r8G1TS4";
+	
 	$html = "";
 	
 	if ($_GET) {
@@ -49,7 +52,7 @@
 						$html .= "<div class='col-sm-9'>" . millisecondsToMinutes($song_info["SongLength"]) . " min</div>";
 					$html .= "</div>";
 					
-					$html .= "<div class='song-general-info col-sm-8'>";
+					$html .= "<div class='song-general-info col-sm-7'>";
 						$html .= "<div class='col-sm-3 bold'>Added to library:</div>";
 						$html .= "<div class='col-sm-9'>" . $added_date->convert2AustrianDate() . "</div>";
 						
@@ -64,6 +67,11 @@
 						$html .= "<div class='col-sm-3 bold'>Last time played:</div>";
 						$html .= "<div class='col-sm-9'>" . $last_played . "</div>";
 					$html .= "</div>";
+					
+					// song mm link button
+					$html .= "<div class='song-general-info col-sm-1'>";
+						$html .= "<button type='button' id='btn-song-mmlink-edit' class='btn btn-default pull-right' onclick=\"crudModal('" . $SAVE_SONG_MMLINK . "', '" . $song_info["SongId"] . "')\"><span class='glyphicon glyphicon-link'></span></button>";
+					$html .= "</div>";	
 				$html .= "</div>";
 			$html .= "</div>";
 

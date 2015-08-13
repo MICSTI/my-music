@@ -76,6 +76,14 @@ a {
 	display: none;
 }
 
+#song-mm-link-data .form-group {
+    margin-bottom: 0px;
+}
+
+#mm-link-suggestions {
+	margin-top: 12px;
+}
+
 /* --- datepicker z-index (otherwise it is not visible in modal window) --- */
 .datepicker {
 	z-index: 1150 !important;
