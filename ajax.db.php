@@ -21,8 +21,23 @@
 				// put info into database
 				$success = $mc->getMDB()->addPlayedSongs($date, $device_id, $activity_id, $songs);
 				
-				$response["success"] = true;
+				$response["success"] = $success;
 				
+				break;
+				
+			// add MM link
+			case "add_mm_link":
+				$json_data = json_decode($data, true);
+				
+				// get info from JSON data
+				$parent_id = $json_data["parent_id"];
+				$child_id = $json_data["child_id"];
+				
+				// put info into database
+				$success = $mc->getMDB()->addMMLinkConnection($parent_id, $child_id);
+				
+				$response["success"] = $success;
+			
 				break;
 				
 			default:

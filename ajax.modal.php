@@ -902,7 +902,7 @@
 												// get right class for button
 												$button_class = $mc->getFrontend()->getMMLinkConfirmButtonClass($date_added->convert2UnixTimestamp(), $candidate_added->convert2UnixTimestamp());
 											
-												$body .= "<button type='button' class='btn btn-" . $button_class . "' onclick=\"addMMLinkConnection('" . $song_details["SongId"] . "', '" . $candidate_song["SongId"] . "')\">Add link</button>";
+												$body .= "<button type='button' class='btn btn-" . $button_class . "' onclick=\"performMMLinkSafeCheck(this, '" . $song_details["SongId"] . "', '" . $candidate_song["SongId"] . "')\">Add link</button>";
 											$body .= "</div>";
 										$body .= "</div>";
 									}

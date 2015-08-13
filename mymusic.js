@@ -409,12 +409,55 @@ function reorderRecordTypes() {
 	});
 }
 
-function addMMLinkConnection(_parent_id, _child_id) {
-	// call ajax.db.php
+function performMMLinkSafeCheck(elem, _parent_id, _child_id) {
+	// check if button has danger class
+	if ($(elem).hasClass("btn-danger")) {
+		swal({
+		  title: "MediaMonkey link connection",
+		  text: "Are you sure that this link connection is correct?",
+		  type: "warning",
+		  showCancelButton: true,
+		  confirmButtonClass: "btn-danger",
+		  confirmButtonText: "Yes, link it!",
+		  closeOnConfirm: false
+		},
+		function(){
+		  addMMLinkConnection(_parent_id, _child_id);
+		});
+	} else {
+		addMMLinkConnection(_parent_id, _child_id);
+	}
 }
 
-function addPlayedSongAddAutoComplete() {
+function addMMLinkConnection(_parent_id, _child_id) {
+	swal("MediaMonkey link connection", "Link connection is being set...", "success");
 	
+	var _data = {
+		parent_id: _parent_id,
+		child_id: _child_id
+	};
+	
+	$.ajax( {
+		method: "POST",
+		url: "ajax.db.php",
+		data: {
+			action: "add_mm_link",
+			data: JSON.stringify(_data)
+		}
+	}).done(function(resp) {
+		var response = JSON.parse(resp);
+		
+		if (response.success) {
+			// go to new song page
+			window.location.href = "song.php?id=" + _parent_id;
+		} else {
+			console.log("Error", response.message);
+			globalNotify("MediaMonkey link connection could not be established", "error");
+		}
+	}).fail(function(error) {
+		// log error
+		console.log("ajax.db.php", error);
+	});
 }
 
 $(document).ready( function () {
