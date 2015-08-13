@@ -81,6 +81,12 @@ function crudModal(_action, _id, _params) {
 		addTooltips();
 	});
 	
+	// fires as the modal is being hidden
+	modal.on("hidden.bs.modal", function() {
+		// close all datepickers on this modal
+		$(".modal-dialog .date-picker").datepicker("hide");
+	});
+	
 	$.ajax( {
 		method: "GET",
 		url: "ajax.modal.php",
