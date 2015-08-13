@@ -12,6 +12,7 @@
 								"external/flags/css/flag-icon.min.css",
 								"external/jquery/jquery-ui.min.css",
 								"external/bootstrap-select/bootstrap-select.min.css",
+								"external/sweet-alert/sweet-alert.css",
 								"auto_complete.css",
 								"datepicker.css",
 								"mymusic.css"
@@ -25,6 +26,7 @@
 								"external/bootstrap-select/bootstrap-select.min.js",
 								"external/notifiy/notify-combined.min.js",
 								"external/jquery/jquery.hotkeys.js",
+								"external/sweet-alert/sweet-alert.min.js",
 								"util.js",
 								"auto_complete.js",
 								"bootstrap-datepicker.js",
