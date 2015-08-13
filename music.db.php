@@ -861,9 +861,9 @@
 			
 			$sql = "UPDATE songs SET name=:name, aid=:aid, rid=:rid, length=:length, bitrate=:bitrate, discno=:discno, trackno=:trackno, rating=:rating WHERE id = :id";
 			$query = $this->db->prepare($sql);
-			$query->execute( array(':id' => $id, ':name' => $name, ':aid' => $aid, ':rid' => $rid, ':length' => $length, ':bitrate' => $bitrate, ':discno' => $discno, ':trackno' => $trackno, ':rating' => $rating) );
+			$success = $query->execute( array(':id' => $id, ':name' => $name, ':aid' => $aid, ':rid' => $rid, ':length' => $length, ':bitrate' => $bitrate, ':discno' => $discno, ':trackno' => $trackno, ':rating' => $rating) );
 			
-			if ($query->rowCount() > 0) {
+			if ($query->rowCount() > 0 OR $success !== false) {
 				// Mobile database entry
 				$mobile_sql = "UPDATE songs SET name = :name, aid = :aid, rid = :rid, length = :length, discno = :discno, trackno = :trackno, rating = :rating WHERE _id = :id";
 				$mobile_query = $this->mobile_db->prepare($mobile_sql);
