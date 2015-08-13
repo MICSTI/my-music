@@ -1920,6 +1920,30 @@
 		}
 		
 		/**
+			******* ATTENTION: This method is not to be used as of version 1.0 ******
+			* It only provides a hotfix method to correct a bug introduced in       *
+			* version 0.1, where the song added dates may not have been imported    *
+			* correctly															    *
+			*************************************************************************
+			
+			Returns the MediaMonkey id for the specified song id.
+			If no MM id is found, false is returned
+		*/
+		public function getMMIdfromSid ($sid) {
+			$sql = "SELECT mmid FROM mmlink WHERE sid = :sid";
+			$query = $this->db->prepare($sql);
+			$query->execute( array(':sid' => $sid) );
+			
+			if ($query->rowCount() > 0) {
+				$fetched = $query->fetch();
+			
+				return $fetched['mmid'];
+			} else {
+				return false;
+			}
+		}
+		
+		/**
 			Returns an array containing all MM links for the specified song id.
 			If no MM links exist for the song id, an empty array is returned.
 		*/
@@ -3224,6 +3248,24 @@
 				return $query->fetchAll();
 			} else {
 				return null;
+			}
+		}
+		
+		/**
+			Method to correct a song added date.
+			All songs in the array are corrected.
+			In the array there has to be one key "mmid" (integer) and one key "added" (MySql date).
+		*/
+		public function correctSongAddedDate($songs) {
+			if (count($songs) > 0) {
+				foreach ($songs as $song) {
+					// convert MM id to sid
+					$sid = $this->getSidFromMMId($song["mmid"]);
+					
+					$sql = "UPDATE mmlink SET added = :added WHERE sid = :sid";
+					$query = $this->db->prepare($sql);
+					$query->execute( array(':added' => $song["added"], ':sid' => $sid) );
+				}
 			}
 		}
 		

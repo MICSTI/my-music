@@ -348,6 +348,27 @@
 			}
 		}
 		
+		/**
+			Correct the song added dates for either one specific song or all songs in the database.
+			If the id is omitted or lower than zero, all songs are corrected.
+		*/
+		public function correctSongAddedDate($id = -1) {
+			if ($id > 0) {
+				// single mode
+				
+				// get matching mmid
+				$mmid = $this->getMDB()->getMMIdfromSid($id);
+				
+				$songs = $this->getMMDB()->correctSongAddedDate($mmid);
+			} else {
+				// all mode
+				
+				$songs = $this->getMMDB()->correctSongAddedDate();
+			}
+			
+			$this->getMDB()->correctSongAddedDate($songs);
+		}
+		
 		public function startsWith ($haystack, $needle) {
 			return $needle === "" || strpos($haystack, $needle) === 0;
 		}

@@ -421,6 +421,31 @@
 			return $play;
 		}
 		
+		public function correctSongAddedDate($id = -1) {
+			$songs = array();
+			
+			if ($id > 0) {
+				// single mode
+				$result = $this->query("SELECT ID, DateAdded FROM songs WHERE ID = " . $id);
+			} else {
+				// all mode
+				$result = $this->query("SELECT ID, DateAdded FROM songs");
+			}
+			
+			while ($song_result = $result->fetchArray()) {
+				$song = array();
+				
+				$song["mmid"] = $song_result["ID"];
+				
+				$date_added = new MMDate($song_result["DateAdded"]);
+				$song["added"] = $date_added->convert2MysqlDate();
+				
+				array_push($songs, $song);
+			}
+			
+			return $songs;
+		}
+		
 		private function convertMMDateTime ($datetime) {
 			$day = floor(abs($datetime));
 		
