@@ -202,14 +202,18 @@
 			
 			$seconds = ($minutes - $m) * 60;
 			$s = floor($seconds);
+			
+			$temp = $this->diff_date;
 		
-			return $this->diff_date->add(new DateInterval('P' . $d . 'DT' . $h . 'H' . $m . 'M' . $s . 'S'));
+			return $temp->add(new DateInterval('P' . $d . 'DT' . $h . 'H' . $m . 'M' . $s . 'S'));
 		}
 		
 		private function calcDate () {
 			$d = floor($this->mmdate) - 2;
+			
+			$temp = $this->diff_date;
 		
-			return $this->diff_date->add(new DateInterval('P' . $d . 'D'));
+			return $temp->add(new DateInterval('P' . $d . 'D'));
 		}
 		
 		public function setMMDate ($mmdate) {
