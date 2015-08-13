@@ -228,6 +228,10 @@
 				$added = strip_tags($added);
 				$rating = strip_tags($rating);
 				
+				// Convert MM date
+				$added_mm = new MMDate($added);
+				$added_mysql = $added_mm->convert2MysqlDate();
+				
 				// Get artist and record ids (by push)
 				$aid = $this->music_db->pushArtist($artist);
 				$rid = $this->music_db->pushRecord($record, $aid);
@@ -253,10 +257,6 @@
 				} else {
 					$this->music_db->updateSong($sid, $name, $aid, $rid, $length, $bitrate, $discno, $trackno, $rating);
 				}
-				
-				// Convert MM date
-				$added_mm = new MMDate($added);
-				$added_mysql = $added_mm->convert2MysqlDateTime();
 				
 				// Assign search tags
 				/*$tags = array();
