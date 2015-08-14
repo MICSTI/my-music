@@ -907,20 +907,10 @@
 										$body .= "</div>";
 									}
 								} else {
-									$body .= "We couldn't find any link suggestions for this song. You can add a song yourself below.";
+									$body .= "We couldn't find any link suggestions for this song.";
 								}
 							$body .= "</div>";
 						$body .= "</div>";
-						
-						// "add your own" panel
-						$body .= "<div class='panel panel-default' id='mm-link-suggestions'>";
-							$body .= "<div class='panel-heading bold'>Add song manually</div>";
-							
-							$body .= "<div class='panel-body'>";
-								
-							$body .= "</div>";
-						$body .= "</div>";
-						
 					$data["body"] = $body;
 					
 					// footer
