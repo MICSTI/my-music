@@ -634,6 +634,38 @@ $(document).ready( function () {
 				
 				// init datepicker
 				initDatepicker();
+				
+				// init admin search fields
+				$(".admin-search").each(function(idx, item) {
+					var adminSearch = new AdminSearch();
+					
+					adminSearchOptions = {
+						id: item.id,
+						url: "search.php",
+						categories: ["songs"],
+						itemDisplay: function(_category, _item, _choiceClass) {
+							switch (_category) {
+								case "songs":
+									return "<div class='" + _choiceClass + "' data-category='" + _category + "' data-id='" + _item.SongId + "' data-artist='" + _item.ArtistName + "' data-song='" + _item.SongName + "' data-record='" + _item.RecordName + "'>" +
+												"<div class='search_artist_name'>" + _item.ArtistName + "</div>" +
+												"<div>" + _item.SongName + "</div>" +
+												"<div class='search_record_name'>" + _item.RecordName + "</div>" +
+											"</div>";
+									
+									break;
+									
+								default:
+									return "";
+									break;
+							}
+						}
+					};
+					
+					adminSearch.init(adminSearchOptions);
+				});
+				
+				// assign focus to autofocus element and set cursor to the end of the input element
+				$("#administration-content .autofocus").first().focus().putCursorAtEnd();
 			}).fail(function(error) {
 				// log error
 				console.log("ajax.administration.php", error);

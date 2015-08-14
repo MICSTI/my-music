@@ -29,6 +29,7 @@
 								"external/sweet-alert/sweet-alert.min.js",
 								"util.js",
 								"auto_complete.js",
+								"admin_search.js",
 								"bootstrap-datepicker.js",
 								"mymusic.js"
 							);
@@ -847,12 +848,12 @@
 			
 			// Top bar with search field
 			$html .= "<div class='row'>";
-				$html .= "<input type='text' id='song-admin-search' class='autofocus' />";
+				$html .= "<input type='text' id='admin-search-song' class='form-control admin-search autofocus' />";
 			$html .= "</div>";
 			
 			// result div
 			$html .= "<div class='row'>";
-				
+				$html .= "<div id='admin-search-song_result'></div>";
 			$html .= "</div>";
 			
 			return $html;

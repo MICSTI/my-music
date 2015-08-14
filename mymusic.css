@@ -84,6 +84,21 @@ a {
 	margin-top: 12px;
 }
 
+/* ------- Admin search ------- */
+.as_result {
+
+}
+
+.as_choice {
+	padding: 2px 4px;
+	border-bottom: 1px solid lightskyblue;
+}
+
+.as_choice:last-child {
+	border-bottom: none !important;
+}
+/* ---------------------------- */
+
 /* --- datepicker z-index (otherwise it is not visible in modal window) --- */
 .datepicker {
 	z-index: 1150 !important;
