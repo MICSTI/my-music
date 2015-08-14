@@ -41,6 +41,10 @@
 		return $minutes . ":" . $seconds;
 	}
 	
+	function formatBitrate($bitrate) {
+		return floor($bitrate / 1000);
+	}
+	
 	function getMostRecentPlayedText($most_recent) {
 		$text = "";
 		

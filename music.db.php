@@ -254,7 +254,11 @@
 						re.id AS 'RecordId',
 						re.name AS 'RecordName',
 						so.length AS 'SongLength',
-						so.rating AS 'SongRating'
+						so.length AS 'SongBitrate',
+						so.rating AS 'SongRating',
+						so.discno AS 'SongDiscNo',
+						so.trackno AS 'SongTrackNo',
+						so.comment AS 'SongComment'
 					FROM
 						songs so INNER JOIN
 						artists ar ON ar.id = so.aid INNER JOIN
@@ -806,7 +810,7 @@
 			Adds a new song to the database.
 			If insert was successful, the newly assigned id is returned, otherwise false.
 		*/
-		public function addSong ($name, $aid, $rid, $length, $bitrate, $discno, $trackno, $rating) {
+		public function addSong ($name, $aid, $rid, $length, $bitrate, $discno, $trackno, $rating, $comment = "") {
 			// strip input from code tags
 			$name = strip_tags($name);
 			$aid = strip_tags($aid);
@@ -816,11 +820,12 @@
 			$discno = strip_tags($discno);
 			$trackno = strip_tags($trackno);
 			$rating = strip_tags($rating);
+			$comment = strip_tags($comment);
 			
 			// Put song into database
-			$sql = "INSERT INTO songs (name, aid, rid, length, bitrate, discno, trackno, rating) VALUES (:name, :aid, :rid, :length, :bitrate, :discno, :trackno, :rating)";
+			$sql = "INSERT INTO songs (name, aid, rid, length, bitrate, discno, trackno, rating, comment) VALUES (:name, :aid, :rid, :length, :bitrate, :discno, :trackno, :rating, :comment)";
 			$query = $this->db->prepare($sql);
-			$query->execute( array(':name' => $name, ':aid' => $aid, ':rid' => $rid, ':length' => $length, ':bitrate' => $bitrate, ':discno' => $discno, ':trackno' => $trackno, ':rating' => $rating) );
+			$query->execute( array(':name' => $name, ':aid' => $aid, ':rid' => $rid, ':length' => $length, ':bitrate' => $bitrate, ':discno' => $discno, ':trackno' => $trackno, ':rating' => $rating, ':comment' => $comment) );
 			
 			if ($query->rowCount() > 0) {
 				$inserted = $this->db->lastInsertId();

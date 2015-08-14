@@ -80,15 +80,19 @@ a {
     margin-bottom: 0px;
 }
 
+#admin-song-static .form-group {
+    margin-bottom: 0px;
+}
+
+#admin-song-static .form-group:last-child {
+	margin-bottom: 15px !important;
+}
+
 #mm-link-suggestions {
 	margin-top: 12px;
 }
 
 /* ------- Admin search ------- */
-.as_result {
-
-}
-
 .as_choice {
 	padding: 2px 4px;
 	border-bottom: 1px solid lightskyblue;

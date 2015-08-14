@@ -911,19 +911,152 @@
 								}
 							$body .= "</div>";
 						$body .= "</div>";
+					$body .= "</form>";
+						
 					$data["body"] = $body;
 					
 					// footer
 					$footer = $mc->getFrontend()->getModalButtons(array("cancel"));
 					$data["footer"] = $footer;
-					
-					// save method id
-					//$data["save"] = "CJqGfoAL";
 				} else {
 					$data["status"] = "error";
 					$data["message"] = "No valid id was passed";
 				}
 				
+				break;
+				
+			// song administration
+			case "57bB21kN":
+				// get data if edit
+				if ($id > 0) {
+					$song = $mc->getMDB()->getSong($id);
+					
+					$added = new MysqlDate($mc->getMDB()->getSongAddedDate($id));
+					$added_date = $added->convert2AustrianDate();
+				} else {
+					$song = array();
+					
+					$song["SongName"] = "";
+					$song["ArtistName"] = "";
+					$song["RecordName"] = "";
+					$song["SongLength"] = "";
+					$song["SongRating"] = "";
+					$song["SongComment"] = "";
+					$song["SongBitrate"] = "";
+					
+					$added_date = "";
+				}	
+					
+				// form name (for processing data in Javascript)
+				$form_name = "admin-song";
+				$data["form_name"] = $form_name;
+			
+				// title
+				$title = "Edit song";
+				$data["title"] = $title;
+				
+				// body
+				$body = "";
+				
+				$body .= "<form class='form-horizontal' id='" . $form_name . "'>";
+					// song title
+					$body .= "<div class='form-group'>";
+						$body .= "<label for='song-admin-song-title' class='control-label col-xs-2'>Title</label>";
+						$body .= "<div class='col-xs-10'>";
+							$body .= "<input type='text' class='form-control autofocus' id='song-admin-song-title' name='song-admin-song-title' placeholder='Song title' value='" . $song["SongName"] . "' />";
+						$body .= "</div>";
+					$body .= "</div>";
+					
+					// artist name
+					$body .= "<div class='form-group'>";
+						$body .= "<label for='song-admin-artist-name' class='control-label col-xs-2'>Artist</label>";
+						$body .= "<div class='col-xs-10'>";
+							$body .= "<input type='text' class='form-control' id='song-admin-artist-name' name='song-admin-artist-name' placeholder='Artist name' value='" . $song["ArtistName"] . "' />";
+						$body .= "</div>";
+					$body .= "</div>";
+					
+					// record name
+					$body .= "<div class='form-group'>";
+						$body .= "<label for='song-admin-record-name' class='control-label col-xs-2'>Record</label>";
+						$body .= "<div class='col-xs-10'>";
+							$body .= "<input type='text' class='form-control' id='song-admin-record-name' name='song-admin-record-name' placeholder='Record name' value='" . $song["RecordName"] . "' />";
+						$body .= "</div>";
+					$body .= "</div>";
+					
+					$body .= "<div id='" . $form_name . "-static'>";
+						// length (static)
+						$body .= "<div class='form-group'>";
+							$body .= "<label for='song-admin-song-length' class='control-label col-xs-2'>Length</label>";
+							$body .= "<div class='col-xs-10'>";
+								$body .= "<p class='form-control-static' id='song-admin-song-length'>" . millisecondsToMinutes($song["SongLength"]) . " min</p>";
+							$body .= "</div>";
+						$body .= "</div>";
+						
+						// bitrate (static)
+						$body .= "<div class='form-group'>";
+							$body .= "<label for='song-admin-song-bitrate' class='control-label col-xs-2'>Bitrate</label>";
+							$body .= "<div class='col-xs-10'>";
+								$body .= "<p class='form-control-static' id='song-admin-song-bitrate'>" . formatBitrate($song["SongBitrate"]) . " kbps</p>";
+							$body .= "</div>";
+						$body .= "</div>";
+						
+						// discno (static)
+						$body .= "<div class='form-group'>";
+							$body .= "<label for='song-admin-song-discno' class='control-label col-xs-2'>Disc no</label>";
+							$body .= "<div class='col-xs-10'>";
+								$body .= "<p class='form-control-static' id='song-admin-song-discno'>" . $song["SongDiscNo"] . "</p>";
+							$body .= "</div>";
+						$body .= "</div>";
+						
+						// trackno (static)
+						$body .= "<div class='form-group'>";
+							$body .= "<label for='song-admin-song-trackno' class='control-label col-xs-2'>Track no</label>";
+							$body .= "<div class='col-xs-10'>";
+								$body .= "<p class='form-control-static' id='song-admin-song-trackno'>" . $song["SongTrackNo"] . "</p>";
+							$body .= "</div>";
+						$body .= "</div>";
+						
+						// rating (static)
+						$body .= "<div class='form-group'>";
+							$body .= "<label for='song-admin-song-rating' class='control-label col-xs-2'>Rating</label>";
+							$body .= "<div class='col-xs-10'>";
+								$body .= "<p class='form-control-static' id='song-admin-song-rating'>" . getStarsRating($song["SongRating"]) . "</p>";
+							$body .= "</div>";
+						$body .= "</div>";
+						
+						// added date (static)
+						if ($added_date != "") {
+							$body .= "<div class='form-group'>";
+								$body .= "<label for='song-admin-song-added' class='control-label col-xs-2'>Added on</label>";
+								$body .= "<div class='col-xs-10'>";
+									$body .= "<p class='form-control-static' id='song-admin-song-added'>" . $added_date . "</p>";
+								$body .= "</div>";
+							$body .= "</div>";
+						}
+					$body .= "</div>";
+					
+					// comment
+					$body .= "<div class='form-group'>";
+						$body .= "<label for='song-admin-record-comment' class='control-label col-xs-2'>Comment</label>";
+						$body .= "<div class='col-xs-10'>";
+							$body .= "<textarea class='form-control' id='song-admin-comment' name='song-admin-comment' placeholder='Comment'>" . $song["SongComment"] . "</textarea>";
+						$body .= "</div>";
+					$body .= "</div>";
+				$body .= "</form>";
+					
+				$data["body"] = $body;
+				
+				// footer
+				$footer = $mc->getFrontend()->getModalButtons(array("cancel", "save"));
+				$data["footer"] = $footer;
+				
+				// save method id
+				$data["save"] = "y2DqnxCB";
+				
+				break;
+				
+			// save song
+			case "y2DqnxCB":
 			
 				break;
 				
