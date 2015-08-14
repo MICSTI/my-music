@@ -110,7 +110,8 @@
 							$menu .= "</ul>";
 							
 						$menu .= "<li class='" . $this->getActiveText("history", $selected) . "'><a href='history.php'>History</a></li>";
-						$menu .= "<li><a href='#'>Concerts</a></li>";
+						$menu .= "<li class='" . $this->getActiveText("concerts", $selected) . "'><a href='concerts.php'>Concerts</a></li>";
+						$menu .= "<li class='" . $this->getActiveText("update", $selected) . "'><a href='update.php'>Update</a></li>";
 						$menu .= "<li class='" . $this->getActiveText("administration", $selected) . "'><a href='administration.php'>Administration</a></li>";
 						$menu .= "<li class='" . $this->getActiveText("settings", $selected) . "'><a href='settings.php'>Settings</a></li>";
 					$menu .= "</ul>";
@@ -864,5 +865,12 @@
 		*/
 		public function getMMLinkConfirmButtonClass($parent_added, $child_added) {
 			return ($parent_added > $child_added) ? "success" : "danger";
+		}
+		
+		/**
+			Returns the static text for a feature that has not yet been implemented.
+		*/
+		public function notImplementedYet() {
+			return "<p><mark>This feature has not yet been implemented. Come back, it will be here soon.</mark>";
 		}
 	}
