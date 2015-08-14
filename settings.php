@@ -14,11 +14,6 @@
 				$html .= "<span>General</span>";
 			$html .= "</a>";
 			
-			// Update
-			$html .= "<a href='#' id='settings-update' class='list-group-item'>";
-				$html .= "<span>Update</span>";
-			$html .= "</a>";
-			
 			// Configuration
 			$html .= "<a href='#' id='settings-configuration' class='list-group-item'>";
 				$html .= "<span>Configuration</span>";

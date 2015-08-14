@@ -353,10 +353,6 @@
 					$html .= $this->getGeneralSettings($mdb);
 					break;
 					
-				case "update":
-					$html .= $group;
-					break;
-					
 				case "configuration":
 					$html .= $this->getConfigurationSettings($mdb);
 					break;
