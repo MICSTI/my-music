@@ -454,7 +454,7 @@ function addMMLinkConnection(_parent_id, _child_id) {
 				
 				if (response.success) {
 					// go to new song page
-					window.location.href = "song.php?id=" + _parent_id;
+					window.location.href = "song.php?id=" + _parent_id + "&messageType=success&messageText=" + encodeURIComponent("The changes have been saved successfully");
 				} else {
 					console.log("Error", response.message);
 					globalNotify("MediaMonkey link connection could not be established", "error");
@@ -529,6 +529,13 @@ $(document).ready( function () {
 	};
 	
 	searchAutoComplete.init(searchACOptions);
+	
+	// check for incoming message
+	var messageType = getUrlParameter("messageType") || "success";
+	var messageText = getUrlParameter("messageText");	
+	if (messageText !== undefined) {
+		globalNotify(decodeURIComponent(messageText), messageType);
+	}
 	
 	// init datepicker
 	$("#pickdate")
