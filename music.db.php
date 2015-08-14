@@ -2816,6 +2816,50 @@
 				$success_comment = false;
 			}
 			
+			// check if child's record is now empty - if so, delete it
+			$sql = "SELECT
+						re.id AS 'RecordId',
+						COUNT(*) AS 'RecordSongCount'
+					FROM
+						records re INNER JOIN
+						songs so ON re.id = so.rid
+					WHERE
+						re.id = (
+							SELECT
+								re.id AS 'RecordId'
+							FROM
+								songs so INNER JOIN
+								records re ON re.id = so.rid
+							WHERE
+								so.id = :child_id
+							)";
+							
+			$query = $this->db->prepare($sql);
+			$exec_record_count = $query->execute( array(':child_id' => $child_id) );
+			
+			if ($query->rowCount() > 0 OR $exec_record_count !== false) {
+				$result = $query->fetch(PDO::FETCH_ASSOC);
+
+				// if it's only this song, delete the record
+				if ($result["RecordSongCount"] <= 1) {
+					$sql = "DELETE FROM records WHERE id = :record_id";
+					
+					$query_del_record = $this->db->prepare($sql);
+					$exec_record_delete = $query_del_record->execute( array(':record_id' => $result["RecordId"]) );
+					
+					if ($query->rowCount() > 0 OR $exec_record_delete !== false) {
+						$success_record_count = true;
+					} else {
+						$success_record_count = false;
+					}
+				} else {
+					// there's more than this song in the record, we don't have to delete it
+					$success_record_count = true;
+				}
+			} else {
+				$success_record_count = false;
+			}
+			
 			// delete child
 			$sql = "DELETE FROM songs WHERE id = :child_id";
 			$query = $this->db->prepare($sql);
@@ -2827,7 +2871,7 @@
 				$success_delete = false;
 			}
 			
-			return $success_connection AND $success_mmlink AND $success_played AND $success_comment AND $success_delete;
+			return $success_connection AND $success_mmlink AND $success_played AND $success_comment AND $success_record_count AND $success_delete;
 		}
 		
 		/**
