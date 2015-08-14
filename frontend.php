@@ -99,7 +99,7 @@
 				
 				$menu .= "<div id='navbarCollapse' class='collapse navbar-collapse'>";
 					$menu .= "<ul class='nav navbar-nav'>";
-						$menu .= "<li class='" . $this->getActiveText("home", $selected) . "'><a href='#'>Home</a></li>";
+						$menu .= "<li class='" . $this->getActiveText("home", $selected) . "'><a href='index.php'>Home</a></li>";
 						$menu .= "<li class='dropdown " . $this->getActiveText("charts", $selected) . "'>";
 							$menu .= "<a href='#' data-toggle='dropdown' class='dropdown-toggle'>Charts <b class='caret'></b></a>";
 							
