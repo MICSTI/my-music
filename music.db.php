@@ -617,7 +617,7 @@
 				// Mobile database entry
 				$mobile_sql = "INSERT INTO artists (_id, name) VALUES (:id, :name)";
 				$mobile_query = $this->mobile_db->prepare($mobile_sql);
-				//$mobile_query->execute( array(':id' => $inserted, ':name' => $name) );
+				$mobile_query->execute( array(':id' => $inserted, ':name' => $name) );
 			
 				if ($this->logging) {
 					$this->addLog(__FUNCTION__, "success", "added new tupel in artists [ name: '" . $name . "', main_country_id: " . $main_country . ", sec_country_id: " . $secondary_country . " ] with id " . $inserted);
@@ -849,7 +849,7 @@
 				// Mobile database entry
 				$mobile_sql = "INSERT INTO songs (_id, name, aid, rid, rating, length, discno, trackno) VALUES (:id, :name, :aid, :rid, :rating, :length, :discno, :trackno)";
 				$mobile_query = $this->mobile_db->prepare($mobile_sql);
-				//$mobile_query->execute( array(':id' => $inserted, ':name' => $name, ':aid' => $aid, ':rid' => $rid, ':rating' => $rating, ':length' => $length, ':discno' => $discno, ':trackno' => $trackno) );
+				$mobile_query->execute( array(':id' => $inserted, ':name' => $name, ':aid' => $aid, ':rid' => $rid, ':rating' => $rating, ':length' => $length, ':discno' => $discno, ':trackno' => $trackno) );
 			
 				if ($this->logging) {
 					$this->addLog(__FUNCTION__, "success", "added new tupel in songs with id " . $inserted . " [" . implode(", ", func_get_args()) . "]");
@@ -1021,7 +1021,7 @@
 				// Mobile database entry
 				$mobile_sql = "INSERT INTO records (_id, name) VALUES (:id, :name)";
 				$mobile_query = $this->mobile_db->prepare($mobile_sql);
-				//$mobile_query->execute( array(':id' => $inserted, ':name' => $name) );
+				$mobile_query->execute( array(':id' => $inserted, ':name' => $name) );
 			
 				if ($this->logging) {
 					$this->addLog(__FUNCTION__, "success", "added new tupel in records [ name: '" . $name . "', aid: '" . $aid . "', typeid: " . $typeid . ", release: '" . $release . "' ] with id " . $inserted);
