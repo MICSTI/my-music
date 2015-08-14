@@ -846,13 +846,18 @@
 		private function getSongAdministration($mdb) {
 			$html = "";
 			
+			// add song
+			$html .= "<div class='row administration-paragraph'>";
+				$html .= "<button type='button' class='btn btn-success' onclick=\"crudModal('57bB21kN')\"><span class='glyphicon glyphicon-plus'></span> Add new song</button>";
+			$html .= "</div>";
+			
 			// Top bar with search field
-			$html .= "<div class='row'>";
+			$html .= "<div class='row administration-paragraph'>";
 				$html .= "<input type='text' id='admin-search-song' class='form-control admin-search autofocus' />";
 			$html .= "</div>";
 			
 			// result div
-			$html .= "<div class='row'>";
+			$html .= "<div class='row administration-paragraph'>";
 				$html .= "<div id='admin-search-song_result'></div>";
 			$html .= "</div>";
 			

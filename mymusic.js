@@ -72,7 +72,7 @@ function crudModal(_action, _id, _params) {
 	// fites when modal has completely finished loading
 	modal.on("shown.bs.modal", function() {
 		// assign focus to autofocus element and set cursor to the end of the input element
-		$(".autofocus").first().focus().putCursorAtEnd();
+		$(".modal-body .autofocus").first().focus().putCursorAtEnd();
 		
 		// init datepicker
 		initDatepicker();

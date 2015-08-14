@@ -92,6 +92,10 @@ a {
 	margin-top: 12px;
 }
 
+.administration-paragraph {
+	margin-bottom: 12px;
+}
+
 /* ------- Admin search ------- */
 .as_choice {
 	padding: 2px 4px;
