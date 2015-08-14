@@ -2849,6 +2849,11 @@
 					
 					if ($query->rowCount() > 0 OR $exec_record_delete !== false) {
 						$success_record_count = true;
+						
+						// delete record from mobile database too
+						$mobile_sql = "DELETE FROM records WHERE _id = :record_id";
+						$mobile_query = $this->mobile_db->prepare($mobile_sql);
+						$mobile_query->execute( array(':record_id' => $result["RecordId"]) );
 					} else {
 						$success_record_count = false;
 					}
@@ -2870,6 +2875,12 @@
 			} else {
 				$success_delete = false;
 			}
+			
+			// delete child from mobile database too
+			$mobile_sql = "DELETE FROM songs WHERE _id = :child_id";
+			$mobile_query = $this->mobile_db->prepare($mobile_sql);
+			$mobile_query->execute( array(':child_id' => $child_id) );
+			
 			
 			return $success_connection AND $success_mmlink AND $success_played AND $success_comment AND $success_record_count AND $success_delete;
 		}

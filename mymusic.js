@@ -430,34 +430,44 @@ function performMMLinkSafeCheck(elem, _parent_id, _child_id) {
 }
 
 function addMMLinkConnection(_parent_id, _child_id) {
-	swal("MediaMonkey link connection", "Link connection is being set...", "success");
+	var modal = $("#music-modal");
 	
-	var _data = {
-		parent_id: _parent_id,
-		child_id: _child_id
-	};
+	if (modal.length > 0) {
+		// start process as soon as modal is hidden
+		modal.on("hidden.bs.modal", function() {
+			swal("MediaMonkey link connection", "Link connection is being set...", "success");
 	
-	$.ajax( {
-		method: "POST",
-		url: "ajax.db.php",
-		data: {
-			action: "add_mm_link",
-			data: JSON.stringify(_data)
-		}
-	}).done(function(resp) {
-		var response = JSON.parse(resp);
+			var _data = {
+				parent_id: _parent_id,
+				child_id: _child_id
+			};
+			
+			$.ajax( {
+				method: "POST",
+				url: "ajax.db.php",
+				data: {
+					action: "add_mm_link",
+					data: JSON.stringify(_data)
+				}
+			}).done(function(resp) {
+				var response = JSON.parse(resp);
+				
+				if (response.success) {
+					// go to new song page
+					window.location.href = "song.php?id=" + _parent_id;
+				} else {
+					console.log("Error", response.message);
+					globalNotify("MediaMonkey link connection could not be established", "error");
+				}
+			}).fail(function(error) {
+				// log error
+				console.log("ajax.db.php", error);
+			});
+		});
 		
-		if (response.success) {
-			// go to new song page
-			window.location.href = "song.php?id=" + _parent_id;
-		} else {
-			console.log("Error", response.message);
-			globalNotify("MediaMonkey link connection could not be established", "error");
-		}
-	}).fail(function(error) {
-		// log error
-		console.log("ajax.db.php", error);
-	});
+		// hide modal
+		modal.modal("hide");
+	}
 }
 
 $(document).ready( function () {
