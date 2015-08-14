@@ -985,42 +985,52 @@
 					
 					$body .= "<div id='" . $form_name . "-static'>";
 						// length (static)
+						$body .= "<input type='hidden' id='song-admin-song-length' name='song-admin-song-length' value='" . $song["SongLength"] . "' />";
+						
 						$body .= "<div class='form-group'>";
 							$body .= "<label for='song-admin-song-length' class='control-label col-xs-2'>Length</label>";
 							$body .= "<div class='col-xs-10'>";
-								$body .= "<p class='form-control-static' id='song-admin-song-length'>" . millisecondsToMinutes($song["SongLength"]) . " min</p>";
+								$body .= "<p class='form-control-static'>" . millisecondsToMinutes($song["SongLength"]) . " min</p>";
 							$body .= "</div>";
 						$body .= "</div>";
 						
 						// bitrate (static)
+						$body .= "<input type='hidden' id='song-admin-song-bitrate' name='song-admin-song-bitrate' value='" . $song["SongBitrate"] . "' />";
+						
 						$body .= "<div class='form-group'>";
 							$body .= "<label for='song-admin-song-bitrate' class='control-label col-xs-2'>Bitrate</label>";
 							$body .= "<div class='col-xs-10'>";
-								$body .= "<p class='form-control-static' id='song-admin-song-bitrate'>" . formatBitrate($song["SongBitrate"]) . " kbps</p>";
+								$body .= "<p class='form-control-static'>" . formatBitrate($song["SongBitrate"]) . " kbps</p>";
 							$body .= "</div>";
 						$body .= "</div>";
 						
 						// discno (static)
+						$body .= "<input type='hidden' id='song-admin-song-discno' name='song-admin-song-discno' value='" . $song["SongDiscNo"] . "' />";
+						
 						$body .= "<div class='form-group'>";
 							$body .= "<label for='song-admin-song-discno' class='control-label col-xs-2'>Disc no</label>";
 							$body .= "<div class='col-xs-10'>";
-								$body .= "<p class='form-control-static' id='song-admin-song-discno'>" . $song["SongDiscNo"] . "</p>";
+								$body .= "<p class='form-control-static'>" . $song["SongDiscNo"] . "</p>";
 							$body .= "</div>";
 						$body .= "</div>";
 						
 						// trackno (static)
+						$body .= "<input type='hidden' id='song-admin-song-trackno' name='song-admin-song-trackno' value='" . $song["SongTrackNo"] . "' />";
+						
 						$body .= "<div class='form-group'>";
 							$body .= "<label for='song-admin-song-trackno' class='control-label col-xs-2'>Track no</label>";
 							$body .= "<div class='col-xs-10'>";
-								$body .= "<p class='form-control-static' id='song-admin-song-trackno'>" . $song["SongTrackNo"] . "</p>";
+								$body .= "<p class='form-control-static'>" . $song["SongTrackNo"] . "</p>";
 							$body .= "</div>";
 						$body .= "</div>";
 						
 						// rating (static)
+						$body .= "<input type='hidden' id='song-admin-song-rating' name='song-admin-song-rating' value='" . $song["SongRating"] . "' />";
+						
 						$body .= "<div class='form-group'>";
 							$body .= "<label for='song-admin-song-rating' class='control-label col-xs-2'>Rating</label>";
 							$body .= "<div class='col-xs-10'>";
-								$body .= "<p class='form-control-static' id='song-admin-song-rating'>" . getStarsRating($song["SongRating"]) . "</p>";
+								$body .= "<p class='form-control-static'>" . getStarsRating($song["SongRating"]) . "</p>";
 							$body .= "</div>";
 						$body .= "</div>";
 						
@@ -1057,6 +1067,38 @@
 				
 			// save song
 			case "y2DqnxCB":
+				parse_str($params, $get);
+				
+				// get artist id
+				$aid = $mc->getMDB()->pushArtist(trim($get["song-admin-artist-name"]));
+				
+				// get record id
+				$rid = $mc->getMDB()->pushRecord(trim($get["song-admin-record-name"]), $aid);
+				
+				// get other form values
+				$name = $get["song-admin-song-title"];
+				$length = $get["song-admin-song-length"];
+				$bitrate = $get["song-admin-song-bitrate"];
+				$discno  = $get["song-admin-song-discno"];
+				$trackno  = $get["song-admin-song-trackno"];
+				$rating  = $get["song-admin-song-rating"];
+				$comment  = $get["song-admin-comment"];
+				
+				// save the song to the database
+				$sid = $mc->getMDB()->saveSong($id, $name, $aid, $rid, $length, $bitrate, $discno, $trackno, $rating, $comment);
+				
+				if ($sid !== false) {
+					$success = true;
+					
+					$data["SongId"] = $sid;
+				} else {
+					$success = false;
+				}
+				
+				// on success action
+				$data["onSuccess"] = "savedSong";
+			
+				$data["success"] = $success;
 			
 				break;
 				

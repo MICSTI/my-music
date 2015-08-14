@@ -139,6 +139,10 @@ function getStatic(_content, onSuccess) {
 	});
 }
 
+function addSuccessMessage() {
+	return "&messageType=success&messageText=" + encodeURIComponent("The changes have been saved successfully");
+}
+
 /**
 	basic initialization for a datepicker
 */
@@ -179,9 +183,6 @@ function persistCrud(_action, _id, _params, _tab) {
 		// wait until modal is completely hidden to update content and display success message
 		modal.on("hidden.bs.modal", function() {
 			if (content.success) {
-				// show success message
-				globalNotify("Changes saved successfully");
-				
 				// success action
 				switch (content.onSuccess) {
 					case "updateSettings":
@@ -198,10 +199,18 @@ function persistCrud(_action, _id, _params, _tab) {
 						
 					case "updateArtistInformation":
 						updateArtistInformation(_id);
+						break;
+						
+					case "savedSong":
+						window.location.href="song.php?id=" + content.SongId + addSuccessMessage();
+						break;
 						
 					default:
 						break;
 				}
+				
+				// show success message
+				globalNotify("Changes saved successfully");
 			} else {
 				// show error message
 				globalNotify("Changes could not be saved", "error");
@@ -454,7 +463,7 @@ function addMMLinkConnection(_parent_id, _child_id) {
 				
 				if (response.success) {
 					// go to new song page
-					window.location.href = "song.php?id=" + _parent_id + "&messageType=success&messageText=" + encodeURIComponent("The changes have been saved successfully");
+					window.location.href = "song.php?id=" + _parent_id + addSuccessMessage();
 				} else {
 					console.log("Error", response.message);
 					globalNotify("MediaMonkey link connection could not be established", "error");

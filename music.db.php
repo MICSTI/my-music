@@ -807,6 +807,22 @@
 		}
 		
 		/**
+			Persists a song. The function updates the song if it already exists or adds it to the database if it doesn't exist.
+			Returns the id of the song if the operation was successful, false if it wasn't.
+		*/
+		public function saveSong($id, $name, $aid, $rid, $length, $bitrate, $discno, $trackno, $rating, $comment) {
+			if ($id <= 0) {
+				// add new song
+				$sid = $this->addSong($name, $aid, $rid, $length, $bitrate, $discno, $trackno, $rating, $comment);
+			} else {
+				// update existing song
+				$sid = $this->updateSong($id, $name, $aid, $rid, $length, $bitrate, $discno, $trackno, $rating, $comment);
+			}
+			
+			return $sid;
+		}
+		
+		/**
 			Adds a new song to the database.
 			If insert was successful, the newly assigned id is returned, otherwise false.
 		*/
@@ -853,7 +869,7 @@
 			Updates a song in the database
 			If update was successful, true is returned, false otherwise
 		*/
-		public function updateSong ($id, $name, $aid, $rid, $length, $bitrate, $discno, $trackno, $rating) {
+		public function updateSong ($id, $name, $aid, $rid, $length, $bitrate, $discno, $trackno, $rating, $comment = "") {
 			// strip input from code tags
 			$id = strip_tags($id);
 			$name = strip_tags($name);
@@ -864,10 +880,11 @@
 			$discno = strip_tags($discno);
 			$trackno = strip_tags($trackno);
 			$rating = strip_tags($rating);
+			$comment = strip_tags($comment);
 			
-			$sql = "UPDATE songs SET name=:name, aid=:aid, rid=:rid, length=:length, bitrate=:bitrate, discno=:discno, trackno=:trackno, rating=:rating WHERE id = :id";
+			$sql = "UPDATE songs SET name=:name, aid=:aid, rid=:rid, length=:length, bitrate=:bitrate, discno=:discno, trackno=:trackno, rating=:rating, comment=:comment WHERE id = :id";
 			$query = $this->db->prepare($sql);
-			$success = $query->execute( array(':id' => $id, ':name' => $name, ':aid' => $aid, ':rid' => $rid, ':length' => $length, ':bitrate' => $bitrate, ':discno' => $discno, ':trackno' => $trackno, ':rating' => $rating) );
+			$success = $query->execute( array(':id' => $id, ':name' => $name, ':aid' => $aid, ':rid' => $rid, ':length' => $length, ':bitrate' => $bitrate, ':discno' => $discno, ':trackno' => $trackno, ':rating' => $rating, ':comment' => $comment) );
 			
 			if ($query->rowCount() > 0 OR $success !== false) {
 				// Mobile database entry
@@ -879,7 +896,7 @@
 					$this->addLog(__FUNCTION__, "success", "updated tupel in songs with id " . $id . " [" . implode(", ", func_get_args()) . "]");
 				}
 			
-				return true;
+				return $id;
 			} else {
 				if ($this->logging) {
 					$this->addLog(__FUNCTION__, "error", "tried to update tupel in songs [" . implode(", ", func_get_args()) . "] \n" . implode(" / ", $query->errorInfo()));
@@ -1042,7 +1059,7 @@
 			Returns the id for the record. If record has no id yet, a new one is assigned and returned.
 			If artist could not be pushed, false is returned.
 		*/
-		public function pushRecord ($name, $aid, $typeid = 0, $release = '0000-00-00') {
+		public function pushRecord ($name, $aid, $typeid = 1, $release = '0000-00-00') {
 			// strip input from code tags
 			$name = strip_tags($name);
 			$aid = strip_tags($aid);
