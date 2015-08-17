@@ -202,11 +202,15 @@ function persistCrud(_action, _id, _params, _tab) {
 						break;
 						
 					case "savedSong":
-						window.location.href="song.php?id=" + content.SongId + addSuccessMessage();
+						window.location.href = "song.php?id=" + content.SongId + addSuccessMessage();
 						break;
 						
 					case "savedArtist":
-						window.location.href="artist.php?id=" + content.ArtistId + addSuccessMessage();
+						window.location.href = "artist.php?id=" + content.ArtistId + addSuccessMessage();
+						break;
+						
+					case "savedRecord":
+						window.location.href = "record.php?id=" + content.RecordId + addSuccessMessage();
 						break;
 						
 					default:
@@ -673,8 +677,17 @@ $(document).ready( function () {
 									
 								case "artists":
 									return "<div class='" + _choiceClass + "' data-category='" + _category + "' data-id='" + _item.ArtistId + "'>" +
-												"<div class='admin-search-edit pull-right clearfix'><button type='button' class='btn btn-primary' onclick=\"crudModal('YTYrcS79', '" + _item.ArtistId + "')\"><span class='glyphicon glyphicon-pencil'></button></div>" + 
+												"<div class='admin-search-edit pull-right'><button type='button' class='btn btn-primary' onclick=\"crudModal('YTYrcS79', '" + _item.ArtistId + "')\"><span class='glyphicon glyphicon-pencil'></button></div>" + 
 												"<div>" + _item.ArtistName + "</div>" +
+											"</div>";
+									
+									break;
+									
+								case "records":
+									return "<div class='" + _choiceClass + "' data-category='" + _category + "' data-id='" + _item.ArtistId + "'>" +
+												"<div class='admin-search-edit pull-right'><button type='button' class='btn btn-primary' onclick=\"crudModal('uXQMGi1b', '" + _item.RecordId + "')\"><span class='glyphicon glyphicon-pencil'></button></div>" + 
+												"<div class='search_artist_name'>" + _item.ArtistName + "</div>" +
+												"<div>" + _item.RecordName + "</div>" +
 											"</div>";
 									
 									break;

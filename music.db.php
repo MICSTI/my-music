@@ -867,7 +867,7 @@
 		
 		/**
 			Updates a song in the database
-			If update was successful, true is returned, false otherwise
+			If update was successful, the id of the record is returned, false otherwise
 		*/
 		public function updateSong ($id, $name, $aid, $rid, $length, $bitrate, $discno, $trackno, $rating, $comment = "") {
 			// strip input from code tags
@@ -998,6 +998,22 @@
 			} else {
 				return false;
 			}
+		}
+		
+		/**
+			Persists a record. The function updates the record if it already exists or adds it to the database if it doesn't exist.
+			Returns the id of the record if the operation was successful, false if it wasn't.
+		*/
+		public function saveRecord($id, $name, $aid, $typeid, $publish) {
+			if ($id <= 0) {
+				// add new record
+				$rid = $this->addRecord($name, $aid, $typeid, $publish);
+			} else {
+				// update existing record
+				$rid = $this->updateRecord($id, $name, $aid, $typeid, $publish);
+			}
+			
+			return $rid;
 		}
 		
 		/**
@@ -1157,7 +1173,7 @@
 			$typeid = strip_tags($typeid);
 			$release = strip_tags($release);
 			
-			$sql = "UPDATE records SET name = :name, aid = :aid, typeid = :typeid, release = :release WHERE id = :id";
+			$sql = "UPDATE records SET name = :name, aid = :aid, typeid = :typeid, publish = :release WHERE id = :id";
 			$query = $this->db->prepare($sql);
 			$query->execute( array(':id' => $id, ':name' => $name, ':aid' => $aid, ':typeid' => $typeid, ':release' => $release) );
 			
@@ -1171,7 +1187,7 @@
 					$this->addLog(__FUNCTION__, "success", "updated tupel in records [ name: '" . $name . "', aid: '" . $aid . "', typeid: " . $typeid . ", release: '" . $release . "' ] with id " . $id);
 				}
 			
-				return true;
+				return $id;
 			} else {
 				if ($this->logging) {
 					$this->addLog(__FUNCTION__, "error", "tried to update tupel in records [ name: '" . $name . "', aid: '" . $aid . "', typeid: " . $typeid . ", release: '" . $release . "' ] with id " . $id . "\n" . implode(" / ", $query->errorInfo()));

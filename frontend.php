@@ -721,7 +721,7 @@
 					break;
 					
 				case "records":
-					$html .= $group;
+					$html .= $this->getRecordAdministration($mdb);
 					break;
 					
 				case "played":
@@ -883,6 +883,30 @@
 			// result div
 			$html .= "<div class='row administration-paragraph'>";
 				$html .= "<div id='admin-search-artist_result'></div>";
+			$html .= "</div>";
+			
+			return $html;
+		}
+		
+		/**
+			Returns the content of the record administration tab
+		*/
+		private function getRecordAdministration($mdb) {
+			$html = "";
+			
+			// add record
+			$html .= "<div class='row administration-paragraph'>";
+				$html .= "<button type='button' class='btn btn-success' onclick=\"crudModal('uXQMGi1b')\"><span class='glyphicon glyphicon-plus'></span> Add new record</button>";
+			$html .= "</div>";
+			
+			// Top bar with search field
+			$html .= "<div class='row administration-paragraph'>";
+				$html .= "<input type='text' id='admin-search-record' class='form-control admin-search autofocus' />";
+			$html .= "</div>";
+			
+			// result div
+			$html .= "<div class='row administration-paragraph'>";
+				$html .= "<div id='admin-search-record_result'></div>";
 			$html .= "</div>";
 			
 			return $html;

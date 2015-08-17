@@ -1214,6 +1214,131 @@
 			
 				break;
 				
+			// record administration
+			case "uXQMGi1b":
+				// get data if edit
+				if ($id > 0) {
+					$record = $mc->getMDB()->getRecord($id);
+					
+				} else {
+					$record = array();
+					
+					$record["RecordName"] = "";
+					$record["ArtistId"] = -1;
+					$record["ArtistName"] = "";
+					$record["RecordTypeId"] = 0;
+					$record["RecordPublishDate"] = "0000-00-00";
+				}	
+					
+				// form name (for processing data in Javascript)
+				$form_name = "admin-record";
+				$data["form_name"] = $form_name;
+			
+				// title
+				$title = $id > 0 ? "Edit record" : "Add record";
+				$data["title"] = $title;
+				
+				// body
+				$body = "";
+				
+				$body .= "<form class='form-horizontal' id='" . $form_name . "'>";
+					// record name
+					$body .= "<div class='form-group'>";
+						$body .= "<label for='record-admin-record-name' class='control-label col-xs-3'>Title</label>";
+						$body .= "<div class='col-xs-9'>";
+							$body .= "<input type='text' class='form-control autofocus' id='record-admin-record-name' name='record-admin-record-name' placeholder='Name' value='" . $record["RecordName"] . "' />";
+						$body .= "</div>";
+					$body .= "</div>";
+				
+					// artist name
+					$body .= "<div class='form-group'>";
+						$body .= "<label for='record-admin-artist-name' class='control-label col-xs-3'>Artist</label>";
+						$body .= "<div class='col-xs-9'>";
+							$body .= "<input type='text' class='form-control' id='record-admin-artist-name' name='record-admin-artist-name' placeholder='Artist name' value='" . $record["ArtistName"] . "' />";
+						$body .= "</div>";
+					$body .= "</div>";
+					
+					// record type
+					$body .= "<div class='form-group'>";
+						$body .= "<label for='record-admin-record-type' class='control-label col-xs-3'>Type</label>";
+						$body .= "<div class='col-xs-9'>";
+							$body .= "<select class='selectpicker form-control' id='record-admin-record-type' name='record-admin-record-type'>";
+								// display all options
+								$record_types = $mc->getMDB()->getRecordTypes();
+								
+								foreach ($record_types as $record_type) {
+									$body .= "<option value='" . $record_type["RecordTypeId"] . "' " . compareOption($record_type["RecordTypeId"], $record["RecordTypeId"]) . ">" . $record_type["RecordTypeName"] . "</option>";
+								}
+							$body .= "</select>";
+						$body .= "</div>";
+					$body .= "</div>";
+					
+					// publish date
+					$publish_date = $record["RecordPublishDate"] != "0000-00-00" ? $record["RecordPublishDate"] : "";
+					
+					if ($record["RecordPublishDate"] != "0000-00-00") {
+						$mysql_date = new MysqlDate($record["RecordPublishDate"]);
+						$publish_date = $mysql_date->convert2AustrianDate();
+					} else {
+						$publish_date = "";
+					}
+					
+					$body .= "<div class='form-group'>";
+						$body .= "<label for='record-admin-publish-date' class='control-label col-xs-3'>Publish date</label>";
+						$body .= "<div class='col-xs-9'>";
+							$body .= "<input type='text' class='form-control date-picker' id='record-admin-publish-date' name='record-admin-publish-date' placeholder='Date' value='" . $publish_date . "' />";
+						$body .= "</div>";
+					$body .= "</div>";
+				$body .= "</form>";
+					
+				$data["body"] = $body;
+				
+				// footer
+				$footer = $mc->getFrontend()->getModalButtons(array("cancel", "save"));
+				$data["footer"] = $footer;
+				
+				// save method id
+				$data["save"] = "JLLamRov";
+				
+				break;
+				
+			// save record
+			case "JLLamRov":
+				parse_str($params, $get);
+				
+				// get artist id
+				$aid = $mc->getMDB()->pushArtist(trim($get["record-admin-artist-name"]));
+				
+				// get other form values
+				$name = $get["record-admin-record-name"];
+				$typeid = $get["record-admin-record-type"];
+				
+				$publish = $get["record-admin-publish-date"];
+				
+				if (empty(trim($publish))) {
+					$publish_date = "0000-00-00";
+				} else {
+					$publish_date = getMysqlDate($publish);
+				}
+				
+				// save the record to the database
+				$rid = $mc->getMDB()->saveRecord($id, $name, $aid, $typeid, $publish_date);
+				
+				if ($rid !== false) {
+					$success = true;
+					
+					$data["RecordId"] = $rid;
+				} else {
+					$success = false;
+				}
+				
+				// on success action
+				$data["onSuccess"] = "savedRecord";
+			
+				$data["success"] = $success;
+			
+				break;
+				
 			default:
 				$data["status"] = "error";
 				$data["message"] = "unknown action";
