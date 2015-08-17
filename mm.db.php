@@ -166,6 +166,27 @@
 			return $xml;
 		}
 		
+		public function importDesktop($desktop_file) {
+			// get x path
+			$xpath = $this->getXPath($desktop_file);
+			
+			// get songs
+			
+			// process songs
+			
+			// get playeds
+			
+			// process playeds
+			
+			// get MM database modification timestamp
+			
+			// get last played id
+			
+			// write config values to database
+			
+			
+		}
+		
 		/**
 			Imports all songs from the songs.xml file
 			It is checked if a song with matching MM id already exists,

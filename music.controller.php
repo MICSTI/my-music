@@ -83,6 +83,10 @@
 			return $success;
 		}
 		
+		public function importDesktopFile($desktop_file) {
+			return $this->getMMDB()->importDesktop($desktop_file);
+		}
+		
 		public function importFromSongFile () {
 			$this->getMMDB()->importSongs($this->getSongFile());
 		}
