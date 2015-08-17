@@ -2732,6 +2732,15 @@
 			// strip input from code tags
 			$sid = strip_tags($sid);
 			
+			// details of the song
+			$song_details = $this->getSong($sid);
+			
+			// string occurence of the word "live", for safe-checking if a candidate is actually just a live version of the song
+			$live_str = "live";
+						
+			// does "live" occur in the original song's record name?
+			$song_live = strpos(strtolower($song_details["RecordName"]), $live_str);
+			
 			$candidates = array();
 			
 			$sql = "SELECT id FROM songs WHERE (name, aid) = ( SELECT name, aid FROM songs WHERE id = :sid LIMIT 1 )";
@@ -2745,7 +2754,17 @@
 					$candidate_id = $candidate['id'];
 					
 					if ($candidate_id != $sid) {
-						array_push($candidates, $candidate['id']);
+						// extra safe check: if only one song contains "live" in the record title, do not add it to the suggestions
+						// if this is the case, it is very likely that it is just a live version of the song - it is not recommended to link the songs in this case.
+						$candidate_details = $this->getSong($candidate_id);
+						
+						// does "live" occur in the candidate song's record name?
+						$candidate_live = strpos(strtolower($candidate_details["RecordName"]), $live_str);
+						
+						// it's only a candidate if either live occurs in both song's and candidate's record names, or in none of them
+						if (($song_live === false AND $candidate_live === false) OR ($song_live !== false AND $candidate_live !== false)) {
+							array_push($candidates, $candidate['id']);
+						}
 					}
 				}
 				
