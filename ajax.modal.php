@@ -696,44 +696,29 @@
 					$body .= "<form class='form-horizontal' id='" . $form_name . "'>";
 						// name (static)
 						$body .= "<div class='form-group'>";
-							$body .= "<label for='artist-name' class='control-label col-xs-3'>Name</label>";
-							$body .= "<div class='col-xs-9'>";
+							$body .= "<label for='artist-name' class='control-label col-xs-2'>Name</label>";
+							$body .= "<div class='col-xs-10'>";
 								$body .= "<p class='form-control-static' id='artist-name'>" . $artist_details["ArtistName"] . "</p>";
 							$body .= "</div>";
 						$body .= "</div>";
 						
-						// countries
-						$countries = $mc->getMDB()->getCountries();
-						
 						// main country
 						$body .= "<div class='form-group'>";
-							$body .= "<label for='record-type' class='control-label col-xs-3'>Origin</label>";
-							$body .= "<div class='col-xs-9'>";
-								$body .= "<select class='selectpicker form-control' id='artist-main-country' name='artist-main-country'>";
-									// blank option
-									$body .= "<option value='0'>None</option>";
-									
-									// display all country options
-									foreach ($countries as $country) {
-										$body .= "<option value='" . $country["CountryId"] . "' data-content=\"" . getCountryFlag($country, true) . "\" " . compareOption($country["CountryId"], $artist_details["ArtistMainCountryId"]) . ">" . $country["CountryName"] . "</option>";
-									}
-								$body .= "</select>";
+							$body .= "<label for='record-type' class='control-label col-xs-2'>Origin</label>";
+							$body .= "<div class='col-xs-10'>";
+								$main_country_select_params = array("class" => "selectpicker form-control", "id" => "artist-main-country", "name" => "artist-main-country");
+								
+								$body .= getCountrySelectBox($mc->getMDB(), $main_country_select_params, $artist_details["ArtistMainCountryId"]);
 							$body .= "</div>";
 						$body .= "</div>";
 						
 						// secondary country
 						$body .= "<div class='form-group'>";
-							$body .= "<label for='record-type' class='control-label col-xs-3'> </label>";
-							$body .= "<div class='col-xs-9'>";
-								$body .= "<select class='selectpicker form-control' id='artist-secondary-country' name='artist-secondary-country'>";
-									// blank option
-									$body .= "<option value='0'>None</option>";
-									
-									// display all country options
-									foreach ($countries as $country) {
-										$body .= "<option value='" . $country["CountryId"] . "' data-content=\"" . getCountryFlag($country, true) . "\" " . compareOption($country["CountryId"], $artist_details["ArtistSecondaryCountryId"]) . ">" . $country["CountryName"] . "</option>";
-									}
-								$body .= "</select>";
+							$body .= "<label for='record-type' class='control-label col-xs-2'> </label>";
+							$body .= "<div class='col-xs-10'>";
+								$secondary_country_select_params = array("class" => "selectpicker form-control", "id" => "artist-secondary-country", "name" => "artist-secondary-country");
+								
+								$body .= getCountrySelectBox($mc->getMDB(), $secondary_country_select_params, $artist_details["ArtistSecondaryCountryId"]);
 							$body .= "</div>";
 						$body .= "</div>";
 						
