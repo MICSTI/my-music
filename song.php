@@ -68,10 +68,14 @@
 						$html .= "<div class='col-sm-9'>" . $last_played . "</div>";
 					$html .= "</div>";
 					
-					// song mm link button
-					$html .= "<div class='song-general-info col-sm-1'>";
-						$html .= "<button type='button' id='btn-song-mmlink-edit' class='btn btn-default pull-right' onclick=\"crudModal('" . $SAVE_SONG_MMLINK . "', '" . $song_info["SongId"] . "')\"><span class='glyphicon glyphicon-link'></span></button>";
-					$html .= "</div>";	
+					// song mm link button (only displayed if there are possible link candidates)
+					$candidates = $mc->getMDB()->getPossibleMMLinkCandidates($sid);
+					
+					if (!empty($candidates)) {
+						$html .= "<div class='song-general-info col-sm-1'>";
+							$html .= "<button type='button' id='btn-song-mmlink-edit' class='btn btn-default pull-right' onclick=\"crudModal('" . $SAVE_SONG_MMLINK . "', '" . $song_info["SongId"] . "')\"><span class='glyphicon glyphicon-link'></span></button>";
+						$html .= "</div>";
+					}
 				$html .= "</div>";
 			$html .= "</div>";
 
