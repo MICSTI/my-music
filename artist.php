@@ -101,25 +101,27 @@
 				$html .= "</div>";
 				
 				// Releases
-				foreach ($releases as $release) {
-					$record_info = $mc->getMDB()->getRecord($release["RecordId"]);
-					
-					$html .= "<div class='panel panel-default'>";
-						$html .= "<div class='panel-heading'>";
-							$html .= "<h4 class='panel-title'>";
-								$html .= "<a class='bold' data-toggle='collapse' data-parent='#song-accordion' href='#songs-release-" . $release["RecordId"] . "'>" . $release["RecordTitle"] . "</a>";
-								
-								// add inline badge to indicate album play count
-								$html .= " <span class='label label-default'>" . $record_info["SongPlayedCount"] . "</span>";
-							$html .= "</h4>";
-						$html .= "</div>";
+				if (!empty($releases)) {
+					foreach ($releases as $release) {
+						$record_info = $mc->getMDB()->getRecord($release["RecordId"]);
 						
-						$html .= "<div id='songs-release-" . $release["RecordId"] . "' class='panel-collapse collapse'>";
-							$html .= "<div class='panel-body'>";
-								$html .= $mc->getFrontend()->getRecordDetailsHtml($record_info);
+						$html .= "<div class='panel panel-default'>";
+							$html .= "<div class='panel-heading'>";
+								$html .= "<h4 class='panel-title'>";
+									$html .= "<a class='bold' data-toggle='collapse' data-parent='#song-accordion' href='#songs-release-" . $release["RecordId"] . "'>" . $release["RecordTitle"] . "</a>";
+									
+									// add inline badge to indicate album play count
+									$html .= " <span class='label label-default'>" . $record_info["SongPlayedCount"] . "</span>";
+								$html .= "</h4>";
+							$html .= "</div>";
+							
+							$html .= "<div id='songs-release-" . $release["RecordId"] . "' class='panel-collapse collapse'>";
+								$html .= "<div class='panel-body'>";
+									$html .= $mc->getFrontend()->getRecordDetailsHtml($record_info);
+								$html .= "</div>";
 							$html .= "</div>";
 						$html .= "</div>";
-					$html .= "</div>";
+					}
 				}
 			$html .= "</div>";
 		}

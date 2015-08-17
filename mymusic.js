@@ -205,6 +205,10 @@ function persistCrud(_action, _id, _params, _tab) {
 						window.location.href="song.php?id=" + content.SongId + addSuccessMessage();
 						break;
 						
+					case "savedArtist":
+						window.location.href="artist.php?id=" + content.ArtistId + addSuccessMessage();
+						break;
+						
 					default:
 						break;
 				}
@@ -646,12 +650,15 @@ $(document).ready( function () {
 				
 				// init admin search fields
 				$(".admin-search").each(function(idx, item) {
+					// category is at position 13
+					var _cat = item.id.substring(13) + "s";
+					
 					var adminSearch = new AdminSearch();
 					
 					adminSearchOptions = {
 						id: item.id,
 						url: "search.php",
-						categories: ["songs"],
+						categories: [_cat],
 						itemDisplay: function(_category, _item, _choiceClass) {
 							switch (_category) {
 								case "songs":
@@ -660,6 +667,14 @@ $(document).ready( function () {
 												"<div class='search_artist_name'>" + _item.ArtistName + "</div>" +
 												"<div>" + _item.SongName + "</div>" +
 												"<div class='search_record_name'>" + _item.RecordName + "</div>" +
+											"</div>";
+									
+									break;
+									
+								case "artists":
+									return "<div class='" + _choiceClass + "' data-category='" + _category + "' data-id='" + _item.ArtistId + "'>" +
+												"<div class='admin-search-edit pull-right clearfix'><button type='button' class='btn btn-primary' onclick=\"crudModal('YTYrcS79', '" + _item.ArtistId + "')\"><span class='glyphicon glyphicon-pencil'></button></div>" + 
+												"<div>" + _item.ArtistName + "</div>" +
 											"</div>";
 									
 									break;

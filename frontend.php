@@ -717,7 +717,7 @@
 					break;
 					
 				case "artists":
-					$html .= $group;
+					$html .= $this->getArtistAdministration($mdb);
 					break;
 					
 				case "records":
@@ -859,6 +859,30 @@
 			// result div
 			$html .= "<div class='row administration-paragraph'>";
 				$html .= "<div id='admin-search-song_result'></div>";
+			$html .= "</div>";
+			
+			return $html;
+		}
+		
+		/**
+			Returns the content of the artist administration tab
+		*/
+		private function getArtistAdministration($mdb) {
+			$html = "";
+			
+			// add song
+			$html .= "<div class='row administration-paragraph'>";
+				$html .= "<button type='button' class='btn btn-success' onclick=\"crudModal('YTYrcS79')\"><span class='glyphicon glyphicon-plus'></span> Add new artist</button>";
+			$html .= "</div>";
+			
+			// Top bar with search field
+			$html .= "<div class='row administration-paragraph'>";
+				$html .= "<input type='text' id='admin-search-artist' class='form-control admin-search autofocus' />";
+			$html .= "</div>";
+			
+			// result div
+			$html .= "<div class='row administration-paragraph'>";
+				$html .= "<div id='admin-search-artist_result'></div>";
 			$html .= "</div>";
 			
 			return $html;

@@ -1116,6 +1116,104 @@
 			
 				break;
 				
+			// artist administration
+			case "YTYrcS79":
+				// get data if edit
+				if ($id > 0) {
+					$artist = $mc->getMDB()->getArtist($id);
+					
+				} else {
+					$artist = array();
+					
+					$artist["ArtistName"] = "";
+					$artist["ArtistMainCountryId"] = 0;
+					$artist["ArtistSecondaryCountryId"] = 0;
+				}	
+					
+				// form name (for processing data in Javascript)
+				$form_name = "admin-artist";
+				$data["form_name"] = $form_name;
+			
+				// title
+				$title = $id > 0 ? "Edit artist" : "Add artist";
+				$data["title"] = $title;
+				
+				// body
+				$body = "";
+				
+				$body .= "<form class='form-horizontal' id='" . $form_name . "'>";
+					// artist name
+					$body .= "<div class='form-group'>";
+						$body .= "<label for='artist-admin-artist-name' class='control-label col-xs-2'>Name</label>";
+						$body .= "<div class='col-xs-10'>";
+							$body .= "<input type='text' class='form-control autofocus' id='artist-admin-artist-name' name='artist-admin-artist-name' placeholder='Name' value='" . $artist["ArtistName"] . "' />";
+						$body .= "</div>";
+					$body .= "</div>";
+					
+					// main country
+					$body .= "<div class='form-group'>";
+						$body .= "<label for='artist-admin-main-country-id' class='control-label col-xs-2'>Origin</label>";
+						$body .= "<div class='col-xs-10'>";
+							$main_country_select_params = array("class" => "selectpicker form-control", "id" => "artist-admin-main-country-id", "name" => "artist-admin-main-country-id");
+							
+							$body .= getCountrySelectBox($mc->getMDB(), $main_country_select_params, $artist["ArtistMainCountryId"]);
+						$body .= "</div>";
+					$body .= "</div>";
+					
+					// secondary country
+					$body .= "<div class='form-group'>";
+						$body .= "<label for='artist-admin-secondary-country-id' class='control-label col-xs-2'> </label>";
+						$body .= "<div class='col-xs-10'>";
+							$secondary_country_select_params = array("class" => "selectpicker form-control", "id" => "artist-admin-secondary-country-id", "name" => "artist-admin-secondary-country-id");
+							
+							$body .= getCountrySelectBox($mc->getMDB(), $secondary_country_select_params, $artist["ArtistSecondaryCountryId"]);
+						$body .= "</div>";
+					$body .= "</div>";
+				$body .= "</form>";
+					
+				$data["body"] = $body;
+				
+				// footer
+				$footer = $mc->getFrontend()->getModalButtons(array("cancel", "save"));
+				$data["footer"] = $footer;
+				
+				// save method id
+				$data["save"] = "QGdoP0vf";
+				
+				break;
+				
+			// save artist
+			case "QGdoP0vf":
+				parse_str($params, $get);
+				
+				// success flag
+				$success = false;
+				
+				// get artist info form form
+				$name = trim($get["artist-admin-artist-name"]);
+				$main_country_id = $get["artist-admin-main-country-id"];
+				$secondary_country_id = $get["artist-admin-secondary-country-id"];
+				
+				if ($id > 0) {
+					$success = $mc->getMDB()->updateArtist($id, $name, $main_country_id, $secondary_country_id);
+				} else {
+					$id = $mc->getMDB()->addArtist($name, $main_country_id, $secondary_country_id);
+					
+					if ($id !== false) {
+						$success = true;
+					}
+				}
+				
+				// add artist id for success action (no need for error checking since it won't get executed if an error occurred)
+				$data["ArtistId"] = $id;
+				
+				// on success action
+				$data["onSuccess"] = "savedArtist";
+			
+				$data["success"] = $success;
+			
+				break;
+				
 			default:
 				$data["status"] = "error";
 				$data["message"] = "unknown action";

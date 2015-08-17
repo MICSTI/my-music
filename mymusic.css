@@ -100,6 +100,7 @@ a {
 .as_choice {
 	padding: 2px 4px;
 	border-bottom: 1px solid lightskyblue;
+	min-height: 40px;
 }
 
 .as_choice:last-child {

@@ -186,3 +186,26 @@
 		}
 		return $randomString;
 	}
+	
+	/**
+		Returns the country select box, default value is 0 (extra option: none)
+	*/
+	function getCountrySelectBox($mdb, $params, $country_id = 0) {
+		$html = "";
+		
+		$html .= "<select class='" . $params["class"] . "' id='" . $params["id"] . "' name='" . $params["name"] . "'>";
+		
+			// blank option
+			$html .= "<option value='0'>None</option>";
+			
+			// all country options
+			$countries = $mdb->getCountries();
+			
+			foreach ($countries as $country) {
+				$html .= "<option value='" . $country["CountryId"] . "' data-content=\"" . getCountryFlag($country, true) . "\" " . compareOption($country["CountryId"], $country_id) . ">" . $country["CountryName"] . "</option>";
+			}
+			
+		$html .= "</select>";
+		
+		return $html;
+	}
