@@ -214,7 +214,7 @@ function persistCrud(_action, _id, _params, _tab) {
 						break;
 						
 					case "savedPlayed":
-						
+						window.location.href = "song.php?id=" + content.SongId + addSuccessMessage();;
 						break;
 						
 					default:

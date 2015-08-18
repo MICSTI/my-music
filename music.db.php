@@ -545,6 +545,35 @@
 		}
 		
 		/**
+			Returns a played entry with all meta data from the database
+		*/
+		public function getPlayed ($id) {
+			$sql = "SELECT
+						pl.id AS 'PlayedId',
+						pl.devid AS 'DeviceId',
+						pl.actid AS 'ActivityId',
+						pl.timestamp AS 'PlayedTimestamp',
+						so.id AS 'SongId',
+						so.name AS 'SongTitle',
+						so.aid AS 'ArtistId',
+						so.rid AS 'RecordId'
+					FROM
+						played pl INNER JOIN
+						songs so ON so.id = pl.sid
+					WHERE
+						pl.id = :id";
+
+			$query = $this->db->prepare($sql);
+			$query->execute( array(':id' => $id) );
+			
+			if ($query->rowCount() > 0) {
+				return $query->fetch(PDO::FETCH_ASSOC);
+			} else {
+				return null;
+			}
+		}
+		
+		/**
 			Returns an array containing all 5 star songs by an artist ordered by play count.
 		*/
 		public function getPopularSongByArtist($id) {
@@ -1198,6 +1227,27 @@
 		}
 		
 		/**
+			Persists a played entry. The function updates the played entry if it already exists or adds it to the database if it doesn't exist.
+			Returns true if the process was successful, false if it wasn't.
+		*/
+		public function savePlayed($id, $sid, $devid, $actid, $timestamp) {
+			if ($id <= 0) {
+				// add new played entry
+				$success = $this->addPlayed($sid, $devid, $actid, $timestamp);
+				
+				// set success to true if a correct id was returned
+				if ($success !== false AND $success > 0) {
+					$success = true;
+				}
+			} else {
+				// update existing played entry
+				$success = $this->updatePlayed($id, $sid, $devid, $actid, $timestamp);
+			}
+			
+			return $success;
+		}
+		
+		/**
 			Adds a new entry to the played table.
 			Inserted id is returned if insert was successful, false if otherwise.
 		*/
@@ -1227,6 +1277,10 @@
 			
 				return false;
 			}
+		}
+		
+		public function updatePlayed($id, $sid, $devid, $actid, $timestamp) {
+			
 		}
 		
 		/**
