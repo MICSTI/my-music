@@ -44,6 +44,9 @@ function AdminSearch() {
 	// function to handle the selection of an item
 	var onItemSelected;
 	
+	// last searched string (to avoid searching for the same term again if element gets focus again)
+	var lastSearchTerm = "";
+	
 	/**
 		Performs the initialization of the important elements.
 		Selectors for parent and result elements as well as key listeners.
@@ -111,31 +114,35 @@ function AdminSearch() {
 	/**
 		Performs an AJAX call to retrieve the possible choices for the search term.
 	*/
-	var getUpdate = function() {		
-		$.ajax({
-			method: "GET",
-			url: url,
-			data: {
-				search: parent.val(),
-				categories: acceptedCategories.join(",")
-			}
-		})
-		 .done( function (msg) { 
-			// parse json
-			json = JSON.parse(msg);
+	var getUpdate = function() {
+		var searchTerm = parent.val();
+		
+		if (searchTerm != lastSearchTerm) {
+			searchedTerm = searchTerm;
 			
-			if (json.data) {								
-				// set content of div
-				result.html(getHtml());
-			} else {
-				// hide and empty result div
+			$.ajax({
+				method: "GET",
+				url: url,
+				data: {
+					search: searchedTerm,
+					categories: acceptedCategories.join(",")
+				}
+			})
+			 .done( function (msg) { 
+				// parse json
+				json = JSON.parse(msg);
 				
-			}
-			
-		 })
-		 .fail( function (error) {
-			 console.log("AJAX search error", error);
-		 });
+				if (json.data) {								
+					// set content of div
+					result.html(getHtml());
+				}
+				
+				lastSearchTerm = searchedTerm;
+			 })
+			 .fail( function (error) {
+				 console.log("AJAX search error", error);
+			 });
+		}
 	}
 	
 	/**
