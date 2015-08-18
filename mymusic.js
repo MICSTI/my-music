@@ -491,34 +491,51 @@ function addMMLinkConnection(_parent_id, _child_id) {
 	}
 }
 
+/**
+	Adds input control to a played song div.
+*/
+function addPlayedSongInputControl(_id) {
+	$("#" + _id + "-container .add-played-song-display").on("dblclick", function() {
+		// hide display div and delete the saved values
+		$(this).hide().empty();
+		
+		$("#" + _id + "-container .add-played-song-input").show();
+	});
+}
+
+/**
+	Adds a new add played div to the add played administration tab.
+*/
+function addNewAddPlayedDiv() {
+	getStatic("add_played_song_add", function(data) {
+		if ($(".add-played-song-div").length > 0) {
+			// append the new div after the last div
+			$(".add-played-song-div").last().after(data.content);
+		} else {
+			// if all divs have been deleted, append it to the form instead
+			$("#add-played-song-form").append(data.content);
+		}
+		
+		// auto complete for song adding
+		var addSongAC = new AutoComplete();
+		
+		// add id to static options array
+		ADD_SONG_AC_OPTIONS["id"] = data.id;
+		
+		addSongAC.init(ADD_SONG_AC_OPTIONS);
+		
+		// add onclick for editing the entered song
+		addPlayedSongInputControl(data.id);
+		
+		// set focus to the last song text input field
+		$(".add-played-song-time").last().focus();
+	});
+}
+
 function initAddPlayedSongAdministration() {
 	if ($("#add-played-song-1").length > 0) {
 		var addPlayedSongAdd = function() {
-			$("#add-played-song-add").on("click", function() {
-				getStatic("add_played_song_add", function(data) {
-					if ($(".add-played-song-div").length > 0) {
-						// append the new div after the last div
-						$(".add-played-song-div").last().after(data.content);
-					} else {
-						// if all divs have been deleted, append it to the form instead
-						$("#add-played-song-form").append(data.content);
-					}
-					
-					// auto complete for song adding
-					var addSongAC = new AutoComplete();
-					
-					// add id to static options array
-					ADD_SONG_AC_OPTIONS["id"] = data.id;
-					
-					addSongAC.init(ADD_SONG_AC_OPTIONS);
-					
-					// add onclick for editing the entered song
-					addPlayedSongInputControl(data.id);
-					
-					// set focus to the last song text input field
-					$(".add-played-song-time").last().focus();
-				});
-			});
+			$("#add-played-song-add").on("click", addNewAddPlayedDiv);
 		}
 		
 		// save played song entries
@@ -588,6 +605,8 @@ function initAddPlayedSongAdministration() {
 							var response = JSON.parse(resp);
 							
 							if (response.success) {
+								resetAddPlayed();
+								
 								globalNotify("Played songs were saved successfully");
 							} else {
 								console.log("Error", response.message);
@@ -608,14 +627,8 @@ function initAddPlayedSongAdministration() {
 			});
 		}
 		
-		var addPlayedSongInputControl = function(_id) {
-			$("#" + _id + "-container .add-played-song-display").on("dblclick", function() {
-				// hide display div and delete the saved values
-				$(this).hide().empty();
-				
-				$("#" + _id + "-container .add-played-song-input").show();
-			});
-		}
+		// add input control
+		addPlayedSongInputControl();
 		
 		// immediately add the function to the already existing element
 		addPlayedSongAdd();
@@ -635,6 +648,18 @@ function initAddPlayedSongAdministration() {
 		
 		addSongACFirst.init(ADD_SONG_AC_OPTIONS);
 	}
+}
+
+/**
+	Resets the add played tab.
+	The date, device and activity remain untouched.
+*/
+function resetAddPlayed() {
+	// remove all add-played-song-divs
+	$(".add-played-song-div").remove();
+	
+	// add a new one
+	addNewAddPlayedDiv();
 }
 
 $(document).ready( function () {

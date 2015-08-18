@@ -918,9 +918,9 @@
 		private function getPlayedAdministration($mdb) {
 			$html = "";
 			
-			// add played
+			// add played info
 			$html .= "<div class='row administration-paragraph'>";
-				$html .= "<button type='button' class='btn btn-success' onclick=\"crudModal('6I6T4dfW')\"><span class='glyphicon glyphicon-plus'></span> Add new played</button>";
+				$html .= "<button type='button' class='btn btn-success' onclick=\"$('#administration-add-played').click()\"><span class='glyphicon glyphicon-plus'></span> Add new played</button>";
 			$html .= "</div>";
 			
 			// Top bar with datepicker
