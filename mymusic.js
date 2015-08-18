@@ -491,6 +491,152 @@ function addMMLinkConnection(_parent_id, _child_id) {
 	}
 }
 
+function initAddPlayedSongAdministration() {
+	if ($("#add-played-song-1").length > 0) {
+		var addPlayedSongAdd = function() {
+			$("#add-played-song-add").on("click", function() {
+				getStatic("add_played_song_add", function(data) {
+					if ($(".add-played-song-div").length > 0) {
+						// append the new div after the last div
+						$(".add-played-song-div").last().after(data.content);
+					} else {
+						// if all divs have been deleted, append it to the form instead
+						$("#add-played-song-form").append(data.content);
+					}
+					
+					// auto complete for song adding
+					var addSongAC = new AutoComplete();
+					
+					// add id to static options array
+					ADD_SONG_AC_OPTIONS["id"] = data.id;
+					
+					addSongAC.init(ADD_SONG_AC_OPTIONS);
+					
+					// add onclick for editing the entered song
+					addPlayedSongInputControl(data.id);
+					
+					// set focus to the last song text input field
+					$(".add-played-song-time").last().focus();
+				});
+			});
+		}
+		
+		// save played song entries
+		if ($("#add-played-song-save").length > 0) {
+			$("#add-played-song-save").on("click", function() {
+				// check if there are songs to save
+				if ($(".add-played-song-div").length > 0) {
+					var first_element = $(".add-played-song-time").first();
+					
+					// check if time has been entered in the first field - otherwise fill it with current time
+					if (!validateTime(first_element.val())) {
+						first_element.val(getTimeString());
+					}
+					
+					// build JSON object
+					var add_songs_data = {};
+					
+					// add date
+					add_songs_data["date"] = $("#played-date").val();
+					
+					// add device
+					add_songs_data["device-id"] = $("#administration-device").val();
+					
+					// add activity
+					add_songs_data["activity-id"] = $("#administration-activity").val();
+					
+					// add songs form data
+					var songs_data = [];
+					
+					var data_ok = true;
+					
+					$.each($(".add-played-song-div"), function(i, item) {
+						var _id = item.id.substr(0, item.id.length - 10);
+						
+						// get time
+						var song_time = $("#" + item.id + " .add-played-song-time").first().val();
+						
+						// if time is not valid, use empty string instead
+						if (!validateTime(song_time)) {
+							song_time = "";
+						}
+						
+						// get song id
+						var song_id = $("#" + _id + "-song-id").val();
+						
+						if (song_id === undefined) {
+							data_ok = false;
+						} else {						
+							var song = { time: song_time, id: song_id };
+							
+							songs_data.push(song);
+						}
+					});
+					
+					add_songs_data["songs"] = songs_data;
+					
+					if (data_ok) {
+						// send data via POST request
+						$.ajax( {
+							method: "POST",
+							url: "ajax.db.php",
+							data: {
+								action: "add_songs_data",
+								data: JSON.stringify(add_songs_data)
+							}
+						}).done(function(resp) {
+							var response = JSON.parse(resp);
+							
+							if (response.success) {
+								globalNotify("Played songs were saved successfully");
+							} else {
+								console.log("Error", response.message);
+								globalNotify("Played songs could not be saved", "error");
+							}
+						}).fail(function(error) {
+							// log error
+							console.log("ajax.db.php", error);
+						});
+					} else {
+						globalNotify("There are errors in the played song form", "error");
+					}
+					
+					
+				} else {
+					globalNotify("No songs to save", "info");
+				}
+			});
+		}
+		
+		var addPlayedSongInputControl = function(_id) {
+			$("#" + _id + "-container .add-played-song-display").on("dblclick", function() {
+				// hide display div and delete the saved values
+				$(this).hide().empty();
+				
+				$("#" + _id + "-container .add-played-song-input").show();
+			});
+		}
+		
+		// immediately add the function to the already existing element
+		addPlayedSongAdd();
+		
+		// add the container click function to the pre-existing add div
+		addPlayedSongInputControl("add-played-song-1");
+		
+		// set the focus to this element if it's visible
+		if ($("#add-played-song-1").length > 0) {
+			$("#add-played-song-1").focus();
+		}
+		
+		// ... and add the auto complete handler to it as well
+		var addSongACFirst = new AutoComplete();
+		
+		ADD_SONG_AC_OPTIONS["id"] = "add-played-song-1";
+		
+		addSongACFirst.init(ADD_SONG_AC_OPTIONS);
+	}
+}
+
 $(document).ready( function () {
 	// make sure you can't submit the search form (would interfere with enter listener of auto complete)
 	$("#form-search").on("keypress", function(event) { return event.keyCode != 13; });
@@ -656,6 +802,9 @@ $(document).ready( function () {
 				// init datepicker
 				initDatepicker();
 				
+				// if tab is add played song, init add played song administration
+				initAddPlayedSongAdministration();
+				
 				// init admin search fields
 				$(".admin-search").each(function(idx, item) {
 					// category is at position 13
@@ -727,147 +876,8 @@ $(document).ready( function () {
 			});
 		});
 		
-		var addPlayedSongAdd = function() {
-			$("#add-played-song-add").on("click", function() {
-				getStatic("add_played_song_add", function(data) {
-					if ($(".add-played-song-div").length > 0) {
-						// append the new div after the last div
-						$(".add-played-song-div").last().after(data.content);
-					} else {
-						// if all divs have been deleted, append it to the form instead
-						$("#add-played-song-form").append(data.content);
-					}
-					
-					// auto complete for song adding
-					var addSongAC = new AutoComplete();
-					
-					// add id to static options array
-					ADD_SONG_AC_OPTIONS["id"] = data.id;
-					
-					addSongAC.init(ADD_SONG_AC_OPTIONS);
-					
-					// add onclick for editing the entered song
-					addPlayedSongInputControl(data.id);
-					
-					// set focus to the last song text input field
-					$(".add-played-song-time").last().focus();
-				});
-			});
-		}
-		
-		// save played song entries
-		if ($("#add-played-song-save").length > 0) {
-			$("#add-played-song-save").on("click", function() {
-				// check if there are songs to save
-				if ($(".add-played-song-div").length > 0) {
-					var first_element = $(".add-played-song-time").first();
-					
-					// check if time has been entered in the first field - otherwise fill it with current time
-					if (!validateTime(first_element.val())) {
-						first_element.val(getTimeString());
-					}
-					
-					// build JSON object
-					var add_songs_data = {};
-					
-					// add date
-					add_songs_data["date"] = $("#played-date").val();
-					
-					// add device
-					add_songs_data["device-id"] = $("#administration-device").val();
-					
-					// add activity
-					add_songs_data["activity-id"] = $("#administration-activity").val();
-					
-					// add songs form data
-					var songs_data = [];
-					
-					var data_ok = true;
-					
-					$.each($(".add-played-song-div"), function(i, item) {
-						var _id = item.id.substr(0, item.id.length - 10);
-						
-						// get time
-						var song_time = $("#" + item.id + " .add-played-song-time").first().val();
-						
-						// if time is not valid, use empty string instead
-						if (!validateTime(song_time)) {
-							song_time = "";
-						}
-						
-						// get song id
-						var song_id = $("#" + _id + "-song-id").val();
-						
-						if (song_id === undefined) {
-							data_ok = false;
-						} else {						
-							var song = { time: song_time, id: song_id };
-							
-							songs_data.push(song);
-						}
-					});
-					
-					add_songs_data["songs"] = songs_data;
-					
-					if (data_ok) {
-						// send data via POST request
-						$.ajax( {
-							method: "POST",
-							url: "ajax.db.php",
-							data: {
-								action: "add_songs_data",
-								data: JSON.stringify(add_songs_data)
-							}
-						}).done(function(resp) {
-							var response = JSON.parse(resp);
-							
-							if (response.success) {
-								globalNotify("Played songs were saved successfully");
-							} else {
-								console.log("Error", response.message);
-								globalNotify("Played songs could not be saved", "error");
-							}
-						}).fail(function(error) {
-							// log error
-							console.log("ajax.db.php", error);
-						});
-					} else {
-						globalNotify("There are errors in the played song form", "error");
-					}
-					
-					
-				} else {
-					globalNotify("No songs to save", "info");
-				}
-			});
-		}
-		
-		var addPlayedSongInputControl = function(_id) {
-			$("#" + _id + "-container .add-played-song-display").on("dblclick", function() {
-				// hide display div and delete the saved values
-				$(this).hide().empty();
-				
-				$("#" + _id + "-container .add-played-song-input").show();
-			});
-		}
-		
-		// immediately add the function to the already existing element
-		addPlayedSongAdd();
-		
-		// add the container click function to the pre-existing add div
-		addPlayedSongInputControl("add-played-song-1");
-		
-		// set the focus to this element if it's visible
-		if ($("#add-played-song-1").length > 0) {
-			$("#add-played-song-1").focus();
-		}
-		
-		// ... and add the auto complete handler to it as well
-		var addSongACFirst = new AutoComplete();
-		
-		ADD_SONG_AC_OPTIONS["id"] = "add-played-song-1";
-		
-		addSongACFirst.init(ADD_SONG_AC_OPTIONS);
+		// if tab is add played song, init add played song administration
+		initAddPlayedSongAdministration();
 	}
 	
 	var removeSettingsActive = function() {
