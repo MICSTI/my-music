@@ -725,7 +725,7 @@
 					break;
 					
 				case "played":
-					$html .= $group;
+					$html .= $this->getPlayedAdministration($mdb);
 					break;
 					
 				case "devices":
@@ -907,6 +907,30 @@
 			// result div
 			$html .= "<div class='row administration-paragraph'>";
 				$html .= "<div id='admin-search-record_result'></div>";
+			$html .= "</div>";
+			
+			return $html;
+		}
+		
+		/**
+			Returns the content of the played administration tab
+		*/
+		private function getPlayedAdministration($mdb) {
+			$html = "";
+			
+			// add played
+			$html .= "<div class='row administration-paragraph'>";
+				$html .= "<button type='button' class='btn btn-success' onclick=\"crudModal('6I6T4dfW')\"><span class='glyphicon glyphicon-plus'></span> Add new played</button>";
+			$html .= "</div>";
+			
+			// Top bar with datepicker
+			$html .= "<div class='row administration-paragraph'>";
+				
+			$html .= "</div>";
+			
+			// result div
+			$html .= "<div class='row administration-paragraph'>";
+				$html .= "<div id='admin-search-played_result'></div>";
 			$html .= "</div>";
 			
 			return $html;

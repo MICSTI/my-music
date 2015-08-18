@@ -213,6 +213,10 @@ function persistCrud(_action, _id, _params, _tab) {
 						window.location.href = "record.php?id=" + content.RecordId + addSuccessMessage();
 						break;
 						
+					case "savedPlayed":
+						
+						break;
+						
 					default:
 						break;
 				}

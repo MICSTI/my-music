@@ -1324,6 +1324,55 @@
 			
 				break;
 				
+			// played administration
+			case "6I6T4dfW":
+				// get data if edit
+				if ($id > 0) {
+					$played = $mc->getMDB()->getPlayed($id);
+					
+				} else {
+					$played = array();
+				}	
+					
+				// form name (for processing data in Javascript)
+				$form_name = "admin-played";
+				$data["form_name"] = $form_name;
+			
+				// title
+				$title = $id > 0 ? "Edit played" : "Add played";
+				$data["title"] = $title;
+				
+				// body
+				$body = "";
+				
+				$body .= "<form class='form-horizontal' id='" . $form_name . "'>";
+					
+				$body .= "</form>";
+					
+				$data["body"] = $body;
+				
+				// footer
+				$footer = $mc->getFrontend()->getModalButtons(array("cancel", "save"));
+				$data["footer"] = $footer;
+				
+				// save method id
+				$data["save"] = "Zqqmukyu";
+				
+				break;
+				
+			// save played
+			case "Zqqmukyu":
+				parse_str($params, $get);
+				
+				$success = true;
+				
+				// on success action
+				$data["onSuccess"] = "savedPlayed";
+			
+				$data["success"] = $success;
+			
+				break;
+			
 			default:
 				$data["status"] = "error";
 				$data["message"] = "unknown action";
