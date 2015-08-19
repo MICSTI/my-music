@@ -40,6 +40,24 @@
 			
 				break;
 				
+			// played date data
+			case "played_date":
+				$json_data = json_decode($data, true);
+				
+				// get info from JSON data
+				$date = getMysqlDate($json_data["date"]);
+				
+				// get data for this date from database
+				$played_data = array();
+				
+				$response["playeds"] = $played_data;
+				
+				$success = true;
+				
+				$response["success"] = $success;
+			
+				break;
+				
 			default:
 				$response["success"] = false;
 				$response["message"] = "Unknown action";

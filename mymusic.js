@@ -662,6 +662,33 @@ function resetAddPlayed() {
 	addNewAddPlayedDiv();
 }
 
+/**
+	Gets the played data for the date.
+*/
+function getPlayedForDateAjax(date) {
+	$.ajax( {
+		method: "POST",
+		url: "ajax.db.php",
+		data: {
+			action: "played_date",
+			data: JSON.stringify({ date: date })
+		}
+	}).done(function(resp) {
+		var response = JSON.parse(resp);
+		
+		if (response.success) {
+			// display played data
+			
+		} else {
+			console.log("Error", response.message);
+			globalNotify("Failed to fetch played data", "error");
+		}
+	}).fail(function(error) {
+		// log error
+		console.log("ajax.db.php", error);
+	});
+}
+
 $(document).ready( function () {
 	// make sure you can't submit the search form (would interfere with enter listener of auto complete)
 	$("#form-search").on("keypress", function(event) { return event.keyCode != 13; });
@@ -829,6 +856,18 @@ $(document).ready( function () {
 				
 				// if tab is add played song, init add played song administration
 				initAddPlayedSongAdministration();
+				
+				// played administration datepicker
+				if ($("#played-administration-date").length > 0) {
+					$("#played-administration-date").on("changeDate", function(e) {
+						// changeDate fires when month or year selection of datepicker is clicked, so we have to check if the user actually selected a new date
+						if (e.viewMode === "days") {
+							// hide datepicker after date was changed
+							$(this).datepicker("hide");
+							getPlayedForDateAjax($(this).val());
+						}
+					});
+				}
 				
 				// init admin search fields
 				$(".admin-search").each(function(idx, item) {

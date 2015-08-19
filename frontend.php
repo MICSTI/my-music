@@ -925,7 +925,7 @@
 			
 			// Top bar with datepicker
 			$html .= "<div class='row administration-paragraph'>";
-				
+				$html .= "<input type='text' id='played-administration-date' class='form-control date-picker' placeholder='Date' value='" . date("d.m.Y") . "' />";
 			$html .= "</div>";
 			
 			// result div
