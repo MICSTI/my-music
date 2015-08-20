@@ -674,7 +674,9 @@ function initAddPlayedSongAdministration() {
 						var song_id = $("#" + _id + "-song-id").val();
 						
 						if (song_id === undefined) {
-							data_ok = false;
+							// if a song has no valid id, it is simply ignored
+							// alternatively, it would be possible to set data_ok to false here - but in this case
+							// it is not possible to submit the form if the user accidentally added a new song line
 						} else {						
 							var song = { time: song_time, id: song_id };
 							
