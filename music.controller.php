@@ -21,8 +21,8 @@
 		// File name of played file
 		private static $playedfile = "files/played.xml";
 		
-		// Mobile folder
-		private static $mobile_folder = "upload/";
+		// Upload folder
+		private static $upload_folder = "upload/";
 		
 		function __construct () {
 			$this->dbc = new DatabaseConnection();
@@ -160,13 +160,13 @@
 			Looks for mobile xml files and imports them to the database
 		*/
 		private function importMobile () {
-			$mobile_folder = $this->getMobileFolder();
+			$upload_folder = $this->getUploadFolder();
 			
 			// Search for mobile xml files
 			$mobile_files = $this->getMobileFiles();
 			
 			foreach ($mobile_files as $file) {
-				$mobfile = $mobile_folder . $file;
+				$mobfile = $upload_folder . $file;
 			
 				// Import file to database
 				$success = $this->importFromMobileFile($mobfile);
@@ -179,18 +179,103 @@
 		}
 		
 		/**
-			Determines all mobile.{UNIX_TIMESTAMP}.xml files in the mobile folder and returns them in an array.
+			Gets all update files (desktop and mobile) and returns them in one array, sorted by timestamp
+		*/
+		public function getUpdateFiles() {
+			$upload_files = array();
+			
+			$desktop_files = $this->getDesktopFiles();
+			$mobile_files = $this->getMobileFiles();
+			
+			$desktop_count = count($desktop_files);
+			$mobile_count = count($mobile_files);
+			
+			$desktop_index = 0;
+			$mobile_index = 0;
+			
+			while (($desktop_index + $mobile_index) < ($desktop_count + $mobile_count)) {
+				if ($desktop_index == $desktop_count) {
+					// take mobile file
+					array_push($upload_files, $mobile_files[$mobile_index]);
+					
+					$mobile_index++;
+				} else if ($mobile_index == $mobile_count) {
+					// take desktop file
+					array_push($upload_files, $desktop_files[$desktop_index]);
+					
+					$desktop_index++;
+				} else {
+					// get next desktop and mobile timestamp
+					$next_desktop_timestamp = $this->getTimestampFromFilename($desktop_files[$desktop_index]);
+					$next_mobile_timestamp = $this->getTimestampFromFilename($mobile_files[$mobile_index]);
+					
+					if ($next_desktop_timestamp < $next_mobile_timestamp) {
+						// take desktop file
+						array_push($upload_files, $desktop_files[$desktop_index]);
+					
+						$desktop_index++;
+					} else {
+						// take mobile file
+						array_push($upload_files, $mobile_files[$mobile_index]);
+					
+						$mobile_index++;
+					}
+				}
+			}
+			
+			return $upload_files;
+		}
+		
+		public function getTimestampFromFilename($filename) {
+			$needle = ".";
+			
+			$first_pos = strpos($filename, $needle);
+			
+			$cut_filename = substr($filename, $first_pos + 1);
+			
+			$second_pos = strpos($cut_filename, $needle);
+			
+			$timestamp = substr($cut_filename, 0, $second_pos);
+			
+			return $timestamp;
+		}
+		
+		/**
+			Determines all mobile.{UNIX_TIMESTAMP}.xml files in the upload folder and returns them in an array.
 			If no files are found, and empty array is returned.
 		*/
 		private function getMobileFiles () {
 			$mobile_files = array();
 		
-			$mobile_folder = $this->getMobileFolder();
+			$upload_folder = $this->getUploadFolder();
 			
 			$file_name_start = "mobile.";
 			$file_name_end = ".xml";
 			
-			$files = scandir($mobile_folder);
+			$files = scandir($upload_folder);
+			
+			foreach ($files as $file) {
+				if ($this->startsWith($file, $file_name_start) AND $this->endsWith($file, $file_name_end)) {
+					array_push($mobile_files, $file);
+				}
+			}
+			
+			return $mobile_files;
+		}
+		
+		/**
+			Determines all desktop.{UNIX_TIMESTAMP}.xml files in the upload folder and returns them in an array.
+			If no files are found, and empty array is returned.
+		*/
+		private function getDesktopFiles () {
+			$mobile_files = array();
+		
+			$upload_folder = $this->getUploadFolder();
+			
+			$file_name_start = "desktop.";
+			$file_name_end = ".xml";
+			
+			$files = scandir($upload_folder);
 			
 			foreach ($files as $file) {
 				if ($this->startsWith($file, $file_name_start) AND $this->endsWith($file, $file_name_end)) {
@@ -402,7 +487,7 @@
 			return MusicController::$playedfile;
 		}
 		
-		private function getMobileFolder () {
-			return MusicController::$mobile_folder;
+		private function getUploadFolder () {
+			return MusicController::$upload_folder;
 		}
 	}
