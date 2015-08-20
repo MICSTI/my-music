@@ -38,3 +38,23 @@ function getTimeString() {
 	
 	return ("0" + _date.getHours()).slice(-2) + ":" + ("0" + _date.getMinutes()).slice(-2);
 }
+
+/**
+	Returns an Austrian datetime string of the passed UNIX timestamp
+*/
+function getFormattedTimestamp(unix_timestamp) {
+	// create a new javascript Date object based on the timestamp
+	// multiplied by 1000 so that the argument is in milliseconds, not seconds
+	var date = new Date(unix_timestamp * 1000);
+	
+	// hours part from the timestamp
+	var hours = date.getHours();
+	
+	// minutes part from the timestamp
+	var minutes = "0" + date.getMinutes();
+
+	// will display time in 10:30:23 format
+	var formattedTime = hours + ':' + minutes.substr(-2);
+	
+	return formattedTime;
+}

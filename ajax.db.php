@@ -48,12 +48,30 @@
 				$date = getMysqlDate($json_data["date"]);
 				
 				// get data for this date from database
-				$played_data = array();
+				$played_data = $mc->getMDB()->getPlayedHistoryForDate($date);
+				
+				$count = count($played_data);
+				
+				for ($i = 0; $i < $count; $i++) {
+					// convert MySQL timestamps to UNIX timestamps
+					$mysql_timestamp = new MysqlDateTime($played_data[$i]["Timestamp"]);
+					$played_data[$i]["UnixTimestamp"] = $mysql_timestamp->convert2UnixTimestamp();
+					
+					// add device icon
+					$device = $mc->getMDB()->getDevice($played_data[$i]["DeviceId"]);
+					
+					$device_icon = $mc->getMDB()->getIcon($device["DeviceDeviceTypeIconId"]);
+					
+					$played_data[$i]["Device"] = getIconRef($device_icon, "", $device["DeviceName"]);
+					
+					// add activity label string
+					$activity = $mc->getMDB()->getActivity($played_data[$i]["ActivityId"]);
+					$played_data[$i]["Activity"] = getActivitySpan($activity);
+				}
 				
 				$response["playeds"] = $played_data;
 				
-				$success = true;
-				
+				$success = !is_null($played_data);
 				$response["success"] = $success;
 			
 				break;

@@ -3295,6 +3295,7 @@
 			$limit_high = strip_tags($limit_high);
 			
 			$sql = "SELECT
+						pl.id AS 'PlayedId',
 						pl.timestamp AS 'Timestamp',
 						pl.actid AS 'ActivityId',
 						pl.devid AS 'DeviceId',
@@ -3323,7 +3324,7 @@
 					$this->addLog(__FUNCTION__, "success", "fetched play history for date " . $date);
 				}
 				
-				return $query->fetchAll();
+				return $query->fetchAll(PDO::FETCH_ASSOC);
 			} else {
 				return null;
 			}

@@ -96,6 +96,35 @@ a {
 	margin-bottom: 12px;
 }
 
+.played-admin-played-time {
+	display: inline-block;
+	width: 70px;
+}
+
+.played-admin-time {
+	display: inline-block;
+	position: relative;
+	top: -16px;
+}
+
+.played-admin-song-info {
+	display: inline-block;
+	width: 350px;
+}
+
+.played-admin-played-details {
+	display: inline-block;
+	width: 200px;
+}
+
+.played-admin-device {
+	margin-bottom: 6px;
+}
+
+.played-admin-activity {
+	margin-bottom: 4px;
+}
+
 /* ------- Admin search ------- */
 .as_choice {
 	padding: 2px 4px;

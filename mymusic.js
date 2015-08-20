@@ -666,6 +666,9 @@ function resetAddPlayed() {
 	Gets the played data for the date.
 */
 function getPlayedForDateAjax(date) {
+	// result div
+	var resultDiv = $("#admin-search-played_result");
+	
 	$.ajax( {
 		method: "POST",
 		url: "ajax.db.php",
@@ -677,8 +680,16 @@ function getPlayedForDateAjax(date) {
 		var response = JSON.parse(resp);
 		
 		if (response.success) {
-			// display played data
+			// empty result div
+			resultDiv.empty();
 			
+			// display played data
+			$.each(response.playeds, function(i, item) {
+				resultDiv.append(getPlayedAdministrationDiv(item));
+			});
+			
+			// add tooltips
+			addTooltips();
 		} else {
 			console.log("Error", response.message);
 			globalNotify("Failed to fetch played data", "error");
@@ -687,6 +698,31 @@ function getPlayedForDateAjax(date) {
 		// log error
 		console.log("ajax.db.php", error);
 	});
+}
+
+function getPlayedAdministrationDiv(played) {
+	var html = "";
+	
+	html += "<div class='as_choice' data-id='" + played.PlayedId+ "'>" +
+				"<div class='pull-right'><button type='button' class='btn btn-primary' onclick=\"crudModal('6I6T4dfW', '" + played.PlayedId + "')\"><span class='glyphicon glyphicon-pencil'></span></button></div>" +
+				
+				"<div class='played-admin-played-time'>" +
+					"<span class='played-admin-time'>" + getFormattedTimestamp(played.UnixTimestamp) + "</span>" +
+				"</div>" +
+				
+				"<div class='played-admin-song-info'>" + 
+					"<div class='search_artist_name'>" + played.ArtistName + "</div>" +
+					"<div>" + played.SongName + "</div>" +
+					"<div class='search_record_name'>" + played.RecordName + "</div>" +
+				"</div>" +
+				
+				"<div class='played-admin-played-details'>" +
+					"<div class='played-admin-device'>" + played.Device + "</div>" + 
+					"<div class='played-admin-activity'>" + played.Activity + "</div>" +
+				"</div>" +
+			"</div>";
+	
+	return html;
 }
 
 $(document).ready( function () {
