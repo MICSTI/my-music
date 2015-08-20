@@ -284,7 +284,7 @@ function persistCrud(_action, _id, _params, _tab) {
 						break;
 						
 					case "savedPlayed":
-						
+						updatePlayedOnDate();
 						break;
 						
 					default:
@@ -402,6 +402,17 @@ function updateArtistInformation(_id) {
 		// log error
 		console.log("ajax.settings.php", error);
 	});
+}
+
+/**
+	Updates the played information for the currently selected date.
+*/
+function updatePlayedOnDate() {
+	// clear result div
+	$("#admin-search-played_result").empty();
+	
+	// get playeds for the currently selected date
+	getPlayedForDateAjax($("#played-administration-date").val());
 }
 
 /**
