@@ -9,12 +9,14 @@
 	// File list
 	$update_files = $mc->getUpdateFiles();
 	
+	$file_count = count($update_files);
+	
 	// Files panel
 	$html .= "<div class='panel panel-default'>";
-		$html .= "<div class='panel-heading bold'>Available files</div>";
+		$html .= "<div class='panel-heading'>Available files</div>";
 		
 		$html .= "<div class='panel-body'>";
-			if (count($update_files) > 0) {
+			if ($file_count > 0) {
 				$html .= "<table class='table'>";
 					$html .= "<thead>";
 						$html .= "<tr>";
@@ -44,5 +46,9 @@
 			}
 		$html .= "</div>";
 	$html .= "</div>";
+	
+	if ($file_count > 0) {
+		$html .= "<button type='button' class='btn btn-primary'>Update</button>";
+	}
 	
 	echo $mc->getIndexHTML($html, "update");
