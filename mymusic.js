@@ -67,6 +67,9 @@ function crudModal(_action, _id, _params) {
 	modal.on("show.bs.modal", function() {
 		// add selectpicker
 		initSelectpicker();
+		
+		// immediately remove handler to avoid attaching it over and over again
+		modal.off("show.bs.modal");
 	});
 
 	// fites when modal has completely finished loading
@@ -84,12 +87,18 @@ function crudModal(_action, _id, _params) {
 		if ($("#played-admin-song-display").length > 0) {
 			addPlayedAdminSongInputControl();
 		}
+		
+		// immediately remove handler to avoid attaching it over and over again
+		modal.off("shown.bs.modal");
 	});
 	
 	// fires as the modal is being hidden
 	modal.on("hidden.bs.modal", function() {
 		// close all datepickers on this modal
 		$(".modal-dialog .date-picker").datepicker("hide");
+		
+		// immediately remove handler to avoid attaching it over and over again
+		modal.off("hidden.bs.modal");
 	});
 	
 	$.ajax( {
@@ -565,6 +574,8 @@ function addMMLinkConnection(_parent_id, _child_id) {
 				// log error
 				console.log("ajax.db.php", error);
 			});
+			
+			modal.off("hidden.bs.modal");
 		});
 		
 		// hide modal
