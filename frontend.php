@@ -704,12 +704,12 @@
 			return $html;
 		}
 		
-		public function getAdministrationContent($mdb, $group = "add-played") {
+		public function getAdministrationContent($mdb, $group = "add-played", $params = "") {
 			$html = "";
 			
 			switch ($group) {
 				case "add-played":
-					$html .= $this->getAddPlayedAdministration($mdb);
+					$html .= $this->getAddPlayedAdministration($mdb, $params);
 					break;
 					
 				case "songs":
@@ -747,8 +747,10 @@
 		/**
 			Returns the content of the add played song administration tab
 		*/
-		private function getAddPlayedAdministration($mdb) {
+		private function getAddPlayedAdministration($mdb, $date = "") {
 			$html = "";
+			
+			$date = $date != "" ? $date : date("d.m.Y");
 			
 			$html .= "<div class='row'>";
 				// Top bar
@@ -756,7 +758,7 @@
 					// datepicker
 					$html .= "<div class='col-sm-2'>";
 						$html .= "<div class='bold'>Date</div>";
-						$html .= "<div><input type='text' id='played-date' class='form-control date-picker' placeholder='Date' value='" . date("d.m.Y") . "' /></div>";
+						$html .= "<div><input type='text' id='played-date' class='form-control date-picker' placeholder='Date' value='" . $date . "' /></div>";
 					$html .= "</div>";
 					
 					// device
@@ -920,7 +922,7 @@
 			
 			// add played info
 			$html .= "<div class='row administration-paragraph'>";
-				$html .= "<button type='button' class='btn btn-success' onclick=\"$('#administration-add-played').click()\"><span class='glyphicon glyphicon-plus'></span> Add new played</button>";
+				$html .= "<button type='button' class='btn btn-success' id='played-admin-add-played'><span class='glyphicon glyphicon-plus'></span> Add new played</button>";
 			$html .= "</div>";
 			
 			// Top bar with datepicker

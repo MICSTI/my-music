@@ -753,13 +753,17 @@ function getPlayedForDateAjax(date) {
 			// empty result div
 			resultDiv.empty();
 			
-			// display played data
-			$.each(response.playeds, function(i, item) {
-				resultDiv.append(getPlayedAdministrationDiv(item));
-			});
-			
-			// add tooltips
-			addTooltips();
+			if (response.playeds) {
+				// display played data
+				$.each(response.playeds, function(i, item) {
+					resultDiv.append(getPlayedAdministrationDiv(item));
+				});
+				
+				// add tooltips
+				addTooltips();
+			} else {
+				resultDiv.append("Unfortunately, there were no songs played on this date.");
+			}
 		} else {
 			console.log("Error", response.message);
 			globalNotify("Failed to fetch played data", "error");
@@ -793,6 +797,115 @@ function getPlayedAdministrationDiv(played) {
 			"</div>";
 	
 	return html;
+}
+
+function switchToAddPlayedTab() {
+	// set date correct for add played tab
+	getNewSettingsTabContent("add-played", $("#played-administration-date").val());	
+}
+
+function getNewSettingsTabContent(target, params) {
+	// get content
+	$.ajax( {
+		method: "GET",
+		url: "ajax.administration.php",
+		data: {
+			action: "tab",
+			id: target,
+			params: params
+		}
+	}).done(function(data) {
+		// set content
+		$("#administration-content").html(data);
+		
+		// add tooltips
+		addTooltips();
+		
+		// init selects
+		initSelectpicker();
+		
+		// init datepicker
+		initDatepicker();
+		
+		// if tab is add played song, init add played song administration
+		initAddPlayedSongAdministration();
+		
+		// played administration datepicker
+		if ($("#played-administration-date").length > 0) {
+			// switch to add played tab button
+			$("#played-admin-add-played").on("click", function() {
+				switchToAddPlayedTab();
+			});
+			
+			// get data for default date
+			getPlayedForDateAjax($("#played-administration-date").val());
+			
+			$("#played-administration-date").on("changeDate", function(e) {
+				// changeDate fires when month or year selection of datepicker is clicked, so we have to check if the user actually selected a new date
+				if (e.viewMode === "days") {
+					// hide datepicker after date was changed
+					$(this).datepicker("hide");
+					getPlayedForDateAjax($(this).val());
+				}
+			});
+		}
+		
+		// init admin search fields
+		$(".admin-search").each(function(idx, item) {
+			// category is at position 13
+			var _cat = item.id.substring(13) + "s";
+			
+			var adminSearch = new AdminSearch();
+			
+			adminSearchOptions = {
+				id: item.id,
+				url: "search.php",
+				categories: [_cat],
+				itemDisplay: function(_category, _item, _choiceClass) {
+					switch (_category) {
+						case "songs":
+							return "<div class='" + _choiceClass + "' data-category='" + _category + "' data-id='" + _item.SongId + "' data-artist='" + _item.ArtistName + "' data-song='" + _item.SongName + "' data-record='" + _item.RecordName + "'>" +
+										"<div class='admin-search-edit pull-right'><button type='button' class='btn btn-primary' onclick=\"crudModal('57bB21kN', '" + _item.SongId + "')\"><span class='glyphicon glyphicon-pencil'></button></div>" + 
+										"<div class='search_artist_name'>" + _item.ArtistName + "</div>" +
+										"<div>" + _item.SongName + "</div>" +
+										"<div class='search_record_name'>" + _item.RecordName + "</div>" +
+									"</div>";
+							
+							break;
+							
+						case "artists":
+							return "<div class='" + _choiceClass + "' data-category='" + _category + "' data-id='" + _item.ArtistId + "'>" +
+										"<div class='admin-search-edit pull-right'><button type='button' class='btn btn-primary' onclick=\"crudModal('YTYrcS79', '" + _item.ArtistId + "')\"><span class='glyphicon glyphicon-pencil'></button></div>" + 
+										"<div>" + _item.ArtistName + "</div>" +
+									"</div>";
+							
+							break;
+							
+						case "records":
+							return "<div class='" + _choiceClass + "' data-category='" + _category + "' data-id='" + _item.ArtistId + "'>" +
+										"<div class='admin-search-edit pull-right'><button type='button' class='btn btn-primary' onclick=\"crudModal('uXQMGi1b', '" + _item.RecordId + "')\"><span class='glyphicon glyphicon-pencil'></button></div>" + 
+										"<div class='search_artist_name'>" + _item.ArtistName + "</div>" +
+										"<div>" + _item.RecordName + "</div>" +
+									"</div>";
+							
+							break;
+							
+						default:
+							return "";
+							break;
+					}
+				}
+			};
+			
+			adminSearch.init(adminSearchOptions);
+		});
+		
+		// assign focus to autofocus element and set cursor to the end of the input element
+		$("#administration-content .autofocus").first().focus().putCursorAtEnd();
+	}).fail(function(error) {
+		// log error
+		console.log("ajax.administration.php", error);
+	});
 }
 
 $(document).ready( function () {
@@ -939,101 +1052,8 @@ $(document).ready( function () {
 			// mark new active
 			$(this).addClass("active");
 			
-			// get content
-			$.ajax( {
-				method: "GET",
-				url: "ajax.administration.php",
-				data: {
-					action: "tab",
-					id: target
-				}
-			}).done(function(data) {
-				// set content
-				$("#administration-content").html(data);
-				
-				// add tooltips
-				addTooltips();
-				
-				// init selects
-				initSelectpicker();
-				
-				// init datepicker
-				initDatepicker();
-				
-				// if tab is add played song, init add played song administration
-				initAddPlayedSongAdministration();
-				
-				// played administration datepicker
-				if ($("#played-administration-date").length > 0) {
-					// get data for default date
-					getPlayedForDateAjax($("#played-administration-date").val());
-					
-					$("#played-administration-date").on("changeDate", function(e) {
-						// changeDate fires when month or year selection of datepicker is clicked, so we have to check if the user actually selected a new date
-						if (e.viewMode === "days") {
-							// hide datepicker after date was changed
-							$(this).datepicker("hide");
-							getPlayedForDateAjax($(this).val());
-						}
-					});
-				}
-				
-				// init admin search fields
-				$(".admin-search").each(function(idx, item) {
-					// category is at position 13
-					var _cat = item.id.substring(13) + "s";
-					
-					var adminSearch = new AdminSearch();
-					
-					adminSearchOptions = {
-						id: item.id,
-						url: "search.php",
-						categories: [_cat],
-						itemDisplay: function(_category, _item, _choiceClass) {
-							switch (_category) {
-								case "songs":
-									return "<div class='" + _choiceClass + "' data-category='" + _category + "' data-id='" + _item.SongId + "' data-artist='" + _item.ArtistName + "' data-song='" + _item.SongName + "' data-record='" + _item.RecordName + "'>" +
-												"<div class='admin-search-edit pull-right'><button type='button' class='btn btn-primary' onclick=\"crudModal('57bB21kN', '" + _item.SongId + "')\"><span class='glyphicon glyphicon-pencil'></button></div>" + 
-												"<div class='search_artist_name'>" + _item.ArtistName + "</div>" +
-												"<div>" + _item.SongName + "</div>" +
-												"<div class='search_record_name'>" + _item.RecordName + "</div>" +
-											"</div>";
-									
-									break;
-									
-								case "artists":
-									return "<div class='" + _choiceClass + "' data-category='" + _category + "' data-id='" + _item.ArtistId + "'>" +
-												"<div class='admin-search-edit pull-right'><button type='button' class='btn btn-primary' onclick=\"crudModal('YTYrcS79', '" + _item.ArtistId + "')\"><span class='glyphicon glyphicon-pencil'></button></div>" + 
-												"<div>" + _item.ArtistName + "</div>" +
-											"</div>";
-									
-									break;
-									
-								case "records":
-									return "<div class='" + _choiceClass + "' data-category='" + _category + "' data-id='" + _item.ArtistId + "'>" +
-												"<div class='admin-search-edit pull-right'><button type='button' class='btn btn-primary' onclick=\"crudModal('uXQMGi1b', '" + _item.RecordId + "')\"><span class='glyphicon glyphicon-pencil'></button></div>" + 
-												"<div class='search_artist_name'>" + _item.ArtistName + "</div>" +
-												"<div>" + _item.RecordName + "</div>" +
-											"</div>";
-									
-									break;
-									
-								default:
-									return "";
-									break;
-							}
-						}
-					};
-					
-					adminSearch.init(adminSearchOptions);
-				});
-				
-				// assign focus to autofocus element and set cursor to the end of the input element
-				$("#administration-content .autofocus").first().focus().putCursorAtEnd();
-			}).fail(function(error) {
-				// log error
-				console.log("ajax.administration.php", error);
-			});
+			// get new tab content
+			getNewSettingsTabContent(target);
 		});
 		
 		// affix for nav always to be visible
