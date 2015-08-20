@@ -133,6 +133,10 @@
 			return date('d.m.Y H:i', $this->unix);
 		}
 		
+		public function convert2Time() {
+			return date('H:i', $this->unix);
+		}
+		
 		public function convert2MMDate () {
 			$unix = new UnixTimestamp($this->unix);
 			

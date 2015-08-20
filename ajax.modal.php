@@ -1327,32 +1327,52 @@
 			// played administration
 			case "6I6T4dfW":
 				// get data if edit
-				if ($id > 0) {
-					$played = $mc->getMDB()->getPlayed($id);
-					
-				} else {
-					$played = array();
-				}	
+				$played = $mc->getMDB()->getPlayed($id);
 					
 				// form name (for processing data in Javascript)
 				$form_name = "admin-played";
 				$data["form_name"] = $form_name;
 			
 				// title
-				$title = $id > 0 ? "Edit played" : "Add played";
+				$title = "Edit played";
 				$data["title"] = $title;
 				
 				// body
 				$body = "";
 				
 				$body .= "<form class='form-horizontal' id='" . $form_name . "'>";
+					// time
+					$mysql_datetime = new MysqlDateTime($played["PlayedTimestamp"]);
+					$time = $mysql_datetime->convert2Time();
+					
+					$body .= "<div class='form-group'>";
+						$body .= "<label for='played-admin-time' class='control-label col-xs-2'>Time</label>";
+						$body .= "<div class='col-xs-10'>";
+							$body .= "<input type='text' class='form-control autofocus' id='played-admin-time' name='played-admin-time' placeholder='Time' value='" . $time . "' />";
+						$body .= "</div>";
+					$body .= "</div>";
+				
 					// song
 					
 					// device
+					$device_params = array("class" => "selectpicker form-control", "id" => "played-admin-device-id", "name" => "played-admin-device-id");
+					
+					$body .= "<div class='form-group'>";
+						$body .= "<label for='played-admin-device-id' class='control-label col-xs-2'>Device</label>";
+						$body .= "<div class='col-xs-10'>";
+							$body .= getDeviceSelectBox($mc->getMDB(), $device_params, $played["DeviceId"]);
+						$body .= "</div>";
+					$body .= "</div>";
 					
 					// activity
+					$activity_params = array("class" => "selectpicker form-control", "id" => "played-admin-activity-id", "name" => "played-admin-activity-id");
 					
-					// timestamp
+					$body .= "<div class='form-group'>";
+						$body .= "<label for='played-admin-activity-id' class='control-label col-xs-2'>Activity</label>";
+						$body .= "<div class='col-xs-10'>";
+							$body .= getActivitySelectBox($mc->getMDB(), $activity_params, $played["ActivityId"]);
+						$body .= "</div>";
+					$body .= "</div>";
 					
 				$body .= "</form>";
 					

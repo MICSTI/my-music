@@ -209,3 +209,59 @@
 		
 		return $html;
 	}
+	
+	/**
+		Returns the device select box, default value is the default device from the database (config property "default_device")
+	*/
+	function getDeviceSelectBox($mdb, $params, $device_id = 0) {
+		$html = "";
+		
+		$html .= "<select class='" . $params["class"] . "' id='" . $params["id"] . "' name='" . $params["name"] . "'>";
+		
+			// all devices
+			$devices = $mdb->getDevices();
+			
+			// keep track of active state to add a divider between active and non-active devices
+			$dev_active = true;
+			
+			// if no device_id was passed, use the default device from the database
+			$selected_device = $device_id > 0 ? $device_id : $mdb->getConfig("default_device");
+			
+			foreach ($devices as $device) {
+				$icon = $mdb->getIcon($device["DeviceDeviceTypeIconId"]);
+				
+				if ($device["DeviceActive"] != $dev_active) {
+					$dev_active = $device["DeviceActive"];
+					$html .= "<option data-divider='true'></option>";
+				}
+				
+				$html .= "<option value='" . $device["DeviceId"] . "' data-icon='" . $icon["IconPath"] . "' " . compareOption($selected_device, $device["DeviceId"]) . ">" . $device["DeviceName"] . "</option>";
+			}
+		
+		$html .= "</select>";
+		
+		return $html;
+	}
+	
+	/**
+		Returns the activity select box, default value is the default on the way activity from the database (config property "default_mobile_activity")
+	*/
+	function getActivitySelectBox($mdb, $params, $activity_id = 0) {
+		$html = "";
+		
+		$html .= "<select class='" . $params["class"] . "' id='" . $params["id"] . "' name='" . $params["name"] . "'>";
+		
+			// all devices
+			$activities = $mdb->getActivities();
+			
+			// if no activity_id was passed, use the default activity from the database
+			$selected_activity = $activity_id > 0 ? $activity_id : $mdb->getConfig("default_mobile_activity");
+			
+			foreach ($activities as $activity) {
+				$html .= "<option value='" . $activity["ActivityId"] . "' data-content=\"<span class='label label-big label-" . $activity["ActivityColor"] . "'>#" . $activity["ActivityName"] . "</span> \" " . compareOption($selected_activity, $activity["ActivityId"]) . ">" . "</option>";
+			}
+		
+		$html .= "</select>";
+		
+		return $html;
+	}
