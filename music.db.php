@@ -1279,8 +1279,20 @@
 			}
 		}
 		
+		/**
+			Updates a played entry.
+			If the operation was successful, true is returned, false otherwise.
+		*/
 		public function updatePlayed($id, $sid, $devid, $actid, $timestamp) {
+			$sql = "UPDATE played SET sid = :sid, devid = :devid, actid = :actid, timestamp = :timestamp WHERE id = :id";
+			$query = $this->db->prepare($sql);
+			$success = $query->execute( array(':id' => $id, ':sid' => $sid, ':devid' => $devid, ':actid' => $actid, ':timestamp' => $timestamp) );
 			
+			if ($query->rowCount() > 0 OR $success !== false) {
+				return true;
+			} else {
+				return false;
+			}
 		}
 		
 		/**

@@ -71,8 +71,7 @@
 				
 				$response["playeds"] = $played_data;
 				
-				$success = !is_null($played_data);
-				$response["success"] = $success;
+				$response["success"] = true;
 			
 				break;
 				

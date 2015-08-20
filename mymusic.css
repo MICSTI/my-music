@@ -125,6 +125,10 @@ a {
 	margin-bottom: 4px;
 }
 
+#played-admin-song-input {
+	display: none;
+}
+
 /* ------- Admin search ------- */
 .as_choice {
 	padding: 2px 4px;

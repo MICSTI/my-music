@@ -1326,8 +1326,15 @@
 				
 			// played administration
 			case "6I6T4dfW":
+				// get date info
+				parse_str($params, $get);
+				
+				$date = $get["date"];
+			
 				// get data if edit
 				$played = $mc->getMDB()->getPlayed($id);
+				
+				$song = $mc->getMDB()->getSong($played["SongId"]);
 					
 				// form name (for processing data in Javascript)
 				$form_name = "admin-played";
@@ -1341,6 +1348,9 @@
 				$body = "";
 				
 				$body .= "<form class='form-horizontal' id='" . $form_name . "'>";
+					// date (hidden)
+					$body .= "<input type='hidden' id='played-admin-date' name='played-admin-date' value='" . $date . "' />";
+				
 					// time
 					$mysql_datetime = new MysqlDateTime($played["PlayedTimestamp"]);
 					$time = $mysql_datetime->convert2Time();
@@ -1353,6 +1363,22 @@
 					$body .= "</div>";
 				
 					// song
+					$body .= "<input type='hidden' id='song-id' name='song-id' value='" . $song["SongId"] . "' />";
+					
+					$body .= "<div class='form-group'>";
+						$body .= "<label for='played-admin-song-id' class='control-label col-xs-2'>Song</label>";
+						
+						$body .= "<div id='played-admin-song-input' class='col-xs-10'>";
+							$body .= "<input type='text' id='played-admin-song-id' class='form-control' placeholder='Choose song' value='" . $song["SongName"] . "' />";
+						$body .= "</div>";
+						
+						$body .= "<div id='played-admin-song-display' class='col-xs-10'>";
+							// song info
+							$body .= "<div class='search_artist_name'>" . $song["ArtistName"] . "</div>";
+							$body .= "<div>" . $song["SongName"] . "</div>";
+							$body.= "<div class='search_record_name'>" . $song["RecordName"] . "</div>";
+						$body .= "</div>";
+					$body .= "</div>";
 					
 					// device
 					$device_params = array("class" => "selectpicker form-control", "id" => "played-admin-device-id", "name" => "played-admin-device-id");
@@ -1391,7 +1417,18 @@
 			case "Zqqmukyu":
 				parse_str($params, $get);
 				
-				$success = true;
+				// get form data
+				$song_id = $get["song-id"];
+				$device_id = $get["played-admin-device-id"];
+				$activity_id = $get["played-admin-activity-id"];
+				
+				$date = $get["played-admin-date"];
+				$time = $get["played-admin-time"];
+				
+				$unix_timestamp = new UnixTimestamp(mktime(substr($time, 0, 2), substr($time, 3), 0, substr($date, 3, 2), substr($date, 0, 2), substr($date, 6)));
+				$timestamp = $unix_timestamp->convert2MysqlDateTime();
+				
+				$success = $mc->getMDB()->updatePlayed($id, $song_id, $device_id, $activity_id, $timestamp);
 				
 				// on success action
 				$data["onSuccess"] = "savedPlayed";

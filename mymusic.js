@@ -79,6 +79,11 @@ function crudModal(_action, _id, _params) {
 		
 		// add tooltips
 		addTooltips();
+		
+		// add control for played admin song input
+		if ($("#played-admin-song-display").length > 0) {
+			addPlayedAdminSongInputControl();
+		}
 	});
 	
 	// fires as the modal is being hidden
@@ -165,6 +170,71 @@ function initSelectpicker() {
 	$(".selectpicker").selectpicker( {} );
 }
 
+/**
+	control for played administration song input
+*/
+function addPlayedAdminSongInputControl() {
+	var songDisplay = $("#played-admin-song-display");
+	var songInput = $("#played-admin-song-id");
+	var songInputContainer = $("#played-admin-song-input");
+	
+	// add auto complete
+	var playedSongOptions = {
+		url: "search.php",
+		id: "played-admin-song-id",
+		categories: ["songs"],
+		itemDisplay: function(_category, _item, _choiceClass) {
+			switch (_category) {
+				case "songs":
+					return "<div class='" + _choiceClass + "' data-category='" + _category + "' data-id='" + _item.SongId + "' data-artist='" + _item.ArtistName + "' data-song='" + _item.SongName + "' data-record='" + _item.RecordName + "'>" +
+								"<div class='search_artist_name'>" + _item.ArtistName + "</div>" +
+								"<div>" + _item.SongName + "</div>" +
+								"<div class='search_record_name'>" + _item.RecordName + "</div>" +
+							"</div>";
+					
+					break;
+					
+				default:
+					return "";
+					break;
+			}
+		},
+		itemSelection: function(elem) {
+			// set song id in hidden input element
+			$("#song-id").val(elem.dataset.id);
+			
+			switch (elem.dataset.category) {
+				case "songs":
+					$("#played-admin-song-ac-result").hide();
+					songInputContainer.hide();
+					songDisplay.html(	"<div>" +
+											"<div>" + elem.dataset.song + "</div>" + 
+											"<div>" + elem.dataset.artist + "</div>" + 
+											"<div>" + elem.dataset.record + "</div>" +
+										"</div>")
+								 .show();
+					break;
+					
+				default:
+					break;
+			}
+			
+			// hide result divs
+			$(".ac_result").empty();
+		}
+	};
+	
+	// init autocomplete
+	var playedAdminAC = new AutoComplete();
+	playedAdminAC.init(playedSongOptions);
+	
+	songDisplay.on("click", function() {
+		// toggle visibility
+		songDisplay.toggle();
+		songInputContainer.toggle();
+	});
+}
+
 function persistCrud(_action, _id, _params, _tab) {
 	var modal = $("#music-modal");
 	
@@ -214,7 +284,7 @@ function persistCrud(_action, _id, _params, _tab) {
 						break;
 						
 					case "savedPlayed":
-						window.location.href = "song.php?id=" + content.SongId + addSuccessMessage();;
+						
 						break;
 						
 					default:
@@ -704,7 +774,7 @@ function getPlayedAdministrationDiv(played) {
 	var html = "";
 	
 	html += "<div class='as_choice' data-id='" + played.PlayedId+ "'>" +
-				"<div class='pull-right'><button type='button' class='btn btn-primary' onclick=\"crudModal('6I6T4dfW', '" + played.PlayedId + "')\"><span class='glyphicon glyphicon-pencil'></span></button></div>" +
+				"<div class='pull-right'><button type='button' class='btn btn-primary' onclick=\"crudModal('6I6T4dfW', '" + played.PlayedId + "', 'date=' + $('#played-administration-date').val())\"><span class='glyphicon glyphicon-pencil'></span></button></div>" +
 				
 				"<div class='played-admin-played-time'>" +
 					"<span class='played-admin-time'>" + getFormattedTimestamp(played.UnixTimestamp) + "</span>" +
@@ -895,6 +965,9 @@ $(document).ready( function () {
 				
 				// played administration datepicker
 				if ($("#played-administration-date").length > 0) {
+					// get data for default date
+					getPlayedForDateAjax($("#played-administration-date").val());
+					
 					$("#played-administration-date").on("changeDate", function(e) {
 						// changeDate fires when month or year selection of datepicker is clicked, so we have to check if the user actually selected a new date
 						if (e.viewMode === "days") {
