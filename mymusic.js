@@ -624,6 +624,15 @@ function addNewAddPlayedDiv() {
 	});
 }
 
+/**
+	Updates the content of the update page.
+*/
+function updateUpdateContent() {
+	getStatic("update", function(data) {
+		$("#update-container").html(data.content);
+	});
+}
+
 function initAddPlayedSongAdministration() {
 	if ($("#add-played-song-1").length > 0) {
 		var addPlayedSongAdd = function() {
@@ -1103,6 +1112,11 @@ $(document).ready( function () {
 	
 	var removeAdministrationActive = function() {
 		$("#administration a").removeClass("active");
+	}
+	
+	// update page content update timer
+	if ($("#update-container").length > 0) {
+		var updateContentTimer = window.setInterval(updateUpdateContent, 3000);
 	}
 	
 	// add tooltips

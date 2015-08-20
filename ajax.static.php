@@ -15,6 +15,16 @@
 					$data["content"] = $mc->getFrontend()->getAddPlayedSongLine($random_id);
 					
 					break;
+					
+				case "update":
+					$data["content"] = $mc->getFrontend()->getUpdateContent($mc);
+					
+					break;
+					
+				default:
+					$data["content"] = "Unknown content identifier " . $content;
+					
+					break;
 			}
 		}
 	}
