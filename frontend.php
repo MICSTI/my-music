@@ -768,7 +768,7 @@
 							// display all options
 							$devices = $mdb->getDevices();
 							
-							$default_device = $mdb->getConfig("default_device");
+							$default_device = $mdb->getConfig("default_web_device");
 							
 							// keep track of active state to add a divider between active and non-active devices
 							$dev_active = true;
@@ -962,7 +962,7 @@
 							
 							$html .= "<tbody>";
 								foreach ($update_files as $update_file) {
-									$type = substr($update_file, 0, strpos($update_file, "."));
+									$type = $mc->getTypeFromFilename($update_file);
 									
 									$timestamp = new UnixTimestamp($mc->getTimestampFromFilename($update_file));
 									

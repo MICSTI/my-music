@@ -167,24 +167,33 @@
 		}
 		
 		public function importDesktop($desktop_file) {
+			// status return array
+			$status = array();
+			
 			// get x path
 			$xpath = $this->getXPath($desktop_file);
 			
 			// get songs
+			$songs = $xpath->query("songs/song");
 			
 			// process songs
+			$this->writeSongs($songs);
 			
 			// get playeds
+			$playeds = $xpath->query("playeds/played");
 			
 			// process playeds
+			$this->writePlayeds($playeds);
 			
-			// get MM database modification timestamp
+			// fill status array
+			$config = $xpath->query("config");
 			
-			// get last played id
+			$status["mm_db_modification"] = $config->getElementsByTagName('mm_db_modification')->item(0)->nodeValue;
+			$status["last_played_id"] = $config->getElementsByTagName('last_imported_played_id')->item(0)->nodeValue;
+
+			$status["success"] = true;
 			
-			// write config values to database
-			
-			
+			return $status;
 		}
 		
 		/**
@@ -265,35 +274,9 @@
 					
 					// Add MM link
 					$this->music_db->addMMLink($sid, $mmid, $added_mysql);
-					
-					// check if new song is a possible candidate for a link to an existing song
-					// criteria for a MM link candidate: same song name, same artist id
-					$mm_link_candidates = $this->music_db->getPossibleMMLinkCandidates($sid);
-					
-					if ($mm_link_candidates !== false) {
-						foreach ($mm_link_candidates as $candidate) {
-							$this->music_db->addMMLinkCandidate($candidate, $sid);
-						}
-					}
 				} else {
 					$this->music_db->updateSong($sid, $name, $aid, $rid, $length, $bitrate, $discno, $trackno, $rating);
 				}
-				
-				// Assign search tags
-				/*$tags = array();
-				
-				$tags_artists = explode(" ", $artist);
-				$tags_name = explode(" ", $name);
-				
-				foreach ($tags_artists as $taga) {
-					array_push($tags, $taga);
-				}
-				
-				foreach ($tags_name as $tagn) {
-					array_push($tags, $tagn);
-				}
-				
-				$this->music_db->setSearchTags($sid, $tags);*/
 			}
 		}
 		
@@ -304,17 +287,18 @@
 				// Get element node values from played element
 				$pldid = $played->getElementsByTagName('pldid')->item(0)->nodeValue;
 				$mmid = $played->getElementsByTagName('mmid')->item(0)->nodeValue;
-				$devid = $played->getElementsByTagName('devid')->item(0)->nodeValue;
 				$timestamp = $played->getElementsByTagName('timestamp')->item(0)->nodeValue;
 				
 				// Remove code tags
 				$pldid = strip_tags($pldid);
 				$mmid = strip_tags($mmid);
-				$devid = strip_tags($devid);
 				$timestamp = strip_tags($timestamp);
 				
 				// Get song id from MediaMonkey id
 				$sid = $this->music_db->getSidFromMMId($mmid);
+				
+				// get default desktop device
+				$devid = $this->music_db->getConfig("default_desktop_device");
 				
 				// get default desktop activity
 				$actid = $this->music_db->getConfig("default_desktop_activity");
