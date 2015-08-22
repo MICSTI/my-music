@@ -7,10 +7,10 @@
 		private $mobile_db;
 	
 		// Should vital database transactions (insert, update, delete) be logged?
-		private $logging = false;
+		private $logging = true;
 		
 		// Should every database transaction (even select) be logged?
-		private $verbose = false;
+		private $verbose = true;
 		
 		// Mobile database file
 		private static $mobile_db_file = "files/myMobileMusic.DB";
@@ -169,7 +169,7 @@
 				if (in_array($type, $mobile_tables)) {
 					$mobile_sql = "INSERT INTO " . $type . " (_id, name) VALUES (:id, :name)";
 					$mobile_query = $this->mobile_db->prepare($mobile_sql);
-					$mobile_query->execute( array(':id' => $inserted, ':name' => $name) );
+					//$mobile_query->execute( array(':id' => $inserted, ':name' => $name) );
 				}
 			
 				if ($this->logging) {
@@ -646,7 +646,7 @@
 				// Mobile database entry
 				$mobile_sql = "INSERT INTO artists (_id, name) VALUES (:id, :name)";
 				$mobile_query = $this->mobile_db->prepare($mobile_sql);
-				$mobile_query->execute( array(':id' => $inserted, ':name' => $name) );
+				//$mobile_query->execute( array(':id' => $inserted, ':name' => $name) );
 			
 				if ($this->logging) {
 					$this->addLog(__FUNCTION__, "success", "added new tupel in artists [ name: '" . $name . "', main_country_id: " . $main_country . ", sec_country_id: " . $secondary_country . " ] with id " . $inserted);
@@ -878,7 +878,7 @@
 				// Mobile database entry
 				$mobile_sql = "INSERT INTO songs (_id, name, aid, rid, rating, length, discno, trackno) VALUES (:id, :name, :aid, :rid, :rating, :length, :discno, :trackno)";
 				$mobile_query = $this->mobile_db->prepare($mobile_sql);
-				$mobile_query->execute( array(':id' => $inserted, ':name' => $name, ':aid' => $aid, ':rid' => $rid, ':rating' => $rating, ':length' => $length, ':discno' => $discno, ':trackno' => $trackno) );
+				//$mobile_query->execute( array(':id' => $inserted, ':name' => $name, ':aid' => $aid, ':rid' => $rid, ':rating' => $rating, ':length' => $length, ':discno' => $discno, ':trackno' => $trackno) );
 			
 				if ($this->logging) {
 					$this->addLog(__FUNCTION__, "success", "added new tupel in songs with id " . $inserted . " [" . implode(", ", func_get_args()) . "]");
@@ -919,7 +919,7 @@
 				// Mobile database entry
 				$mobile_sql = "UPDATE songs SET name = :name, aid = :aid, rid = :rid, length = :length, discno = :discno, trackno = :trackno, rating = :rating WHERE _id = :id";
 				$mobile_query = $this->mobile_db->prepare($mobile_sql);
-				$mobile_query->execute( array(':id' => $id, ':name' => $name, ':aid' => $aid, ':rid' => $rid, ':length' => $length, ':discno' => $discno, ':trackno' => $trackno, ':rating' => $rating) );
+				//$mobile_query->execute( array(':id' => $id, ':name' => $name, ':aid' => $aid, ':rid' => $rid, ':length' => $length, ':discno' => $discno, ':trackno' => $trackno, ':rating' => $rating) );
 			
 				if ($this->logging) {
 					$this->addLog(__FUNCTION__, "success", "updated tupel in songs with id " . $id . " [" . implode(", ", func_get_args()) . "]");
@@ -1066,16 +1066,16 @@
 				// Mobile database entry
 				$mobile_sql = "INSERT INTO records (_id, name) VALUES (:id, :name)";
 				$mobile_query = $this->mobile_db->prepare($mobile_sql);
-				$mobile_query->execute( array(':id' => $inserted, ':name' => $name) );
+				//$mobile_query->execute( array(':id' => $inserted, ':name' => $name) );
 			
 				if ($this->logging) {
-					$this->addLog(__FUNCTION__, "success", "added new tupel in records [ name: '" . $name . "', aid: '" . $aid . "', typeid: " . $typeid . ", release: '" . $release . "' ] with id " . $inserted);
+					$this->addLog(__FUNCTION__, "success", "added new tupel in records [ name: '" . $name . "', aid: '" . $aid . "', typeid: " . $typeid . ", publish: '" . $publish . "' ] with id " . $inserted);
 				}
 			
 				return $inserted;
 			} else {
 				if ($this->logging) {
-					$this->addLog(__FUNCTION__, "error", "tried to add new tupel in records [ name: '" . $name . "', aid: '" . $aid . "', typeid: " . $typeid . ", release: '" . $release . "' ] with \n" . implode(" / ", $query->errorInfo()));
+					$this->addLog(__FUNCTION__, "error", "tried to add new tupel in records [ name: '" . $name . "', aid: '" . $aid . "', typeid: " . $typeid . ", publish: '" . $publish . "' ] with \n" . implode(" / ", $query->errorInfo()));
 				}
 			
 				return false;
@@ -1142,7 +1142,7 @@
 				if (in_array($type, $mobile_tables)) {
 					$mobile_sql = "UPDATE " . $type . " SET name = :name WHERE _id = :id";
 					$mobile_query = $this->mobile_db->prepare($mobile_sql);
-					$mobile_query->execute( array(':id' => $id, ':name' => $name) );
+					//$mobile_query->execute( array(':id' => $id, ':name' => $name) );
 				}
 			
 				if ($this->logging) {
@@ -1252,11 +1252,23 @@
 			Inserted id is returned if insert was successful, false if otherwise.
 		*/
 		public function addPlayed ($sid, $devid, $actid, $timestamp) {
-			// strip input from code tags
-			$sid = strip_tags($sid);
-			$devid = strip_tags($devid);
-			$actid = strip_tags($actid);
-			$timestamp = strip_tags($timestamp);
+			// check if sid is valid
+			$song_exists = $this->songExists($sid);
+			
+			if ($song_exists === false) {
+				// check if song has a song connection (meaning that it was linked to another song)
+				$connection_parent = $this->getConnectionParent($sid);
+				
+				if ($connection_parent !== false) {
+					// if a connection parent song id was found, this is the correct one
+					$sid = $connection_parent;
+				} else {
+					// played cannot be added, the song id is not found
+					$this->addLog(__FUNCTION__, "error", "could not add played entry" . " [" . implode(", ", func_get_args()) . "]");
+					
+					return false;
+				}
+			}
 			
 			$sql = "INSERT INTO played (sid, devid, actid, timestamp) VALUES (:sid, :devid, :actid, :timestamp)";
 			$query = $this->db->prepare($sql);
@@ -1443,11 +1455,15 @@
 		}
 		
 		/**
-			Checks if a song with the specified mmid already exists in the database
-			Returns true if the song exists, false if otherwise
+			Checks if a song with the specified id exists in the database.
+			Returns true if it exists, false if it doesn't.
 		*/
-		public function songExists ($mmid) {
-			if ($this->getSongIdByValue('mmid', $mmid) !== false) {
+		public function songExists ($sid) {
+			$sql = "SELECT id FROM songs WHERE id = :id";
+			$query = $this->db->prepare($sql);
+			$query->execute( array(':id' => $sid) );
+			
+			if ($query->rowCount() > 0) {
 				return true;
 			} else {
 				return false;
@@ -2171,7 +2187,7 @@
 				// Mobile database entry
 				$mobile_sql = "INSERT INTO devices (_id, name, active) VALUES (:id, :name, :active)";
 				$mobile_query = $this->mobile_db->prepare($mobile_sql);
-				$mobile_query->execute( array(':id' => $inserted, ':name' => $name, ':active' => $active) );
+				//$mobile_query->execute( array(':id' => $inserted, ':name' => $name, ':active' => $active) );
 			
 				if ($this->logging) {
 					$this->addLog(__FUNCTION__, "success", "added new device '" . $name . "', type id " . $typeid . ", active " . $active . " with id " . $inserted);
@@ -3006,6 +3022,24 @@
 			
 			
 			return $success_connection AND $success_mmlink AND $success_played AND $success_comment AND $success_record_count AND $success_delete;
+		}
+		
+		/**
+			If a song was linked to another, the original song id is no longer in the database.
+			For this purpose, it is possible to get the correct song id for a song id that no longer exists in the database because an MM link was added.
+		*/
+		public function getConnectionParent($sid) {
+			$sql = "SELECT parent_id AS 'ParentSongId' FROM song_connection WHERE child_id = :sid";
+			$query = $this->db->prepare($sql);
+			$query->execute( array(':sid' => $sid) );
+			
+			if ($query->rowCount() > 0) {
+				$song = $query->fetch(PDO::FETCH_ASSOC);
+				
+				return $song["ParentSongId"];
+			}
+			
+			return false;
 		}
 		
 		/**

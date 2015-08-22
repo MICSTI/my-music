@@ -76,6 +76,8 @@
 				case "played":
 					$success = $this->getMMDB()->getXMLPlayedData($param)->save($this->getPlayedFile());
 					
+					break;
+					
 				default:
 					break;
 			}
@@ -107,6 +109,18 @@
 			}
 			
 			return $success;
+		}
+		
+		public function importFromDesktopFile ($desktop_file) {
+			$status = $this->getMMDB()->importDesktop($desktop_file);
+			
+			if ($status["success"]) {
+				$this->getMDB()->addLog(__FUNCTION__, "success", "imported desktop file '" . $desktop_file . "'");
+			} else {
+				$this->getMDB()->addLog(__FUNCTION__, "error", "tried to import desktop file '" . $desktop_file . "'");
+			}
+			
+			return $status;
 		}
 		
 		/**
@@ -226,6 +240,9 @@
 			return $upload_files;
 		}
 		
+		/**
+			Gets the timestamp portion from a filename ("desktop.12345678.xml" -> returns 12345678)
+		*/
 		public function getTimestampFromFilename($filename) {
 			$needle = ".";
 			
@@ -238,6 +255,13 @@
 			$timestamp = substr($cut_filename, 0, $second_pos);
 			
 			return $timestamp;
+		}
+		
+		/**
+			Gets the file type portion from a filename ("desktop.12345678.xml" -> returns "desktop")
+		*/
+		public function getTypeFromFilename($filename) {
+			return substr($filename, 0, strpos($filename, "."));
 		}
 		
 		/**
@@ -329,40 +353,82 @@
 		
 		/**
 			Performs a full update of the database.
-			For the very first update, use initialImport().
 		*/
-		public function updateDatabase () {		
-			if ($this->checkForDatabaseUpdate()) {
-				// Get start time
-				$time_start = microtime(true);
+		public function updateDatabase() {
+			$last_played_id = -1;
+			$mm_db_modification = -1;
 			
-				// Import songs
-				$this->importSongs();
+			// upload folder
+			$upload_folder = $this->getUploadFolder();
+			
+			// get start time
+			$time_start = microtime(true);
+			
+			// get files
+			$update_files = $this->getUpdateFiles();
+			
+			foreach ($update_files as $update_file) {
+				// get file type
+				$type = $this->getTypeFromFilename($update_file);
 				
-				// Import played
-				$this->importPlayed();
+				// get file path
+				$file_path = $upload_folder . $update_file;
 				
-				// Log update info
-				$db_modification = $this->getMDB()->getConfig('mm_db_modification');
-				$last_imported = $this->getMDB()->getConfig('last_imported_played_id');
-				
-				$db_modification_unix = new UnixTimestamp($db_modification);
-				$db_modification_mysql = $db_modification_unix->convert2MysqlDateTime();
-				
-				$this->getMDB()->setConfig('successful_update', mktime());
-				
-				// Get end time
-				$time_end = microtime(true);
-				
-				$time = $time_end - $time_start;
-				
-				$this->getMDB()->addLog(__FUNCTION__, "success", "performed update in " . $time . " seconds, new database file modification time " . $db_modification_mysql . " (" . $db_modification . "), new current played id " . $last_imported);
-			} else {
-				$this->getMDB()->addLog(__FUNCTION__, "info", "didn't perform database update because no newer file exists!");
+				switch ($type) {
+					case "desktop":
+						// Import file to database
+						$status = $this->importFromDesktopFile($file_path);
+						
+						$last_played_id = $status["last_played_id"];
+						
+						if ($status["mm_db_modification"] > $mm_db_modification)
+							$mm_db_modification = $status["mm_db_modification"];
+						
+						// Move imported file to storage folder if import was successful
+						if ($status["success"]) {
+							rename($file_path, "storage/" . $update_file);
+						}
+					
+						break;
+						
+					case "mobile":
+						// Import file to database
+						$success = $this->importFromMobileFile($file_path);
+					
+						// Move imported file to storage folder if import was successful
+						if ($success) {
+							rename($file_path, "storage/" . $update_file);
+						}
+						
+						break;
+						
+					default:
+						break;
+				}
+			}				
+			
+			// write config values to database
+			if ($last_played_id > 0) {
+				$this->getMDB()->setConfig('last_imported_played_id', $last_played_id);
 			}
 			
-			// Import mobile files
-			$this->importMobile();
+			if ($mm_db_modification > 0) {
+				$this->getMDB()->setConfig('mm_db_modification', $mm_db_modification);
+			}
+			
+			$unix_mm_db_modification = new UnixTimestamp($mm_db_modification);
+			$austrian_mm_db_modification = $unix_mm_db_modification->convert2AustrianDateTime();
+		
+			// get end time
+			$time_end = microtime(true);
+			
+			// get execution time
+			$time = $time_end - $time_start;
+				
+			// add log entry
+			$this->getMDB()->addLog(__FUNCTION__, "success", "performed update in " . $time . " seconds, new database file modification time " . $austrian_mm_db_modification . " (" . $mm_db_modification . "), new current played id " . $last_played_id);
+			
+			return true;
 		}
 
 		/**
