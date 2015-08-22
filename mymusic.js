@@ -857,6 +857,12 @@ function getNewSettingsTabContent(target, params) {
 			params: params
 		}
 	}).done(function(data) {
+		// special case: jump to add-played
+		if (target == "add-played") {
+			$("#administration a").removeClass("active");
+			$("#administration-add-played").addClass("active");
+		}
+		
 		// set content
 		$("#administration-content").html(data);
 		
