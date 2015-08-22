@@ -983,7 +983,7 @@
 			$html .= "</div>";
 			
 			if ($file_count > 0) {
-				$html .= "<button type='button' class='btn btn-primary'>Update</button>";
+				$html .= "<button id='perform-update' type='button' class='btn btn-primary'>Update</button>";
 			}
 			
 			return $html;

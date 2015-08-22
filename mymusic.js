@@ -630,7 +630,16 @@ function addNewAddPlayedDiv() {
 function updateUpdateContent() {
 	getStatic("update", function(data) {
 		$("#update-container").html(data.content);
+		
+		$("#perform-update").on("click", performUpdate);
 	});
+}
+
+/**
+	Applies the update files to the database.
+*/
+function performUpdate() {
+	
 }
 
 function initAddPlayedSongAdministration() {
