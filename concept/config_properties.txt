@@ -6,6 +6,8 @@ version_number
 version_string
 img_path
 secondary_country_weight
-default_device
-default_activity
+default_desktop_device
+default_web_device
+default_desktop_activity
+default_web_activity
 default_mobile_activity
