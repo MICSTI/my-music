@@ -857,7 +857,15 @@
 				$html .= "<div class='panel-heading'>Top 20/20</div>";
 				
 				$html .= "<div class='panel-body'>";
+					// info when top 20/20 charts were last compiled
+					$html .= "<div class='panel-paragraph'>";
+						$html .= "Last successfully compiled on <span id='charts-compilation-top2020-datetime'></span>";
+					$html .= "</div>";
 					
+					// compile now button
+					$html .= "<div>";
+						$html .= "<button id='charts-compile-top2020' type='button' class='btn btn-success'>Compile</button>";
+					$html .= "</div>";
 				$html .= "</div>";
 			$html .= "</div>";
 			
@@ -866,7 +874,15 @@
 				$html .= "<div class='panel-heading'>Favourites</div>";
 				
 				$html .= "<div class='panel-body'>";
+					// info when favourites charts were last compiled
+					$html .= "<div class='panel-paragraph'>";
+						$html .= "Last successfully compiled on <span id='charts-compilation-favourites-datetime'></span>";
+					$html .= "</div>";
 					
+					// compile now button
+					$html .= "<div>";
+						$html .= "<button id='charts-compile-favourites' type='button' class='btn btn-success'>Compile</button>";
+					$html .= "</div>";
 				$html .= "</div>";
 			$html .= "</div>";
 			
@@ -875,7 +891,38 @@
 				$html .= "<div class='panel-heading'>Calendarial</div>";
 				
 				$html .= "<div class='panel-body'>";
-					
+					// all available years (a year is only shown when it has completely passed --> 2015 shows up on Jan 1, 2016)
+					$html .= "<table class='table'>";
+						$html .= "<thead>";
+							$html .= "<tr>";
+								$html .= "<td class='bold col-sm-2'>Year</td>";
+								$html .= "<td class='bold col-sm-3'>Last compiled</td>";
+								$html .= "<td class='col-sm-2'> </td>";
+								$html .= "<td class='col-sm-5'> </td>";
+							$html .= "</tr>";
+						$html .= "</thead>";
+						
+						$html .= "<tbody>";
+							// get current year minus 1 - the last completely finished year
+							$year = date("Y") - 1;
+							
+							// Charts go back to 2011 - the start year of taking record
+							$threshold_year = 2011;
+							
+							for ($year; $year >= $threshold_year; $year--) {
+								$html .= "<tr>";
+									$html .= "<td>" . $year . "</td>";
+									$html .= "<td></td>";
+									
+									$html .= "<td>";
+										$html .= "<button type='button' class='btn btn-primary'>Compile</button>";
+									$html .= "</td>";
+									
+									$html .= "<td></td>";
+								$html .= "</tr>";
+							}
+						$html .= "</tbody>";
+					$html .= "</table>";
 				$html .= "</div>";
 			$html .= "</div>";
 			

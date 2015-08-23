@@ -38,6 +38,10 @@ a {
 	color: #f89406;
 }
 
+.panel-paragraph {
+	margin-bottom: 12px;
+}
+
 .song-general-info div {
 	padding-top: 4px;
 	padding-bottom: 4px;
