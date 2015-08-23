@@ -105,9 +105,9 @@
 							$menu .= "<a href='#' data-toggle='dropdown' class='dropdown-toggle'>Charts <b class='caret'></b></a>";
 							
 							$menu .= "<ul class='dropdown-menu'>";
-								$menu .= "<li><a href='#'>Top 20/20</a></li>";
+								$menu .= "<li><a href='top2020.php'>Top 20/20</a></li>";
 								$menu .= "<li><a href='favourites.php'>Favourites</a></li>";
-								$menu .= "<li><a href='#'>Calendarial</a></li>";
+								$menu .= "<li><a href='calendarial.php'>Calendarial</a></li>";
 							$menu .= "</ul>";
 							
 						$menu .= "<li class='" . $this->getActiveText("history", $selected) . "'><a href='history.php'>History</a></li>";
