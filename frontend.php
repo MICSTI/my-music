@@ -107,7 +107,7 @@
 							$menu .= "<ul class='dropdown-menu'>";
 								$menu .= "<li><a href='#'>Top 20/20</a></li>";
 								$menu .= "<li><a href='favourites.php'>Favourites</a></li>";
-								$menu .= "<li><a href='#'>Years</a></li>";
+								$menu .= "<li><a href='#'>Calendarial</a></li>";
 							$menu .= "</ul>";
 							
 						$menu .= "<li class='" . $this->getActiveText("history", $selected) . "'><a href='history.php'>History</a></li>";
@@ -712,6 +712,10 @@
 					$html .= $this->getAddPlayedAdministration($mdb, $params);
 					break;
 					
+				case "charts":
+					$html .= $this->getChartAdministration($mdb);
+					break;
+					
 				case "songs":
 					$html .= $this->getSongAdministration($mdb);
 					break;
@@ -840,6 +844,42 @@
 						
 						<div class='add-played-song-display col-sm-10'></div>
 					</div>";
+		}
+		
+		/**
+			Returns the content of the chart administration tab
+		*/
+		private function getChartAdministration($mdb) {
+			$html = "";
+			
+			// top 20/20
+			$html .= "<div class='panel panel-default'>";
+				$html .= "<div class='panel-heading'>Top 20/20</div>";
+				
+				$html .= "<div class='panel-body'>";
+					
+				$html .= "</div>";
+			$html .= "</div>";
+			
+			// favourites
+			$html .= "<div class='panel panel-default'>";
+				$html .= "<div class='panel-heading'>Favourites</div>";
+				
+				$html .= "<div class='panel-body'>";
+					
+				$html .= "</div>";
+			$html .= "</div>";
+			
+			// calendarial
+			$html .= "<div class='panel panel-default'>";
+				$html .= "<div class='panel-heading'>Calendarial</div>";
+				
+				$html .= "<div class='panel-body'>";
+					
+				$html .= "</div>";
+			$html .= "</div>";
+			
+			return $html;
 		}
 		
 		/**
