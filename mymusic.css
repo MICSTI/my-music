@@ -190,7 +190,7 @@ a {
 /* --------------------- */
 
 /* ---- SETTINGS ---- */
-#settings.affix {
+#settings.affix, #administration.affix {
 	position: fixed;
 	top: 16px;
 }

@@ -1110,7 +1110,7 @@ $(document).ready( function () {
 			var administrationWidth = administration.innerWidth();
 			
 			administration.on("affixed.bs.affix", function() {
-				administration.css("width", settingsWidth + "px");
+				administration.css("width", administrationWidth + "px");
 				
 				// remove the listener immediately so we don't attach it over and over again if we scroll up and down
 				administration.off("affixed.bs.affix");
