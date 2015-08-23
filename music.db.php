@@ -3356,7 +3356,7 @@
 		/**
 			Returns the content of the favourite song charts.
 		*/
-		public function getChartsContentFavouriteSongs($chart_id) {
+		public function getChartsContentSongs($chart_id) {
 			$sql = "SELECT
 						so.id AS 'SongId',
 						so.name AS 'SongName',
@@ -3385,7 +3385,7 @@
 		/**
 			Returns the content of the favourite artist charts.
 		*/
-		public function getChartsContentFavouriteArtists($chart_id) {
+		public function getChartsContentArtists($chart_id) {
 			$sql = "SELECT
 						ar.id AS 'ArtistId',
 						ar.name AS 'ArtistName',
@@ -3411,7 +3411,7 @@
 		/**
 			Returns the content of the favourite records charts.
 		*/
-		public function getChartsContentFavouriteRecords($chart_id) {
+		public function getChartsContentRecords($chart_id) {
 			$sql = "SELECT
 						re.id AS 'RecordId',
 						re.name AS 'RecordName',

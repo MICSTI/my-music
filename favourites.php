@@ -8,14 +8,14 @@
 	
 	$chart_id = $chart_info["ChartId"];
 	
-	$songs = $mc->getMDB()->getChartsContentFavouriteSongs($chart_id);
-	$artists = $mc->getMDB()->getChartsContentFavouriteArtists($chart_id);
-	$records = $mc->getMDB()->getChartsContentFavouriteRecords($chart_id);
+	$songs = $mc->getMDB()->getChartsContentSongs($chart_id);
+	$artists = $mc->getMDB()->getChartsContentArtists($chart_id);
+	$records = $mc->getMDB()->getChartsContentRecords($chart_id);
 	
 	// headline
 	$html .= "<h3>Favourites</h3>";
 	
-	// Tabs for songs and artists
+	// Tabs for songs, artists and records
 	$html .= "<ul class='nav nav-tabs'>";
 		$html .= "<li class='active'>";
 			$html .= "<a data-toggle='tab' href='#songs'>Songs</a>";
