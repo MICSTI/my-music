@@ -17,6 +17,9 @@
 			
 			$popular = $mc->getMDB()->getPopularSongByArtist($aid);
 			
+			// get charts info
+			$charts_info = $mc->getMDB()->getChartsInfoForInstance("artists", $aid);
+			
 			// headline
 			$html .= "<h3>Artist details</h3>";
 			
@@ -40,7 +43,22 @@
 					// artist details edit button
 					$html .= "<div class='song-general-info col-sm-1'>";
 						$html .= "<button type='button' id='btn-artist-details-edit' class='btn btn-default pull-right' onclick=\"crudModal('" . $SAVE_ARTIST_DETAILS . "', '" . $artist_info["ArtistId"] . "')\"><span class='glyphicon glyphicon-pencil'></span></button>";
-					$html .= "</div>";	
+					$html .= "</div>";
+					
+					// charts info
+					$html .= "<div class='song-general-info col-sm-4'>";
+						if (count($charts_info) > 0) {
+							$html .= "<div class='col-sm-3 bold'>Charts:</div>";
+							
+							$html .= "<div class='col-sm-9'>";
+								foreach ($charts_info as $chart_entry) {
+									$html .= "<div>";
+										$html .= $chart_entry["ChartType"] . ": " . $chart_entry["Rank"] . ".";
+									$html .= "</div>";
+								}
+							$html .= "</div>";
+						}
+					$html .= "</div>";
 					
 					// origin country
 					$main_country = $mc->getMDB()->getCountry($artist_info["ArtistMainCountryId"]);
@@ -49,7 +67,7 @@
 					$main_country_flag = getCountryFlag($main_country);
 					$secondary_country_flag = getCountryFlag($secondary_country);
 					
-					$html .= "<div class='song-general-info col-sm-4'>";
+					$html .= "<div class='song-general-info col-sm-7'>";
 						$html .= "<div class='col-sm-3 bold'>Origin:</div>";
 						
 						$html .= "<div class='col-sm-9'>";

@@ -19,7 +19,7 @@
 			$added_date = new MysqlDate($mc->getMDB()->getSongAddedDate($sid));
 			
 			// get charts info
-			$charts_info = $mc->getMDB()->getChartsSongInfo($sid);
+			$charts_info = $mc->getMDB()->getChartsInfoForInstance("songs", $sid);
 			
 			if (!empty($history)) {
 				$first_played = $history[count($history) - 1]["timestamp"];

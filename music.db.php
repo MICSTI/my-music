@@ -3383,10 +3383,10 @@
 		}
 		
 		/**
-			Returns an array containing all charts entries for this song.
+			Returns an array containing all charts entries for this instance type.
 			If no entries are found, and empty array is returned.
 		*/
-		public function getChartsSongInfo($sid) {
+		public function getChartsInfoForInstance($instance_type, $id) {
 			$sql = "SELECT
 						co.rank AS 'Rank',
 						co.cnt AS 'PlayedCount',
@@ -3396,11 +3396,11 @@
 						chart_content co INNER JOIN
 						charts ch ON co.chart_id = ch.id
 					WHERE
-						co.instance_id = :sid AND
-						co.instance_type = 'songs'";
+						co.instance_id = :id AND
+						co.instance_type = :instance_type";
 						
 			$query = $this->db->prepare($sql);
-			$query->execute( array(':sid' => $sid) );
+			$query->execute( array(':id' => $id, ':instance_type' => $instance_type) );
 			
 			if ($query->rowCount() > 0) {
 				return $query->fetchAll(PDO::FETCH_ASSOC);
