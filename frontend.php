@@ -958,7 +958,7 @@
 				}
 			} else {
 				if ($with_text) {
-					return "This chart has never been compiled.";
+					return "This chart has not been compiled yet.";
 				} else {
 					return "-";
 				}
