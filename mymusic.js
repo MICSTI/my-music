@@ -848,15 +848,20 @@ function initCharts() {
 		$(this).hide();
 		
 		// show next paragraph with the info class (loading indicator)
-		$(this).next("p.loading-static").css("display", "inline-block");
+		var loadingIndicator = $(this).next("p.loading-static");
+		
+		loadingIndicator.css("display", "inline-block");
 		
 		// get parameters
 		var _params = this.id.split("-");
 		
+		var chart_type = _params[2];
+		var chart_year = _params.length > 3 ? _params[3] : 0;
+		
 		// build data request object
 		var _data = {
-			chart_type: _params[2],
-			year: _params.length > 3 ? _params[3] : 0
+			chart_type: chart_type,
+			year: chart_year
 		};
 		
 		// AJAX request
@@ -871,6 +876,15 @@ function initCharts() {
 			var response = JSON.parse(resp);
 			
 			if (response.success) {
+				// remove loading indicator
+				loadingIndicator.remove();
+				
+				// update status message
+				var status_id = "charts-compilation-status-" + chart_type;
+				status_id += chart_year > 0 ? "-" + chart_year : "";
+				
+				$("#" + status_id).html(response.message);
+				
 				globalNotify("Charts compilation finished successfully");
 			} else {
 				console.log("Error", response.message);

@@ -3255,6 +3255,7 @@
 		/**
 			Compiles the charts for songs.
 			It also handles the calculation for nationality and activity additional statistics.
+			Returns the chart id of the chart container entry.
 		*/
 		public function compileCharts($type, $songs, $artists, $records, $year = 0) {
 			// get old charts info
@@ -3269,7 +3270,18 @@
 			$chart_id = $this->addChartContainerEntry($type, $year);
 			
 			// write songs
-			$this->writeChartsContent($chart_id, "songs", $songs);
+			if (count($songs) > 0)
+				$this->writeChartsContent($chart_id, "songs", $songs);
+			
+			// write artists
+			if (count($artists) > 0)
+				$this->writeChartsContent($chart_id, "artists", $artists);
+			
+			// write records
+			if (count($records) > 0)
+				$this->writeChartsContent($chart_id, "records", $records);
+			
+			return $chart_id;
 		}
 		
 		/**
@@ -3296,6 +3308,18 @@
 			}
 			
 			return false;
+		}
+		
+		/**
+			Utility function for updating the timestamp of a chart container entry.
+			The actual timestamp updatting is done by MySQL.
+		*/
+		public function updateChartContainerTimestamp($chart_id) {
+			$timestamp = new UnixTimestamp(mktime());
+			
+			$sql = "UPDATE charts SET timestamp = :timestamp WHERE id = :id";
+			$query = $this->db->prepare($sql);
+			$query->execute( array(':id' => $chart_id, ':timestamp' => $timestamp->convert2MysqlDateTime()) );
 		}
 		
 		public function writeChartsContent($chart_id, $instance_type, $content) {

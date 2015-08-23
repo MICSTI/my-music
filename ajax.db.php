@@ -93,8 +93,14 @@
 						// favourite records
 						$records = $mc->getMDB()->getMostPlayedRecords();
 						
-						// write songs
-						$mc->getMDB()->compileCharts("favourites", $songs, $artists, $records);
+						// compile charts
+						$chart_id = $mc->getMDB()->compileCharts("favourites", $songs, $artists, $records);
+						
+						// update charts compilation timestamp
+						$mc->getMDB()->updateChartContainerTimestamp($chart_id);
+						
+						// set message
+						$response["message"] =  $mc->getFrontend()->getChartCompilationStatus($mc->getMDB(), true, "favourites");
 							
 						$response["success"] = true;
 						
