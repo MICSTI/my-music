@@ -90,13 +90,13 @@ TABLE song_connection
 TABLE charts
 	id			INT
 	chart_type	VARCHAR
-	instance_type	VARCHAR
 	year		INT
 	timestamp	TIMESTAMP
 	
 TABLE chart_content
 	id			INT
 	chart_id	INT
+	instance_type	VARCHAR
 	instance_id	INT
 	rank		INT
 	cnt			INT
@@ -104,7 +104,6 @@ TABLE chart_content
 TABLE chart_nationalities
 	id			INT
 	chart_id	INT
-	instance_type	VARCHAR
 	nat_id		INT
 	rank		INT
 	cnt			INT

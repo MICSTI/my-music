@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: 127.0.0.1
--- Erstellungszeit: 23. Aug 2015 um 11:30
+-- Erstellungszeit: 23. Aug 2015 um 12:17
 -- Server Version: 5.6.21
 -- PHP-Version: 5.6.3
 
@@ -28,7 +28,7 @@ SET time_zone = "+00:00";
 
 CREATE TABLE IF NOT EXISTS `charts` (
 `id` int(10) unsigned NOT NULL COMMENT 'Chart id',
-  `type` varchar(100) NOT NULL COMMENT 'Chart type',
+  `chart_type` varchar(100) NOT NULL COMMENT 'Chart type',
   `year` int(11) DEFAULT NULL COMMENT 'Chart year',
   `timestamp` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT 'Compile timestamp'
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
@@ -42,6 +42,7 @@ CREATE TABLE IF NOT EXISTS `charts` (
 CREATE TABLE IF NOT EXISTS `chart_content` (
 `id` int(10) unsigned NOT NULL COMMENT 'Chart content id',
   `chart_id` int(10) unsigned NOT NULL COMMENT 'Chart id',
+  `instance_type` varchar(100) NOT NULL COMMENT 'Chart instance type',
   `instance_id` int(10) unsigned NOT NULL COMMENT 'Instance id',
   `rank` int(10) unsigned NOT NULL COMMENT 'Chart rank',
   `cnt` int(10) unsigned NOT NULL COMMENT 'Instance count'

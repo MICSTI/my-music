@@ -859,7 +859,9 @@
 				$html .= "<div class='panel-body'>";
 					// info when top 20/20 charts were last compiled
 					$html .= "<div class='panel-paragraph'>";
-						$html .= "Last successfully compiled on <span id='charts-compilation-top2020-datetime'></span>";
+						$html .= "<span id='charts-compilation-status-top2020'>";
+							
+						$html .= "</span>";
 					$html .= "</div>";
 					
 					// compile now button
@@ -876,7 +878,9 @@
 				$html .= "<div class='panel-body'>";
 					// info when favourites charts were last compiled
 					$html .= "<div class='panel-paragraph'>";
-						$html .= "Last successfully compiled on <span id='charts-compilation-favourites-datetime'></span>";
+						$html .= "<span id='charts-compilation-status-favourites'>";
+							
+						$html .= "</span>";
 					$html .= "</div>";
 					
 					// compile now button
@@ -927,6 +931,19 @@
 			$html .= "</div>";
 			
 			return $html;
+		}
+		
+		public function getChartCompilationStatus($mdb, $chart_type, $instance_type, $year = 0) {
+			// get status array
+			$status = $mdb->getChartInfo($chart_type, $instance_type, $year);
+			
+			if ($status !== false) {
+				$datetime = new MySqlDateTime($status["ChartCompileTimestamp"]);
+				
+				return "Last successfully compiled on " . $datetime->convert2AustrianDateTime();
+			} else {
+				return "This chart has never been compiled successfully.";
+			}
 		}
 		
 		/**
