@@ -950,9 +950,9 @@
 				}
 			} else {
 				if ($with_text) {
-					return "This chart has never been compiled successfully.";
+					return "This chart has never been compiled.";
 				} else {
-					return "never";
+					return "-";
 				}
 			}
 		}

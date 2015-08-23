@@ -101,10 +101,11 @@ TABLE chart_content
 	rank		INT
 	cnt			INT
 	
-TABLE chart_nationalities
+TABLE chart_additional
 	id			INT
 	chart_id	INT
-	nat_id		INT
+	instance_type	INT
+	instance_id	INT
 	rank		INT
 	cnt			INT
 	fraction	DECIMAL (6,5)

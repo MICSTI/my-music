@@ -3253,7 +3253,7 @@
 		}
 		
 		/**
-			Returns the 100 most played songs in the database
+			Returns the 250 most played songs in the database
 		*/
 		public function getMostPlayedSongs() {
 			$sql = "SELECT
@@ -3272,7 +3272,7 @@
 							sid
 						ORDER BY
 							PlayedCount DESC
-						LIMIT 100) pc_q INNER JOIN
+						LIMIT 250) pc_q INNER JOIN
 					songs so ON so.id = pc_q.SongId INNER JOIN
 					artists ar ON ar.id = so.aid";
 
@@ -3291,7 +3291,7 @@
 		}
 		
 		/**
-			Returns the 100 most played artists in the database
+			Returns the 250 most played artists in the database
 		*/
 		public function getMostPlayedArtists() {
 			$sql = "SELECT
@@ -3306,7 +3306,7 @@
 						ar.id
 					ORDER BY
 						PlayedCount DESC
-					LIMIT 100";
+					LIMIT 250";
 
 			$query = $this->db->prepare($sql);
 			$query->execute();
@@ -3323,7 +3323,7 @@
 		}
 		
 		/**
-			Returns the 100 most played records in the database
+			Returns the 250 most played records in the database
 		*/
 		public function getMostPlayedRecords() {
 			$sql = "SELECT
@@ -3346,7 +3346,7 @@
 							re.id
 						ORDER BY
 							PlayedCount DESC
-						LIMIT 100) pl_q INNER JOIN
+						LIMIT 250) pl_q INNER JOIN
 						artists ar ON ar.id = pl_q.ArtistId";
 
 			$query = $this->db->prepare($sql);

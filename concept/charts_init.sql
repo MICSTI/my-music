@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: 127.0.0.1
--- Erstellungszeit: 23. Aug 2015 um 12:17
+-- Erstellungszeit: 23. Aug 2015 um 14:59
 -- Server Version: 5.6.21
 -- PHP-Version: 5.6.3
 
@@ -31,6 +31,22 @@ CREATE TABLE IF NOT EXISTS `charts` (
   `chart_type` varchar(100) NOT NULL COMMENT 'Chart type',
   `year` int(11) DEFAULT NULL COMMENT 'Chart year',
   `timestamp` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT 'Compile timestamp'
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=latin1;
+
+-- --------------------------------------------------------
+
+--
+-- Tabellenstruktur für Tabelle `chart_additional`
+--
+
+CREATE TABLE IF NOT EXISTS `chart_additional` (
+`id` int(10) unsigned NOT NULL COMMENT 'Chart nationalities id',
+  `chart_id` int(10) unsigned NOT NULL COMMENT 'Chart id',
+  `instance_type` varchar(100) NOT NULL COMMENT 'Instance type',
+  `instance_id` int(10) unsigned NOT NULL COMMENT 'Instance id',
+  `rank` int(10) unsigned NOT NULL COMMENT 'Chart rank',
+  `cnt` int(10) unsigned NOT NULL COMMENT 'Nationality instance count',
+  `fraction` decimal(6,5) unsigned NOT NULL COMMENT 'Fraction percentage'
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
@@ -48,21 +64,6 @@ CREATE TABLE IF NOT EXISTS `chart_content` (
   `cnt` int(10) unsigned NOT NULL COMMENT 'Instance count'
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
--- --------------------------------------------------------
-
---
--- Tabellenstruktur für Tabelle `chart_nationalities`
---
-
-CREATE TABLE IF NOT EXISTS `chart_nationalities` (
-`id` int(10) unsigned NOT NULL COMMENT 'Chart nationalities id',
-  `chart_id` int(10) unsigned NOT NULL COMMENT 'Chart id',
-  `nat_id` int(10) unsigned NOT NULL COMMENT 'Nationalities id',
-  `rank` int(10) unsigned NOT NULL COMMENT 'Chart rank',
-  `cnt` int(10) unsigned NOT NULL COMMENT 'Nationality instance count',
-  `fraction` decimal(6,5) unsigned NOT NULL COMMENT 'Fraction percentage'
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-
 --
 -- Indizes der exportierten Tabellen
 --
@@ -74,15 +75,15 @@ ALTER TABLE `charts`
  ADD PRIMARY KEY (`id`);
 
 --
--- Indizes für die Tabelle `chart_content`
+-- Indizes für die Tabelle `chart_additional`
 --
-ALTER TABLE `chart_content`
+ALTER TABLE `chart_additional`
  ADD PRIMARY KEY (`id`);
 
 --
--- Indizes für die Tabelle `chart_nationalities`
+-- Indizes für die Tabelle `chart_content`
 --
-ALTER TABLE `chart_nationalities`
+ALTER TABLE `chart_content`
  ADD PRIMARY KEY (`id`);
 
 --
@@ -93,17 +94,17 @@ ALTER TABLE `chart_nationalities`
 -- AUTO_INCREMENT für Tabelle `charts`
 --
 ALTER TABLE `charts`
-MODIFY `id` int(10) unsigned NOT NULL AUTO_INCREMENT COMMENT 'Chart id';
+MODIFY `id` int(10) unsigned NOT NULL AUTO_INCREMENT COMMENT 'Chart id',AUTO_INCREMENT=2;
+--
+-- AUTO_INCREMENT für Tabelle `chart_additional`
+--
+ALTER TABLE `chart_additional`
+MODIFY `id` int(10) unsigned NOT NULL AUTO_INCREMENT COMMENT 'Chart nationalities id';
 --
 -- AUTO_INCREMENT für Tabelle `chart_content`
 --
 ALTER TABLE `chart_content`
 MODIFY `id` int(10) unsigned NOT NULL AUTO_INCREMENT COMMENT 'Chart content id';
---
--- AUTO_INCREMENT für Tabelle `chart_nationalities`
---
-ALTER TABLE `chart_nationalities`
-MODIFY `id` int(10) unsigned NOT NULL AUTO_INCREMENT COMMENT 'Chart nationalities id';
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;

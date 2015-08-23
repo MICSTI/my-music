@@ -74,6 +74,21 @@
 				$response["success"] = true;
 			
 				break;
+			
+			// Charts favourites
+			case "charts_favourites":
+				$json_data = json_decode($data, true);
+				
+				// favourite songs
+				$songs = $mc->getMDB()->getMostPlayedSongs();
+				
+				// favourite artists
+				$artists = $mc->getMDB()->getMostPlayedArtists();
+				
+				// favourite records
+				$records = $mc->getMDB()->getMostPlayedRecords();
+			
+				break;
 				
 			default:
 				$response["success"] = false;
