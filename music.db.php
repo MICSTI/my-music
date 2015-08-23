@@ -3220,6 +3220,35 @@
 		}
 		
 		/**
+			Returns the last successful charts compile timestamp.
+			Returns an array containing the info about the chart, false otherwise.
+		*/
+		public function getChartInfo($chart_type, $instance_type, $year = 0) {			
+			$year_where = $year > 0 ? " AND ch.year = :year" : "";
+			
+			$sql = "SELECT
+						ch.id AS 'ChartId',
+						ch.chart_type AS 'ChartType',
+						ch.instance_type AS 'ChartInstanceType',
+						ch.year AS 'ChartYear',
+						ch.timestamp AS 'ChartCompileTimestamp'
+					FROM
+						charts ch
+					WHERE
+						ch.chart_type = :chart_type AND
+						ch.instance_type = :instance_type" . $year_where;
+						
+			$query = $this->db->prepare($sql);
+			$query->execute( array(':chart_type' => $chart_type, ':instance_type' => $instance_type, ':year' => $year) );
+			
+			if ($query->rowCount() > 0) {
+				return $query->fetch(PDO::FETCH_ASSOC);
+			} else {
+				return false;
+			}
+		}
+		
+		/**
 			Returns the 100 most played songs in the database
 		*/
 		public function getMostPlayedSongs() {
