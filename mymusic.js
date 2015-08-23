@@ -841,7 +841,7 @@ function getPlayedAdministrationDiv(played) {
 	return html;
 }
 
-function chartsInit() {
+function initCharts() {
 	// charts compilation buttons
 	$(".btn-chart").on("click", function() {
 		// hide button to avoid multiple execution
@@ -849,6 +849,37 @@ function chartsInit() {
 		
 		// show next paragraph with the info class (loading indicator)
 		$(this).next("p.loading-static").css("display", "inline-block");
+		
+		// get parameters
+		var _params = this.id.split("-");
+		
+		// build data request object
+		var _data = {
+			chart_type: _params[2],
+			year: _params.length > 3 ? _params[3] : 0
+		};
+		
+		// AJAX request
+		$.ajax( {
+			method: "POST",
+			url: "ajax.db.php",
+			data: {
+				action: "charts_compilation",
+				data: JSON.stringify(_data)
+			}
+		}).done(function(resp) {
+			var response = JSON.parse(resp);
+			
+			if (response.success) {
+				globalNotify("Charts compilation finished successfully");
+			} else {
+				console.log("Error", response.message);
+				globalNotify("Charts compilation failed", "error");
+			}
+		}).fail(function(error) {
+			// log error
+			console.log("ajax.db.php", error);
+		});
 	});
 }
 
@@ -918,7 +949,7 @@ function getNewSettingsTabContent(target, params) {
 		
 		// charts initialization
 		if ($("#charts-container").length > 0) {
-			chartsInit();
+			initCharts();
 		}
 		
 		// init admin search fields

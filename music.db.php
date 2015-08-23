@@ -3253,6 +3253,104 @@
 		}
 		
 		/**
+			Compiles the charts for songs.
+			It also handles the calculation for nationality and activity additional statistics.
+		*/
+		public function compileCharts($type, $songs, $artists, $records, $year = 0) {
+			// get old charts info
+			$old_charts = $this->getChartInfo($type);
+			
+			// delete old charts
+			if ($old_charts !== false) {
+				$this->deleteCharts($old_charts["ChartId"]);
+			}
+			
+			// create container entry
+			$chart_id = $this->addChartContainerEntry($type, $year);
+			
+			// write songs
+			$this->writeChartsContent($chart_id, "songs", $songs);
+		}
+		
+		/**
+			Creates a chart container entry and returns its id.
+			If the creation was unsuccessful, false is returned.
+		*/
+		private function addChartContainerEntry($chart_type, $year = 0) {
+			if ($year > 0) {
+				$fields = "chart_type, year";
+				$values = ":chart_type, :year";
+				$exec_array = array(':chart_type' => $chart_type, ':year' => $year);
+			} else {
+				$fields = "chart_type";
+				$values = ":chart_type";
+				$exec_array = array(':chart_type' => $chart_type);
+			}
+			
+			$sql = "INSERT INTO charts (" . $fields . ") VALUES (" . $values . ")";
+			$query = $this->db->prepare($sql);
+			$query->execute( $exec_array );
+			
+			if ($query->rowCount() > 0) {
+				return $this->db->lastInsertId();
+			}
+			
+			return false;
+		}
+		
+		public function writeChartsContent($chart_id, $instance_type, $content) {
+			// get instance name ("songs" -> "SongId", for getting right field from content array)
+			$instance = substr($instance_type, 0, -1);
+			$instance = strtoupper(substr($instance, 0, 1)) . substr($instance, 1) . "Id";
+			
+			$counter = 1;
+			$rank = 1;
+			$old_count = 0;
+			
+			foreach ($content as $entry) {
+				$instance_id = $entry[$instance];
+				$count = $entry["PlayedCount"];
+				
+				if ($count != $old_count) {
+					// assign new rank if counts are different
+					$rank = $counter;
+				}
+				
+				$this->addChartsContentEntry($chart_id, $instance_type, $instance_id, $rank, $count);
+				
+				$old_count = $count;
+				$counter++;
+			}
+		}
+		
+		private function addChartsContentEntry($chart_id, $instance_type, $instance_id, $rank, $count) {
+			$sql = "INSERT INTO chart_content (chart_id, instance_type, instance_id, rank, cnt) VALUES (:chart_id, :instance_type, :instance_id, :rank, :cnt)";
+			$query = $this->db->prepare($sql);
+			$query->execute( array(':chart_id' => $chart_id, ':instance_type' => $instance_type, ':instance_id' => $instance_id, ':rank' => $rank, ':cnt' => $count) );
+		}
+		
+		/**
+			Deletes all info about a chart container entry in the database.
+			All content and additional info are also deleted.
+		*/
+		private function deleteCharts($chart_id) {
+			// delete additional info
+			$sql = "DELETE FROM chart_additional WHERE chart_id = :id";
+			$query = $this->db->prepare($sql);
+			$query->execute( array(':id' => $chart_id) );
+			
+			// delete content
+			$sql = "DELETE FROM chart_content WHERE chart_id = :id";
+			$query = $this->db->prepare($sql);
+			$query->execute( array(':id' => $chart_id) );
+			
+			 // delete chart container entry
+			$sql = "DELETE FROM charts WHERE id = :id";
+			$query = $this->db->prepare($sql);
+			$query->execute( array(':id' => $chart_id) );
+		}
+		
+		/**
 			Returns the 250 most played songs in the database
 		*/
 		public function getMostPlayedSongs() {

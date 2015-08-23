@@ -870,7 +870,7 @@
 						// compile now button
 						$html .= "<div>";
 							$html .= "<button id='charts-compile-top2020' type='button' class='btn btn-primary btn-chart'>Compile</button>";
-							$html .= $this->getLoadingStatic();
+							$html .= $this->getCompilingStatic();
 						$html .= "</div>";
 					$html .= "</div>";
 				$html .= "</div>";
@@ -890,7 +890,7 @@
 						// compile now button
 						$html .= "<div>";
 							$html .= "<button id='charts-compile-favourites' type='button' class='btn btn-primary btn-chart'>Compile</button>";
-							$html .= $this->getLoadingStatic();
+							$html .= $this->getCompilingStatic();
 						$html .= "</div>";
 					$html .= "</div>";
 				$html .= "</div>";
@@ -928,7 +928,7 @@
 										
 										$html .= "<td>";
 											$html .= "<button id='charts-compile-calendarial-" . $year . "' type='button' class='btn btn-primary btn-chart'>Compile</button>";
-											$html .= $this->getLoadingStatic();
+											$html .= $this->getCompilingStatic();
 										$html .= "</td>";
 										
 										$html .= "<td></td>";
@@ -963,10 +963,6 @@
 					return "-";
 				}
 			}
-		}
-		
-		public function getLoadingStatic() {
-			return "<p class='loading-static bg-info'>Loading...</p>";
 		}
 		
 		/**
@@ -1130,5 +1126,19 @@
 		*/
 		public function notImplementedYet() {
 			return "<p><mark>This feature has not yet been implemented. Come back, it will be here soon.</mark>";
+		}
+		
+		/**
+			Returns the static text for indicating that the page is loading.
+		*/
+		public function getLoadingStatic() {
+			return "<p class='loading-static bg-info'>Loading...</p>";
+		}
+		
+		/**
+			Returns the static text for indicating that the page is compiling.
+		*/
+		public function getCompilingStatic() {
+			return "<p class='loading-static bg-info'>Compiling...</p>";
 		}
 	}

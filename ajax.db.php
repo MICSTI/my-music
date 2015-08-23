@@ -76,17 +76,39 @@
 				break;
 			
 			// Charts favourites
-			case "charts_favourites":
+			case "charts_compilation":
 				$json_data = json_decode($data, true);
 				
-				// favourite songs
-				$songs = $mc->getMDB()->getMostPlayedSongs();
+				$chart_type = $json_data["chart_type"];
+				$year = $json_data["year"];
 				
-				// favourite artists
-				$artists = $mc->getMDB()->getMostPlayedArtists();
+				switch ($chart_type) {
+					case "favourites":					
+						// favourite songs
+						$songs = $mc->getMDB()->getMostPlayedSongs();
+						
+						// favourite artists
+						$artists = $mc->getMDB()->getMostPlayedArtists();
+						
+						// favourite records
+						$records = $mc->getMDB()->getMostPlayedRecords();
+						
+						// write songs
+						$mc->getMDB()->compileCharts("favourites", $songs, $artists, $records);
+							
+						$response["success"] = true;
+						
+						break;
+						
+					default:
+						$response["success"] = false;
+						$response["message"] = "Unknown chart type '" . $chart_type . "'";
+						
+						break;
+				}
 				
-				// favourite records
-				$records = $mc->getMDB()->getMostPlayedRecords();
+				/*
+				*/
 			
 				break;
 				
