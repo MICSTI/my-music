@@ -860,7 +860,7 @@
 					// info when top 20/20 charts were last compiled
 					$html .= "<div class='panel-paragraph'>";
 						$html .= "<span id='charts-compilation-status-top2020'>";
-							
+							$html .= $this->getChartCompilationStatus($mdb, true, "top2020");
 						$html .= "</span>";
 					$html .= "</div>";
 					
@@ -879,7 +879,7 @@
 					// info when favourites charts were last compiled
 					$html .= "<div class='panel-paragraph'>";
 						$html .= "<span id='charts-compilation-status-favourites'>";
-							
+							$html .= $this->getChartCompilationStatus($mdb, true, "favourites");
 						$html .= "</span>";
 					$html .= "</div>";
 					
@@ -916,7 +916,10 @@
 							for ($year; $year >= $threshold_year; $year--) {
 								$html .= "<tr>";
 									$html .= "<td>" . $year . "</td>";
-									$html .= "<td></td>";
+									
+									$html .= "<td>";
+										$html .= $this->getChartCompilationStatus($mdb, false, "calendarial", $year);
+									$html .= "</td>";
 									
 									$html .= "<td>";
 										$html .= "<button type='button' class='btn btn-primary'>Compile</button>";
@@ -933,16 +936,24 @@
 			return $html;
 		}
 		
-		public function getChartCompilationStatus($mdb, $chart_type, $instance_type, $year = 0) {
+		public function getChartCompilationStatus($mdb, $with_text, $chart_type, $year = 0) {
 			// get status array
-			$status = $mdb->getChartInfo($chart_type, $instance_type, $year);
+			$status = $mdb->getChartInfo($chart_type, $year);
 			
 			if ($status !== false) {
 				$datetime = new MySqlDateTime($status["ChartCompileTimestamp"]);
 				
-				return "Last successfully compiled on " . $datetime->convert2AustrianDateTime();
+				if ($with_text) {
+					return "Last successfully compiled on <span class='bold'>" . $datetime->convert2AustrianDateTime() . "</span>";
+				} else {
+					return $datetime->convert2AustrianDateTime();
+				}
 			} else {
-				return "This chart has never been compiled successfully.";
+				if ($with_text) {
+					return "This chart has never been compiled successfully.";
+				} else {
+					return "never";
+				}
 			}
 		}
 		

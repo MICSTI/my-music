@@ -3223,8 +3223,14 @@
 			Returns the last successful charts compile timestamp.
 			Returns an array containing the info about the chart, false otherwise.
 		*/
-		public function getChartInfo($chart_type, $year = 0) {			
-			$year_where = $year > 0 ? " AND ch.year = :year" : "";
+		public function getChartInfo($chart_type, $year = 0) {						
+			if ($year > 0) {
+				$year_where = " AND ch.year = :year";
+				$exec_array = array(':chart_type' => $chart_type, ':year' => $year);
+			} else {
+				$year_where = "";
+				$exec_array = array(':chart_type' => $chart_type);
+			}
 			
 			$sql = "SELECT
 						ch.id AS 'ChartId',
@@ -3237,7 +3243,7 @@
 						ch.chart_type = :chart_type" . $year_where;
 						
 			$query = $this->db->prepare($sql);
-			$query->execute( array(':chart_type' => $chart_type, ':year' => $year) );
+			$query->execute( $exec_array );
 			
 			if ($query->rowCount() > 0) {
 				return $query->fetch(PDO::FETCH_ASSOC);
