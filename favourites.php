@@ -4,9 +4,13 @@
 	$html = "";
 	
 	// data
-	$songs = $mc->getMDB()->getMostPlayedSongs();
-	$artists = $mc->getMDB()->getMostPlayedArtists();
-	$records = $mc->getMDB()->getMostPlayedRecords();
+	$chart_info = $mc->getMDB()->getChartInfo("favourites");
+	
+	$chart_id = $chart_info["ChartId"];
+	
+	$songs = $mc->getMDB()->getChartsContentFavouriteSongs($chart_id);
+	$artists = $mc->getMDB()->getChartsContentFavouriteArtists($chart_id);
+	$records = $mc->getMDB()->getChartsContentFavouriteRecords($chart_id);
 	
 	// headline
 	$html .= "<h3>Favourites</h3>";
@@ -47,8 +51,7 @@
 	*/
 	function getSongContent($songs) {
 		$content = "";
-		
-		$place = 1;
+
 		$previous = -1;
 		
 		$content .= "<table class='table table-striped'>";
@@ -64,23 +67,17 @@
 			
 			$content .= "<tbody>";
 				foreach ($songs as $song) {
-					// determine rank
 					$played_count = $song["PlayedCount"];
 					
-					if ($played_count != $previous) {
-						$rank = $place;
-					} else {
-						$rank = "";
-					}
+					// don't display rank if it's the same count as before - they are tied
+					$rank = $song["Rank"];
+					$rank_display = $played_count == $previous ? "" : $rank;
 					
 					// set previous value to current value for next loop
 					$previous = $played_count;
 					
-					// increment rank
-					$place++;
-					
 					$content .= "<tr>";
-						$content .= "<td class='rank'>" . $rank . "</td>";
+						$content .= "<td class='rank'>" . $rank_display . "</td>";
 						$content .= "<td><a href='song.php?id=" . $song["SongId"] . "'>" . $song["SongName"] . "</a></td>";
 						$content .= "<td><a href='artist.php?id=" . $song["ArtistId"] . "'>" . $song["ArtistName"] . "</a></td>";
 						$content .= "<td>" . $played_count . "</td>";
@@ -99,7 +96,6 @@
 	function getArtistContent($artists) {
 		$content = "";
 		
-		$place = 1;
 		$previous = -1;
 		
 		$content .= "<table class='table table-striped'>";
@@ -114,23 +110,17 @@
 			
 			$content .= "<tbody>";
 				foreach ($artists as $artist) {
-					// determine rank
 					$played_count = $artist["PlayedCount"];
 					
-					if ($played_count != $previous) {
-						$rank = $place;
-					} else {
-						$rank = "";
-					}
+					// don't display rank if it's the same count as before - they are tied
+					$rank = $artist["Rank"];
+					$rank_display = $played_count == $previous ? "" : $rank;
 					
 					// set previous value to current value for next loop
 					$previous = $played_count;
 					
-					// increment rank
-					$place++;
-					
 					$content .= "<tr>";
-						$content .= "<td class='rank'>" . $rank . "</td>";
+						$content .= "<td class='rank'>" . $rank_display . "</td>";
 						$content .= "<td><a href='artist.php?id=" . $artist["ArtistId"] . "'>" . $artist["ArtistName"] . "</a></td>";
 						$content .= "<td>" . $played_count . "</td>";
 						$content .= "<td> </td>";
@@ -148,7 +138,6 @@
 	function getRecordContent($records) {
 		$content = "";
 		
-		$place = 1;
 		$previous = -1;
 		
 		$content .= "<table class='table table-striped'>";
@@ -164,23 +153,17 @@
 			
 			$content .= "<tbody>";
 				foreach ($records as $record) {
-					// determine rank
 					$played_count = $record["PlayedCount"];
 					
-					if ($played_count != $previous) {
-						$rank = $place;
-					} else {
-						$rank = "";
-					}
+					// don't display rank if it's the same count as before - they are tied
+					$rank = $record["Rank"];
+					$rank_display = $played_count == $previous ? "" : $rank;
 					
 					// set previous value to current value for next loop
 					$previous = $played_count;
 					
-					// increment rank
-					$place++;
-					
 					$content .= "<tr>";
-						$content .= "<td class='rank'>" . $rank . "</td>";
+						$content .= "<td class='rank'>" . $rank_display . "</td>";
 						$content .= "<td><a href='record.php?id=" . $record["RecordId"] . "'>" . $record["RecordName"] . "</a></td>";
 						$content .= "<td><a href='artist.php?id=" . $record["ArtistId"] . "'>" . $record["ArtistName"] . "</a></td>";
 						$content .= "<td>" . $played_count . "</td>";

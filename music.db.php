@@ -3354,6 +3354,90 @@
 		}
 		
 		/**
+			Returns the content of the favourite song charts.
+		*/
+		public function getChartsContentFavouriteSongs($chart_id) {
+			$sql = "SELECT
+						so.id AS 'SongId',
+						so.name AS 'SongName',
+						ar.id AS 'ArtistId',
+						ar.name AS 'ArtistName',
+						co.rank AS 'Rank',
+						co.cnt AS 'PlayedCount'
+					FROM
+						chart_content co INNER JOIN
+						songs so ON co.instance_id = so.id INNER JOIN
+						artists ar ON so.aid = ar.id
+					WHERE
+						co.chart_id = :chart_id AND
+						co.instance_type = 'songs'";
+						
+			$query = $this->db->prepare($sql);
+			$query->execute( array(':chart_id' => $chart_id) );
+			
+			if ($query->rowCount() > 0) {
+				return $query->fetchAll(PDO::FETCH_ASSOC);
+			} else {
+				return array();
+			}
+		}
+		
+		/**
+			Returns the content of the favourite artist charts.
+		*/
+		public function getChartsContentFavouriteArtists($chart_id) {
+			$sql = "SELECT
+						ar.id AS 'ArtistId',
+						ar.name AS 'ArtistName',
+						co.rank AS 'Rank',
+						co.cnt AS 'PlayedCount'
+					FROM
+						chart_content co INNER JOIN
+						artists ar ON co.instance_id = ar.id
+					WHERE
+						co.chart_id = :chart_id AND
+						co.instance_type = 'artists'";
+						
+			$query = $this->db->prepare($sql);
+			$query->execute( array(':chart_id' => $chart_id) );
+			
+			if ($query->rowCount() > 0) {
+				return $query->fetchAll(PDO::FETCH_ASSOC);
+			} else {
+				return array();
+			}
+		}
+		
+		/**
+			Returns the content of the favourite records charts.
+		*/
+		public function getChartsContentFavouriteRecords($chart_id) {
+			$sql = "SELECT
+						re.id AS 'RecordId',
+						re.name AS 'RecordName',
+						ar.id AS 'ArtistId',
+						ar.name AS 'ArtistName',
+						co.rank AS 'Rank',
+						co.cnt AS 'PlayedCount'
+					FROM
+						chart_content co INNER JOIN
+						records re ON co.instance_id = re.id INNER JOIN
+						artists ar ON re.aid = ar.id
+					WHERE
+						co.chart_id = :chart_id AND
+						co.instance_type = 'records'";
+						
+			$query = $this->db->prepare($sql);
+			$query->execute( array(':chart_id' => $chart_id) );
+			
+			if ($query->rowCount() > 0) {
+				return $query->fetchAll(PDO::FETCH_ASSOC);
+			} else {
+				return array();
+			}
+		}
+		
+		/**
 			Deletes all info about a chart container entry in the database.
 			All content and additional info are also deleted.
 		*/
