@@ -864,7 +864,7 @@
 					
 					// compile now button
 					$html .= "<div>";
-						$html .= "<button id='charts-compile-top2020' type='button' class='btn btn-success'>Compile</button>";
+						$html .= "<button id='charts-compile-top2020' type='button' class='btn btn-primary'>Compile</button>";
 					$html .= "</div>";
 				$html .= "</div>";
 			$html .= "</div>";
@@ -881,7 +881,7 @@
 					
 					// compile now button
 					$html .= "<div>";
-						$html .= "<button id='charts-compile-favourites' type='button' class='btn btn-success'>Compile</button>";
+						$html .= "<button id='charts-compile-favourites' type='button' class='btn btn-primary'>Compile</button>";
 					$html .= "</div>";
 				$html .= "</div>";
 			$html .= "</div>";

@@ -86,6 +86,12 @@ TABLE song_connection
 	parent_id	INT
 	child_id	INT
 	added		DATE
+	
+TABLE charts
+	id			INT
+	type		VARCHAR
+	year		INT
+	timestamp	TIMESTAMP
 
 
 CREATE VIEW SongsView AS
