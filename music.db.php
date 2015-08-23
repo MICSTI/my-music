@@ -3570,6 +3570,30 @@
 		}
 		
 		/**
+			Returns the 20 most played songs over the last 20 days.
+		*/
+		public function getTop2020Songs() {
+			$date_from = new UnixTimestamp(mktime(0, 0, 0, date("m"), date("d") - 21, date("Y")));
+			$date_to = new UnixTimestamp(mktime(0, 0, 0, date("m"), date("d") - 1, date("Y")));
+			$limit_low = 0;
+			$limit_high = 20;
+			
+			return $this->getPlayedSongStatistics($date_from->convert2MysqlDate(), $date_to->convert2MysqlDate(), $limit_low, $limit_high);
+		}
+		
+		/**
+			Returns the 20 most played artists over the last 20 days.
+		*/
+		public function getTop2020Artists() {
+			$date_from = new UnixTimestamp(mktime(0, 0, 0, date("m"), date("d") - 21, date("Y")));
+			$date_to = new UnixTimestamp(mktime(0, 0, 0, date("m"), date("d") - 1, date("Y")));
+			$limit_low = 0;
+			$limit_high = 20;
+			
+			return $this->getPlayedArtistStatistics($date_from->convert2MysqlDate(), $date_to->convert2MysqlDate(), $limit_low, $limit_high);
+		}
+		
+		/**
 			Returns the play history for the specfied date
 			If no result is found, null is returned
 		*/
@@ -3736,18 +3760,18 @@
 			}
 		}
 		
-		public function getPlayedStatistics ($date_from, $date_to, $limit_low = "", $limit_high = "") {
-			// strip input from code tags
-			$date_from = strip_tags($date_from);
-			$date_to = strip_tags($date_to);
-			$limit_low = strip_tags($limit_low);
-			$limit_high = strip_tags($limit_high);
-			
+		/**
+			Returns an array containing the song statistics for the specified date range.
+		*/
+		public function getPlayedSongStatistics ($date_from, $date_to, $limit_low, $limit_high) {
 			$sql = "SELECT
+						so.id AS 'SongId',
 						so.name AS 'SongName',
+						ar.id AS 'ArtistId',
 						ar.name AS 'ArtistName',
+						re.id AS 'RecordId',
 						re.name AS 'RecordName',
-						COUNT(pl.sid) AS 'PlayCount'
+						COUNT(pl.sid) AS 'PlayedCount'
 					FROM
 						played pl
 						INNER JOIN songs so ON so.id = pl.sid
@@ -3758,22 +3782,51 @@
 					GROUP BY
 						pl.sid
 					ORDER BY
-						PlayCount DESC,
+						PlayedCount DESC,
 						ArtistName,
-						SongName";
+						SongName
+					LIMIT
+						:limit_low, :limit_high";
 
-			$sql .= $this->getQueryLimit($limit_low, $limit_high);
 			$query = $this->db->prepare($sql);
-			$query->execute( array(':date_from' => $date_from, ':date_to' => $date_to) );
+			$query->execute( array(':date_from' => $date_from, ':date_to' => $date_to, ':limit_low' => $limit_low, ':limit_high' => $limit_high) );
 			
 			if ($query->rowCount() > 0) {
-				if ($this->logging) {
-					$this->addLog(__FUNCTION__, "success", "fetched played statistics for range " . $date_from . " - " . $date_to);
-				}
-				
-				return $query->fetchAll();
+				return $query->fetchAll(PDO::FETCH_ASSOC);
 			} else {
-				return null;
+				return array();
+			}
+		}
+		
+		/**
+			Returns an array containing the song statistics for the specified date range.
+		*/
+		public function getPlayedArtistStatistics ($date_from, $date_to, $limit_low, $limit_high) {
+			$sql = "SELECT
+						ar.id AS 'ArtistId',
+						ar.name AS 'ArtistName',
+						COUNT(pl.sid) AS 'PlayedCount'
+					FROM
+						played pl
+						INNER JOIN songs so ON so.id = pl.sid
+						INNER JOIN artists ar ON ar.id = so.aid
+					WHERE
+						DATE(pl.timestamp) >= :date_from AND DATE(pl.timestamp) <= :date_to
+					GROUP BY
+						ar.id
+					ORDER BY
+						PlayedCount DESC,
+						ArtistName
+					LIMIT
+						:limit_low, :limit_high";
+
+			$query = $this->db->prepare($sql);
+			$query->execute( array(':date_from' => $date_from, ':date_to' => $date_to, ':limit_low' => $limit_low, ':limit_high' => $limit_high) );
+			
+			if ($query->rowCount() > 0) {
+				return $query->fetchAll(PDO::FETCH_ASSOC);
+			} else {
+				return array();
 			}
 		}
 		
@@ -3888,7 +3941,7 @@
 		
 		private function getQueryLimit ($limit_low, $limit_high) {
 			if ($limit_low != "") {
-				$limit = "LIMIT " . $limit_low;
+				$limit = " LIMIT " . $limit_low;
 				
 				if ($limit_high != "") {
 					$limit .= ", " . $limit_high;
