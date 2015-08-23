@@ -3383,6 +3383,33 @@
 		}
 		
 		/**
+			Returns an array containing all charts entries for this song.
+			If no entries are found, and empty array is returned.
+		*/
+		public function getChartsSongInfo($sid) {
+			$sql = "SELECT
+						co.rank AS 'Rank',
+						co.cnt AS 'PlayedCount',
+						ch.chart_type AS 'ChartType',
+						ch.year AS 'ChartYear'
+					FROM
+						chart_content co INNER JOIN
+						charts ch ON co.chart_id = ch.id
+					WHERE
+						co.instance_id = :sid AND
+						co.instance_type = 'songs'";
+						
+			$query = $this->db->prepare($sql);
+			$query->execute( array(':sid' => $sid) );
+			
+			if ($query->rowCount() > 0) {
+				return $query->fetchAll(PDO::FETCH_ASSOC);
+			} else {
+				return array();
+			}
+		}
+		
+		/**
 			Returns the content of the favourite artist charts.
 		*/
 		public function getChartsContentArtists($chart_id) {
