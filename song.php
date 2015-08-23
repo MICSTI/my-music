@@ -58,11 +58,7 @@
 							$html .= "<div class='col-sm-3 bold'>Charts:</div>";
 							
 							$html .= "<div class='col-sm-9'>";
-								foreach ($charts_info as $chart_entry) {
-									$html .= "<div>";
-										$html .= $chart_entry["ChartType"] . ": " . $chart_entry["Rank"] . ".";
-									$html .= "</div>";
-								}
+								$html .= $mc->getFrontend()->getChartsInfoDisplay($charts_info);
 							$html .= "</div>";
 						}
 					$html .= "</div>";

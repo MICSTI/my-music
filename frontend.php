@@ -944,6 +944,10 @@
 			return $html;
 		}
 		
+		/**
+			Returns the compilation status for a certain chart type.
+			It is possible to specify if a longer or a short version should be returned ($with_text).
+		*/
 		public function getChartCompilationStatus($mdb, $with_text, $chart_type, $year = 0) {
 			// get status array
 			$status = $mdb->getChartInfo($chart_type, $year);
@@ -963,6 +967,23 @@
 					return "-";
 				}
 			}
+		}
+		
+		/**
+			Returns the content of the charts info display.
+		*/
+		public function getChartsInfoDisplay($charts_info) {
+			$html = "";
+			
+			if (count($charts_info) > 0) {
+				foreach ($charts_info as $chart_entry) {
+					$html .= "<div>";
+						$html .= $chart_entry["ChartType"] . ": " . $chart_entry["Rank"] . ".";
+					$html .= "</div>";
+				}
+			}
+			
+			return $html;
 		}
 		
 		/**
