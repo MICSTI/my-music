@@ -92,6 +92,21 @@ TABLE charts
 	type		VARCHAR
 	year		INT
 	timestamp	TIMESTAMP
+	
+TABLE chart_content
+	id			INT
+	chart_id	INT
+	instance_id	INT
+	rank		INT
+	cnt			INT
+	
+TABLE chart_nationalities
+	id			INT
+	chart_id	INT
+	nat_id		INT
+	rank		INT
+	cnt			INT
+	fraction	DECIMAL (6,5)
 
 
 CREATE VIEW SongsView AS
