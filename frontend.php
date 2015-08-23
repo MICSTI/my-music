@@ -852,85 +852,93 @@
 		private function getChartAdministration($mdb) {
 			$html = "";
 			
-			// top 20/20
-			$html .= "<div class='panel panel-default'>";
-				$html .= "<div class='panel-heading'>Top 20/20</div>";
-				
-				$html .= "<div class='panel-body'>";
-					// info when top 20/20 charts were last compiled
-					$html .= "<div class='panel-paragraph'>";
-						$html .= "<span id='charts-compilation-status-top2020'>";
-							$html .= $this->getChartCompilationStatus($mdb, true, "top2020");
-						$html .= "</span>";
-					$html .= "</div>";
-					
-					// compile now button
-					$html .= "<div>";
-						$html .= "<button id='charts-compile-top2020' type='button' class='btn btn-primary'>Compile</button>";
-					$html .= "</div>";
-				$html .= "</div>";
-			$html .= "</div>";
+			// chart container
+			$html .= "<div id='charts-container'>";
 			
-			// favourites
-			$html .= "<div class='panel panel-default'>";
-				$html .= "<div class='panel-heading'>Favourites</div>";
-				
-				$html .= "<div class='panel-body'>";
-					// info when favourites charts were last compiled
-					$html .= "<div class='panel-paragraph'>";
-						$html .= "<span id='charts-compilation-status-favourites'>";
-							$html .= $this->getChartCompilationStatus($mdb, true, "favourites");
-						$html .= "</span>";
-					$html .= "</div>";
+				// top 20/20
+				$html .= "<div class='panel panel-default'>";
+					$html .= "<div class='panel-heading'>Top 20/20</div>";
 					
-					// compile now button
-					$html .= "<div>";
-						$html .= "<button id='charts-compile-favourites' type='button' class='btn btn-primary'>Compile</button>";
-					$html .= "</div>";
-				$html .= "</div>";
-			$html .= "</div>";
-			
-			// calendarial
-			$html .= "<div class='panel panel-default'>";
-				$html .= "<div class='panel-heading'>Calendarial</div>";
-				
-				$html .= "<div class='panel-body'>";
-					// all available years (a year is only shown when it has completely passed --> 2015 shows up on Jan 1, 2016)
-					$html .= "<table class='table'>";
-						$html .= "<thead>";
-							$html .= "<tr>";
-								$html .= "<td class='bold col-sm-2'>Year</td>";
-								$html .= "<td class='bold col-sm-3'>Last compiled</td>";
-								$html .= "<td class='col-sm-2'> </td>";
-								$html .= "<td class='col-sm-5'> </td>";
-							$html .= "</tr>";
-						$html .= "</thead>";
+					$html .= "<div class='panel-body'>";
+						// info when top 20/20 charts were last compiled
+						$html .= "<div class='panel-paragraph'>";
+							$html .= "<span id='charts-compilation-status-top2020'>";
+								$html .= $this->getChartCompilationStatus($mdb, true, "top2020");
+							$html .= "</span>";
+						$html .= "</div>";
 						
-						$html .= "<tbody>";
-							// get current year minus 1 - the last completely finished year
-							$year = date("Y") - 1;
-							
-							// Charts go back to 2011 - the start year of taking record
-							$threshold_year = 2011;
-							
-							for ($year; $year >= $threshold_year; $year--) {
-								$html .= "<tr>";
-									$html .= "<td>" . $year . "</td>";
-									
-									$html .= "<td>";
-										$html .= $this->getChartCompilationStatus($mdb, false, "calendarial", $year);
-									$html .= "</td>";
-									
-									$html .= "<td>";
-										$html .= "<button type='button' class='btn btn-primary'>Compile</button>";
-									$html .= "</td>";
-									
-									$html .= "<td></td>";
-								$html .= "</tr>";
-							}
-						$html .= "</tbody>";
-					$html .= "</table>";
+						// compile now button
+						$html .= "<div>";
+							$html .= "<button id='charts-compile-top2020' type='button' class='btn btn-primary btn-chart'>Compile</button>";
+							$html .= $this->getLoadingStatic();
+						$html .= "</div>";
+					$html .= "</div>";
 				$html .= "</div>";
+				
+				// favourites
+				$html .= "<div class='panel panel-default'>";
+					$html .= "<div class='panel-heading'>Favourites</div>";
+					
+					$html .= "<div class='panel-body'>";
+						// info when favourites charts were last compiled
+						$html .= "<div class='panel-paragraph'>";
+							$html .= "<span id='charts-compilation-status-favourites'>";
+								$html .= $this->getChartCompilationStatus($mdb, true, "favourites");
+							$html .= "</span>";
+						$html .= "</div>";
+						
+						// compile now button
+						$html .= "<div>";
+							$html .= "<button id='charts-compile-favourites' type='button' class='btn btn-primary btn-chart'>Compile</button>";
+							$html .= $this->getLoadingStatic();
+						$html .= "</div>";
+					$html .= "</div>";
+				$html .= "</div>";
+				
+				// calendarial
+				$html .= "<div class='panel panel-default'>";
+					$html .= "<div class='panel-heading'>Calendarial</div>";
+					
+					$html .= "<div class='panel-body'>";
+						// all available years (a year is only shown when it has completely passed --> 2015 shows up on Jan 1, 2016)
+						$html .= "<table class='table'>";
+							$html .= "<thead>";
+								$html .= "<tr>";
+									$html .= "<td class='bold col-sm-2'>Year</td>";
+									$html .= "<td class='bold col-sm-3'>Last compiled</td>";
+									$html .= "<td class='col-sm-2'> </td>";
+									$html .= "<td class='col-sm-5'> </td>";
+								$html .= "</tr>";
+							$html .= "</thead>";
+							
+							$html .= "<tbody>";
+								// get current year minus 1 - the last completely finished year
+								$year = date("Y") - 1;
+								
+								// Charts go back to 2011 - the start year of taking record
+								$threshold_year = 2011;
+								
+								for ($year; $year >= $threshold_year; $year--) {
+									$html .= "<tr>";
+										$html .= "<td>" . $year . "</td>";
+										
+										$html .= "<td>";
+											$html .= $this->getChartCompilationStatus($mdb, false, "calendarial", $year);
+										$html .= "</td>";
+										
+										$html .= "<td>";
+											$html .= "<button id='charts-compile-calendarial-" . $year . "' type='button' class='btn btn-primary btn-chart'>Compile</button>";
+											$html .= $this->getLoadingStatic();
+										$html .= "</td>";
+										
+										$html .= "<td></td>";
+									$html .= "</tr>";
+								}
+							$html .= "</tbody>";
+						$html .= "</table>";
+					$html .= "</div>";
+				$html .= "</div>";
+			
 			$html .= "</div>";
 			
 			return $html;
@@ -955,6 +963,10 @@
 					return "-";
 				}
 			}
+		}
+		
+		public function getLoadingStatic() {
+			return "<p class='loading-static bg-info'>Loading...</p>";
 		}
 		
 		/**

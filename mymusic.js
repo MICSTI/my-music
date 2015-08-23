@@ -841,6 +841,24 @@ function getPlayedAdministrationDiv(played) {
 	return html;
 }
 
+function chartsInit() {
+	// charts compilation buttons
+	$(".btn-chart").on("click", function() {
+		// hide button to avoid multiple execution
+		$(this).hide();
+		
+		// show next paragraph with the info class (loading indicator)
+		$(this).next("p.loading-static").css("display", "inline-block");
+	});
+}
+
+/**
+	Compiles the charts and updates the content of the chart administration div.
+*/
+function compileCharts() {
+	
+}
+
 function switchToAddPlayedTab() {
 	// set date correct for add played tab
 	getNewSettingsTabContent("add-played", $("#played-administration-date").val());	
@@ -896,6 +914,11 @@ function getNewSettingsTabContent(target, params) {
 					getPlayedForDateAjax($(this).val());
 				}
 			});
+		}
+		
+		// charts initialization
+		if ($("#charts-container").length > 0) {
+			chartsInit();
 		}
 		
 		// init admin search fields

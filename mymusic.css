@@ -96,6 +96,11 @@ a {
 	margin-top: 12px;
 }
 
+.loading-static {
+	display: none;
+	padding: 9px 32px;
+}
+
 .administration-paragraph {
 	margin-bottom: 12px;
 }
