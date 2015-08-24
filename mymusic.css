@@ -139,6 +139,11 @@ a {
 }
 
 /* ------- Calendarial ------- */
+#calendarial-accordion.affix {
+	position: fixed;
+	top: 16px;
+}
+
 #calendarial-container {
 	padding-top: 24px;
 }

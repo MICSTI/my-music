@@ -1232,7 +1232,7 @@ $(document).ready( function () {
 	}
 	
 	// calendarial charts
-	var calendarial = $("#calendarial-container");
+	var calendarial = $("#calendarial-accordion");
 	if (calendarial.length > 0) {
 		// accordion items
 		$(".calendarial-item").on("click", function() {
@@ -1269,6 +1269,19 @@ $(document).ready( function () {
 			}).fail(function(error) {
 				// log error
 				console.log("ajax.db.php", error);
+			});
+		});
+		
+		// affix for accordion nav always to be visible
+		calendarial.on("affix.bs.affix", function() {
+			// a small hack to contain the width of the accordion nav div
+			var calendarialWidth = calendarial.innerWidth();
+			
+			calendarial.on("affixed.bs.affix", function() {
+				calendarial.css("width", calendarialWidth + "px");
+				
+				// remove the listener immediately so we don't attach it over and over again if we scroll up and down
+				calendarial.off("affixed.bs.affix");
 			});
 		});
 	}

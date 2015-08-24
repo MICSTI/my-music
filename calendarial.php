@@ -21,7 +21,7 @@
 			
 			if (count($year_charts) > 0) {
 				// nav accordion
-				$html .= "<div id='calendarial-accordion' class='panel-group'>";
+				$html .= "<div id='calendarial-accordion' class='panel-group' data-spy='affix' data-offset-top='230'>";
 					foreach ($year_charts as $year_chart) {
 						if ($first) {
 							$first = false;
