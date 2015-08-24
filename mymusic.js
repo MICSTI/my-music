@@ -1236,6 +1236,13 @@ $(document).ready( function () {
 	if (calendarial.length > 0) {
 		// accordion items
 		$(".calendarial-item").on("click", function() {
+			// hide open accordion elements
+			$("a.calendarial-item[aria-expanded='true']").each(function(i, item) {
+				var parent_id = this.id.split("-");
+				
+				$("#calendarial-" + parent_id[2]).collapse("hide");
+			});
+			
 			var _params = this.id.split("-");
 			
 			var _type = _params[1];

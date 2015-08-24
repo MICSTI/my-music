@@ -28,8 +28,10 @@
 							
 							$first_year = $year_chart["ChartYear"];
 							$collapse_in = " in";
+							$aria_expanded = "true";
 						} else {
 							$collapse_in = "";
+							$aria_expanded = "false";
 						}
 						
 						$year = $year_chart["ChartYear"];
@@ -37,7 +39,7 @@
 						$html .= "<div class='panel panel-default'>";
 							$html .= "<div class='panel-heading'>";
 								$html .= "<div class='panel-title'>";
-									$html .= "<a class='calendarial-item' id='#calendarial-year-" . $year . "' data-toggle='collapse' data-parent='#calendarial-accordion' href='#calendarial-" . $year . "'>" . $year . "</a>";
+									$html .= "<a class='calendarial-item' id='#calendarial-year-" . $year . "' data-toggle='collapse' data-parent='#calendarial-accordion' aria-expanded='" . $aria_expanded . "' href='#calendarial-" . $year . "'>" . $year . "</a>";
 								$html .= "</div>";
 							$html .= "</div>";
 						$html .= "</div>";
