@@ -980,7 +980,20 @@
 			if (count($charts_info) > 0) {
 				foreach ($charts_info as $chart_entry) {
 					$html .= "<div>";
-						$html .= $chart_entry["ChartType"] . ": " . $chart_entry["Rank"] . ".";
+						
+						$chart_type = $chart_entry["ChartType"];
+						
+						switch ($chart_type) {
+							case "calendarial":
+								$html .= $chart_entry["ChartYear"] . ": " . $chart_entry["Rank"] . ".";
+								
+								break;
+								
+							default:
+								$html .= $chart_entry["ChartType"] . ": " . $chart_entry["Rank"] . ".";
+								
+								break;
+						}
 					$html .= "</div>";
 				}
 			}
