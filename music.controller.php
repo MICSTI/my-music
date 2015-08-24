@@ -416,6 +416,9 @@
 				$this->getMDB()->setConfig('mm_db_modification', $mm_db_modification);
 			}
 			
+			$successful_update = mktime();
+			$this->getMDB()->setConfig('successful_update', $successful_update);
+			
 			$unix_mm_db_modification = new UnixTimestamp($mm_db_modification);
 			$austrian_mm_db_modification = $unix_mm_db_modification->convert2AustrianDateTime();
 		
