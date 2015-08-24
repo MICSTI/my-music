@@ -1231,6 +1231,48 @@ $(document).ready( function () {
 		$("#settings a").removeClass("active");
 	}
 	
+	// calendarial charts
+	var calendarial = $("#calendarial-container");
+	if (calendarial.length > 0) {
+		// accordion items
+		$(".calendarial-item").on("click", function() {
+			var _params = this.id.split("-");
+			
+			var _type = _params[1];
+			var _year = _params[2];
+			var _month = _params[3] ? _params[3] : 0;
+			
+			// data object
+			var _data = {
+				type: _type,
+				year: _year,
+				month: _month
+			}
+			
+			$.ajax( {
+				method: "POST",
+				url: "ajax.db.php",
+				data: {
+					action: "calendarial_charts",
+					data: JSON.stringify(_data)
+				}
+			}).done(function(resp) {
+				var response = JSON.parse(resp);
+				
+				if (response.success) {
+					// set content
+					$("#calendarial-content").html(response.content);
+				} else {
+					console.log("Error", response.message);
+					globalNotify("Error getting charts content", "error");
+				}
+			}).fail(function(error) {
+				// log error
+				console.log("ajax.db.php", error);
+			});
+		});
+	}
+	
 	var removeAdministrationActive = function() {
 		$("#administration a").removeClass("active");
 	}

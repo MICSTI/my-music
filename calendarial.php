@@ -9,6 +9,9 @@
 	// flag for setting "in" class for first element
 	$first = true;
 	
+	// first year (for getting the content automatically for this year)
+	$first_year;
+	
 	// Headline
 	$html .= "<h3>Calendarial</h3>";
 	
@@ -20,14 +23,21 @@
 				// nav accordion
 				$html .= "<div id='calendarial-accordion' class='panel-group'>";
 					foreach ($year_charts as $year_chart) {
-						$collapse_in = $first ? " in" : "";
+						if ($first) {
+							$first = false;
+							
+							$first_year = $year_chart["ChartYear"];
+							$collapse_in = " in";
+						} else {
+							$collapse_in = "";
+						}
 						
 						$year = $year_chart["ChartYear"];
 						
 						$html .= "<div class='panel panel-default'>";
 							$html .= "<div class='panel-heading'>";
 								$html .= "<div class='panel-title'>";
-									$html .= "<a data-toggle='collapse' data-parent='#calendarial-accordion' href='#calendarial-" . $year . "'>" . $year . "</a>";
+									$html .= "<a class='calendarial-item' id='#calendarial-year-" . $year . "' data-toggle='collapse' data-parent='#calendarial-accordion' href='#calendarial-" . $year . "'>" . $year . "</a>";
 								$html .= "</div>";
 							$html .= "</div>";
 						$html .= "</div>";
@@ -47,7 +57,8 @@
 		
 		// content right
 		$html .= "<div class='col-sm-9' id='calendarial-content'>";
-			$html .= "CONTENT";
+			// automatically get content for the first year in the accordion
+			$html .= $mc->getFrontend()->getCalendarialChartsContent($mc->getMDB(), "year", $first_year);
 		$html .= "</div>";
 	$html .= "</div>";
 	

@@ -158,10 +158,16 @@
 						
 						break;
 				}
-				
-				/*
-				*/
 			
+				break;
+			
+			case "calendarial_charts":
+				$json_data = json_decode($data, true);
+				
+				$type = $json_data["type"];
+				$year = $json_data["year"];
+				$month = $json_data["month"];
+				
 				break;
 				
 			default:

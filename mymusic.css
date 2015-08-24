@@ -142,7 +142,14 @@ a {
 #calendarial-container {
 	padding-top: 24px;
 }
+
+.calendarial-content-title {
+	padding: 8px 12px;
+	margin-bottom: 12px;
+	font-size: 1.2em;
+}
 /* ---------------------------- */
+
 /* ------- Admin search ------- */
 .as_choice {
 	padding: 2px 4px;
