@@ -168,6 +168,9 @@
 				$year = $json_data["year"];
 				$month = $json_data["month"];
 				
+				$response["content"] = $mc->getFrontend()->getCalendarialChartsContent($mc->getMDB(), $type, $year, $month);
+				$response["success"] = true;
+				
 				break;
 				
 			default:
