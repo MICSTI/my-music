@@ -116,7 +116,7 @@
 						// records (not needed here, we pass an empty array intentionally
 						$records = array();
 						
-						// compile charts_compilation
+						// compile charts
 						$chart_id = $mc->getMDB()->compileCharts("top2020", $songs, $artists, $records);
 						
 						// update charts compilation timestamp
@@ -125,11 +125,31 @@
 						// set message
 						$response["message"] = $mc->getFrontend()->getChartCompilationStatus($mc->getMDB(), true, "top2020");
 						
-						$response["songs"] = $songs;
-						$response["artists"] = $artists;
-						
 						$response["success"] = true;
 					
+						break;
+						
+					case "calendarial":
+						// get songs
+						$songs = $mc->getMDB()->getYearSongs($year);
+						
+						// get artists
+						$artists = $mc->getMDB()->getYearArtists($year);
+						
+						// get records
+						$records = $mc->getMDB()->getYearRecords($year);
+						
+						// compile charts
+						$chart_id = $mc->getMDB()->compileCharts("calendarial", $songs, $artists, $records, $year);
+						
+						// update charts compilation timestamp
+						$mc->getMDB()->updateChartContainerTimestamp($chart_id);
+						
+						// set message
+						$response["message"] = $mc->getFrontend()->getChartCompilationStatus($mc->getMDB(), false, "calendarial", $year);
+						
+						$response["success"] = true;
+						
 						break;
 						
 					default:

@@ -138,6 +138,11 @@ a {
 	display: none;
 }
 
+/* ------- Calendarial ------- */
+#calendarial-container {
+	padding-top: 24px;
+}
+/* ---------------------------- */
 /* ------- Admin search ------- */
 .as_choice {
 	padding: 2px 4px;

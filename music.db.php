@@ -3253,13 +3253,42 @@
 		}
 		
 		/**
+			Returns an array containing all calendarial year charts, by default ordered by descending year.
+			The sort order can be changed via the ascending flag.
+			If no calendarial year charts are found, an empty array is returned.
+		*/
+		public function getCalendarialYears($ascending = false) {
+			$order = $ascending ? "ASC" : "DESC";
+			
+			$sql = "SELECT
+						id AS 'ChartId',
+						year AS 'ChartYear',
+						timestamp AS 'CompileTimestamp'
+					FROM
+						charts
+					WHERE
+						chart_type = 'calendarial'
+					ORDER BY
+						year " . $order;
+						
+			$query = $this->db->prepare($sql);
+			$query->execute();
+			
+			if ($query->rowCount() > 0) {
+				return $query->fetchAll(PDO::FETCH_ASSOC);
+			} else {
+				return array();
+			}
+		}
+		
+		/**
 			Compiles the charts for songs.
 			It also handles the calculation for nationality and activity additional statistics.
 			Returns the chart id of the chart container entry.
 		*/
 		public function compileCharts($type, $songs, $artists, $records, $year = 0) {
 			// get old charts info
-			$old_charts = $this->getChartInfo($type);
+			$old_charts = $this->getChartInfo($type, $year);
 			
 			// delete old charts
 			if ($old_charts !== false) {
@@ -3621,6 +3650,42 @@
 		}
 		
 		/**
+			Returns the 101 most played songs over the specified year.
+		*/
+		public function getYearSongs($year) {
+			$date_from = new UnixTimestamp(mktime(0, 0, 0, 1, 1, $year));
+			$date_to = new UnixTimestamp(mktime(0, 0, 0, 12, 31, $year));
+			$limit_low = 0;
+			$limit_high = 101;
+			
+			return $this->getPlayedSongStatistics($date_from->convert2MysqlDate(), $date_to->convert2MysqlDate(), $limit_low, $limit_high);
+		}
+		
+		/**
+			Returns the 100 most played artists over the specified year.
+		*/
+		public function getYearArtists($year) {
+			$date_from = new UnixTimestamp(mktime(0, 0, 0, 1, 1, $year));
+			$date_to = new UnixTimestamp(mktime(0, 0, 0, 12, 31, $year));
+			$limit_low = 0;
+			$limit_high = 100;
+			
+			return $this->getPlayedArtistStatistics($date_from->convert2MysqlDate(), $date_to->convert2MysqlDate(), $limit_low, $limit_high);
+		}
+		
+		/**
+			Returns the 100 most played records over the specified year.
+		*/
+		public function getYearRecords($year) {
+			$date_from = new UnixTimestamp(mktime(0, 0, 0, 1, 1, $year));
+			$date_to = new UnixTimestamp(mktime(0, 0, 0, 12, 31, $year));
+			$limit_low = 0;
+			$limit_high = 100;
+			
+			return $this->getPlayedRecordStatistics($date_from->convert2MysqlDate(), $date_to->convert2MysqlDate(), $limit_low, $limit_high);
+		}
+		
+		/**
 			Returns the play history for the specfied date
 			If no result is found, null is returned
 		*/
@@ -3844,6 +3909,42 @@
 					ORDER BY
 						PlayedCount DESC,
 						ArtistName
+					LIMIT
+						:limit_low, :limit_high";
+
+			$query = $this->db->prepare($sql);
+			$query->execute( array(':date_from' => $date_from, ':date_to' => $date_to, ':limit_low' => $limit_low, ':limit_high' => $limit_high) );
+			
+			if ($query->rowCount() > 0) {
+				return $query->fetchAll(PDO::FETCH_ASSOC);
+			} else {
+				return array();
+			}
+		}
+		
+		/**
+			Returns an array containing the record statistics for the specified date range.
+		*/
+		public function getPlayedRecordStatistics ($date_from, $date_to, $limit_low, $limit_high) {
+			$sql = "SELECT
+						re.id AS 'RecordId',
+						re.name AS 'RecordName',
+						ar.id AS 'ArtistId',
+						ar.name AS 'ArtistName',
+						COUNT(pl.sid) AS 'PlayedCount'
+					FROM
+						played pl
+						INNER JOIN songs so ON so.id = pl.sid
+						INNER JOIN artists ar ON ar.id = so.aid
+						INNER JOIN records re ON re.id = so.rid
+					WHERE
+						DATE(pl.timestamp) >= :date_from AND DATE(pl.timestamp) <= :date_to
+					GROUP BY
+						re.id
+					ORDER BY
+						PlayedCount DESC,
+						ArtistName,
+						RecordName
 					LIMIT
 						:limit_low, :limit_high";
 

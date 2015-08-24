@@ -1,3 +1,6 @@
+// interval timer for updating the content of the update page
+var updateContentTimer;
+
 var DATEPICKER_INIT_OPTIONS = {
 			format: "dd.mm.yyyy",
 			weekStart: 1
@@ -631,7 +634,7 @@ function updateUpdateContent() {
 	getStatic("update", function(data) {
 		$("#update-container").html(data.content);
 		
-		$("#perform-update").on("click", performUpdate);
+		addPerformUpdateClickHandler();
 	});
 }
 
@@ -639,7 +642,37 @@ function updateUpdateContent() {
 	Applies the update files to the database.
 */
 function performUpdate() {
+	// hide button to avoid multiple executions
+	$(this).remove();
 	
+	// stop refreshing update page
+	window.clearInterval(updateContentTimer);
+	
+	// call update AJAX
+	$.ajax( {
+		method: "POST",
+		url: "ajax.update_perform.php",
+		data: {
+			action: "update_database"
+		}
+	}).done(function(resp) {
+		var response = JSON.parse(resp);
+		
+		if (response.success) {
+			globalNotify("Update successful");
+		} else {
+			globalNotify("Update not successful", "error");
+			console.log("ajax.update_perform.php", response.message);
+		}
+	}).fail(function(error) {
+		// log error
+		console.log("ajax.update_perform.php", error);
+	});
+}
+
+function addPerformUpdateClickHandler() {
+	$("#perform-update").off("click");
+	$("#perform-update").on("click", performUpdate);
 }
 
 function initAddPlayedSongAdministration() {
@@ -1105,6 +1138,11 @@ $(document).ready( function () {
 				window.location.href = "history.php?date=" + formatted.substring(6) + "-" + formatted.substring(3, 5) + "-" + formatted.substring(0, 2);
 			}
 		});
+		
+	// init perform update button
+	var performUpdateButton = $("#perform-update");
+	if (performUpdateButton.length > 0)
+		addPerformUpdateClickHandler();
 
 	// settings
 	var settings = $("#settings");
@@ -1199,7 +1237,7 @@ $(document).ready( function () {
 	
 	// update page content update timer
 	if ($("#update-container").length > 0) {
-		var updateContentTimer = window.setInterval(updateUpdateContent, 3000);
+		updateContentTimer = window.setInterval(updateUpdateContent, 3000);
 	}
 	
 	// add tooltips

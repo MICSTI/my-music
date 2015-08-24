@@ -857,7 +857,7 @@
 			
 				// top 20/20
 				$html .= "<div class='panel panel-default'>";
-					$html .= "<div class='panel-heading'>Top 20/20</div>";
+					$html .= "<div class='panel-heading bold'>Top 20/20</div>";
 					
 					$html .= "<div class='panel-body'>";
 						// info when top 20/20 charts were last compiled
@@ -877,7 +877,7 @@
 				
 				// favourites
 				$html .= "<div class='panel panel-default'>";
-					$html .= "<div class='panel-heading'>Favourites</div>";
+					$html .= "<div class='panel-heading bold'>Favourites</div>";
 					
 					$html .= "<div class='panel-body'>";
 						// info when favourites charts were last compiled
@@ -897,7 +897,7 @@
 				
 				// calendarial
 				$html .= "<div class='panel panel-default'>";
-					$html .= "<div class='panel-heading'>Calendarial</div>";
+					$html .= "<div class='panel-heading bold'>Calendarial</div>";
 					
 					$html .= "<div class='panel-body'>";
 						// all available years (a year is only shown when it has completely passed --> 2015 shows up on Jan 1, 2016)
@@ -923,7 +923,9 @@
 										$html .= "<td>" . $year . "</td>";
 										
 										$html .= "<td>";
-											$html .= $this->getChartCompilationStatus($mdb, false, "calendarial", $year);
+											$html .= "<span id='charts-compilation-status-calendarial-" . $year . "'>";
+												$html .= $this->getChartCompilationStatus($mdb, false, "calendarial", $year);
+											$html .= "</span>";
 										$html .= "</td>";
 										
 										$html .= "<td>";
@@ -956,7 +958,7 @@
 				$datetime = new MySqlDateTime($status["ChartCompileTimestamp"]);
 				
 				if ($with_text) {
-					return "Last successfully compiled on <span class='bold'>" . $datetime->convert2AustrianDateTime() . "</span>";
+					return "Last compiled successfully on <span class='bold'>" . $datetime->convert2AustrianDateTime() . "</span>";
 				} else {
 					return $datetime->convert2AustrianDateTime();
 				}
