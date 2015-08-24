@@ -3220,7 +3220,273 @@
 		}
 		
 		/**
-			Returns the 100 most played songs in the database
+			Returns the last successful charts compile timestamp.
+			Returns an array containing the info about the chart, false otherwise.
+		*/
+		public function getChartInfo($chart_type, $year = 0) {						
+			if ($year > 0) {
+				$year_where = " AND ch.year = :year";
+				$exec_array = array(':chart_type' => $chart_type, ':year' => $year);
+			} else {
+				$year_where = "";
+				$exec_array = array(':chart_type' => $chart_type);
+			}
+			
+			$sql = "SELECT
+						ch.id AS 'ChartId',
+						ch.chart_type AS 'ChartType',
+						ch.year AS 'ChartYear',
+						ch.timestamp AS 'ChartCompileTimestamp'
+					FROM
+						charts ch
+					WHERE
+						ch.chart_type = :chart_type" . $year_where;
+						
+			$query = $this->db->prepare($sql);
+			$query->execute( $exec_array );
+			
+			if ($query->rowCount() > 0) {
+				return $query->fetch(PDO::FETCH_ASSOC);
+			} else {
+				return false;
+			}
+		}
+		
+		/**
+			Compiles the charts for songs.
+			It also handles the calculation for nationality and activity additional statistics.
+			Returns the chart id of the chart container entry.
+		*/
+		public function compileCharts($type, $songs, $artists, $records, $year = 0) {
+			// get old charts info
+			$old_charts = $this->getChartInfo($type);
+			
+			// delete old charts
+			if ($old_charts !== false) {
+				$this->deleteCharts($old_charts["ChartId"]);
+			}
+			
+			// create container entry
+			$chart_id = $this->addChartContainerEntry($type, $year);
+			
+			// write songs
+			if (count($songs) > 0)
+				$this->writeChartsContent($chart_id, "songs", $songs);
+			
+			// write artists
+			if (count($artists) > 0)
+				$this->writeChartsContent($chart_id, "artists", $artists);
+			
+			// write records
+			if (count($records) > 0)
+				$this->writeChartsContent($chart_id, "records", $records);
+			
+			return $chart_id;
+		}
+		
+		/**
+			Creates a chart container entry and returns its id.
+			If the creation was unsuccessful, false is returned.
+		*/
+		private function addChartContainerEntry($chart_type, $year = 0) {
+			if ($year > 0) {
+				$fields = "chart_type, year";
+				$values = ":chart_type, :year";
+				$exec_array = array(':chart_type' => $chart_type, ':year' => $year);
+			} else {
+				$fields = "chart_type";
+				$values = ":chart_type";
+				$exec_array = array(':chart_type' => $chart_type);
+			}
+			
+			$sql = "INSERT INTO charts (" . $fields . ") VALUES (" . $values . ")";
+			$query = $this->db->prepare($sql);
+			$query->execute( $exec_array );
+			
+			if ($query->rowCount() > 0) {
+				return $this->db->lastInsertId();
+			}
+			
+			return false;
+		}
+		
+		/**
+			Utility function for updating the timestamp of a chart container entry.
+			The actual timestamp updatting is done by MySQL.
+		*/
+		public function updateChartContainerTimestamp($chart_id) {
+			$timestamp = new UnixTimestamp(mktime());
+			
+			$sql = "UPDATE charts SET timestamp = :timestamp WHERE id = :id";
+			$query = $this->db->prepare($sql);
+			$query->execute( array(':id' => $chart_id, ':timestamp' => $timestamp->convert2MysqlDateTime()) );
+		}
+		
+		public function writeChartsContent($chart_id, $instance_type, $content) {
+			// get instance name ("songs" -> "SongId", for getting right field from content array)
+			$instance = substr($instance_type, 0, -1);
+			$instance = strtoupper(substr($instance, 0, 1)) . substr($instance, 1) . "Id";
+			
+			$counter = 1;
+			$rank = 1;
+			$old_count = 0;
+			
+			foreach ($content as $entry) {
+				$instance_id = $entry[$instance];
+				$count = $entry["PlayedCount"];
+				
+				if ($count != $old_count) {
+					// assign new rank if counts are different
+					$rank = $counter;
+				}
+				
+				$this->addChartsContentEntry($chart_id, $instance_type, $instance_id, $rank, $count);
+				
+				$old_count = $count;
+				$counter++;
+			}
+		}
+		
+		private function addChartsContentEntry($chart_id, $instance_type, $instance_id, $rank, $count) {
+			$sql = "INSERT INTO chart_content (chart_id, instance_type, instance_id, rank, cnt) VALUES (:chart_id, :instance_type, :instance_id, :rank, :cnt)";
+			$query = $this->db->prepare($sql);
+			$query->execute( array(':chart_id' => $chart_id, ':instance_type' => $instance_type, ':instance_id' => $instance_id, ':rank' => $rank, ':cnt' => $count) );
+		}
+		
+		/**
+			Returns the content of the favourite song charts.
+		*/
+		public function getChartsContentSongs($chart_id) {
+			$sql = "SELECT
+						so.id AS 'SongId',
+						so.name AS 'SongName',
+						ar.id AS 'ArtistId',
+						ar.name AS 'ArtistName',
+						co.rank AS 'Rank',
+						co.cnt AS 'PlayedCount'
+					FROM
+						chart_content co INNER JOIN
+						songs so ON co.instance_id = so.id INNER JOIN
+						artists ar ON so.aid = ar.id
+					WHERE
+						co.chart_id = :chart_id AND
+						co.instance_type = 'songs'";
+						
+			$query = $this->db->prepare($sql);
+			$query->execute( array(':chart_id' => $chart_id) );
+			
+			if ($query->rowCount() > 0) {
+				return $query->fetchAll(PDO::FETCH_ASSOC);
+			} else {
+				return array();
+			}
+		}
+		
+		/**
+			Returns an array containing all charts entries for this instance type.
+			If no entries are found, and empty array is returned.
+		*/
+		public function getChartsInfoForInstance($instance_type, $id) {
+			$sql = "SELECT
+						co.rank AS 'Rank',
+						co.cnt AS 'PlayedCount',
+						ch.chart_type AS 'ChartType',
+						ch.year AS 'ChartYear'
+					FROM
+						chart_content co INNER JOIN
+						charts ch ON co.chart_id = ch.id
+					WHERE
+						co.instance_id = :id AND
+						co.instance_type = :instance_type";
+						
+			$query = $this->db->prepare($sql);
+			$query->execute( array(':id' => $id, ':instance_type' => $instance_type) );
+			
+			if ($query->rowCount() > 0) {
+				return $query->fetchAll(PDO::FETCH_ASSOC);
+			} else {
+				return array();
+			}
+		}
+		
+		/**
+			Returns the content of the favourite artist charts.
+		*/
+		public function getChartsContentArtists($chart_id) {
+			$sql = "SELECT
+						ar.id AS 'ArtistId',
+						ar.name AS 'ArtistName',
+						co.rank AS 'Rank',
+						co.cnt AS 'PlayedCount'
+					FROM
+						chart_content co INNER JOIN
+						artists ar ON co.instance_id = ar.id
+					WHERE
+						co.chart_id = :chart_id AND
+						co.instance_type = 'artists'";
+						
+			$query = $this->db->prepare($sql);
+			$query->execute( array(':chart_id' => $chart_id) );
+			
+			if ($query->rowCount() > 0) {
+				return $query->fetchAll(PDO::FETCH_ASSOC);
+			} else {
+				return array();
+			}
+		}
+		
+		/**
+			Returns the content of the favourite records charts.
+		*/
+		public function getChartsContentRecords($chart_id) {
+			$sql = "SELECT
+						re.id AS 'RecordId',
+						re.name AS 'RecordName',
+						ar.id AS 'ArtistId',
+						ar.name AS 'ArtistName',
+						co.rank AS 'Rank',
+						co.cnt AS 'PlayedCount'
+					FROM
+						chart_content co INNER JOIN
+						records re ON co.instance_id = re.id INNER JOIN
+						artists ar ON re.aid = ar.id
+					WHERE
+						co.chart_id = :chart_id AND
+						co.instance_type = 'records'";
+						
+			$query = $this->db->prepare($sql);
+			$query->execute( array(':chart_id' => $chart_id) );
+			
+			if ($query->rowCount() > 0) {
+				return $query->fetchAll(PDO::FETCH_ASSOC);
+			} else {
+				return array();
+			}
+		}
+		
+		/**
+			Deletes all info about a chart container entry in the database.
+			All content and additional info are also deleted.
+		*/
+		private function deleteCharts($chart_id) {
+			// delete additional info
+			$sql = "DELETE FROM chart_additional WHERE chart_id = :id";
+			$query = $this->db->prepare($sql);
+			$query->execute( array(':id' => $chart_id) );
+			
+			// delete content
+			$sql = "DELETE FROM chart_content WHERE chart_id = :id";
+			$query = $this->db->prepare($sql);
+			$query->execute( array(':id' => $chart_id) );
+			
+			 // delete chart container entry
+			$sql = "DELETE FROM charts WHERE id = :id";
+			$query = $this->db->prepare($sql);
+			$query->execute( array(':id' => $chart_id) );
+		}
+		
+		/**
+			Returns the 250 most played songs in the database
 		*/
 		public function getMostPlayedSongs() {
 			$sql = "SELECT
@@ -3239,7 +3505,7 @@
 							sid
 						ORDER BY
 							PlayedCount DESC
-						LIMIT 100) pc_q INNER JOIN
+						LIMIT 250) pc_q INNER JOIN
 					songs so ON so.id = pc_q.SongId INNER JOIN
 					artists ar ON ar.id = so.aid";
 
@@ -3258,7 +3524,7 @@
 		}
 		
 		/**
-			Returns the 100 most played artists in the database
+			Returns the 250 most played artists in the database
 		*/
 		public function getMostPlayedArtists() {
 			$sql = "SELECT
@@ -3273,7 +3539,7 @@
 						ar.id
 					ORDER BY
 						PlayedCount DESC
-					LIMIT 100";
+					LIMIT 250";
 
 			$query = $this->db->prepare($sql);
 			$query->execute();
@@ -3290,7 +3556,7 @@
 		}
 		
 		/**
-			Returns the 100 most played records in the database
+			Returns the 250 most played records in the database
 		*/
 		public function getMostPlayedRecords() {
 			$sql = "SELECT
@@ -3313,7 +3579,7 @@
 							re.id
 						ORDER BY
 							PlayedCount DESC
-						LIMIT 100) pl_q INNER JOIN
+						LIMIT 250) pl_q INNER JOIN
 						artists ar ON ar.id = pl_q.ArtistId";
 
 			$query = $this->db->prepare($sql);
@@ -3328,6 +3594,30 @@
 			} else {
 				return null;
 			}
+		}
+		
+		/**
+			Returns the 20 most played songs over the last 20 days.
+		*/
+		public function getTop2020Songs() {
+			$date_from = new UnixTimestamp(mktime(0, 0, 0, date("m"), date("d") - 21, date("Y")));
+			$date_to = new UnixTimestamp(mktime(0, 0, 0, date("m"), date("d") - 1, date("Y")));
+			$limit_low = 0;
+			$limit_high = 20;
+			
+			return $this->getPlayedSongStatistics($date_from->convert2MysqlDate(), $date_to->convert2MysqlDate(), $limit_low, $limit_high);
+		}
+		
+		/**
+			Returns the 20 most played artists over the last 20 days.
+		*/
+		public function getTop2020Artists() {
+			$date_from = new UnixTimestamp(mktime(0, 0, 0, date("m"), date("d") - 21, date("Y")));
+			$date_to = new UnixTimestamp(mktime(0, 0, 0, date("m"), date("d") - 1, date("Y")));
+			$limit_low = 0;
+			$limit_high = 20;
+			
+			return $this->getPlayedArtistStatistics($date_from->convert2MysqlDate(), $date_to->convert2MysqlDate(), $limit_low, $limit_high);
 		}
 		
 		/**
@@ -3497,18 +3787,18 @@
 			}
 		}
 		
-		public function getPlayedStatistics ($date_from, $date_to, $limit_low = "", $limit_high = "") {
-			// strip input from code tags
-			$date_from = strip_tags($date_from);
-			$date_to = strip_tags($date_to);
-			$limit_low = strip_tags($limit_low);
-			$limit_high = strip_tags($limit_high);
-			
+		/**
+			Returns an array containing the song statistics for the specified date range.
+		*/
+		public function getPlayedSongStatistics ($date_from, $date_to, $limit_low, $limit_high) {
 			$sql = "SELECT
+						so.id AS 'SongId',
 						so.name AS 'SongName',
+						ar.id AS 'ArtistId',
 						ar.name AS 'ArtistName',
+						re.id AS 'RecordId',
 						re.name AS 'RecordName',
-						COUNT(pl.sid) AS 'PlayCount'
+						COUNT(pl.sid) AS 'PlayedCount'
 					FROM
 						played pl
 						INNER JOIN songs so ON so.id = pl.sid
@@ -3519,22 +3809,51 @@
 					GROUP BY
 						pl.sid
 					ORDER BY
-						PlayCount DESC,
+						PlayedCount DESC,
 						ArtistName,
-						SongName";
+						SongName
+					LIMIT
+						:limit_low, :limit_high";
 
-			$sql .= $this->getQueryLimit($limit_low, $limit_high);
 			$query = $this->db->prepare($sql);
-			$query->execute( array(':date_from' => $date_from, ':date_to' => $date_to) );
+			$query->execute( array(':date_from' => $date_from, ':date_to' => $date_to, ':limit_low' => $limit_low, ':limit_high' => $limit_high) );
 			
 			if ($query->rowCount() > 0) {
-				if ($this->logging) {
-					$this->addLog(__FUNCTION__, "success", "fetched played statistics for range " . $date_from . " - " . $date_to);
-				}
-				
-				return $query->fetchAll();
+				return $query->fetchAll(PDO::FETCH_ASSOC);
 			} else {
-				return null;
+				return array();
+			}
+		}
+		
+		/**
+			Returns an array containing the song statistics for the specified date range.
+		*/
+		public function getPlayedArtistStatistics ($date_from, $date_to, $limit_low, $limit_high) {
+			$sql = "SELECT
+						ar.id AS 'ArtistId',
+						ar.name AS 'ArtistName',
+						COUNT(pl.sid) AS 'PlayedCount'
+					FROM
+						played pl
+						INNER JOIN songs so ON so.id = pl.sid
+						INNER JOIN artists ar ON ar.id = so.aid
+					WHERE
+						DATE(pl.timestamp) >= :date_from AND DATE(pl.timestamp) <= :date_to
+					GROUP BY
+						ar.id
+					ORDER BY
+						PlayedCount DESC,
+						ArtistName
+					LIMIT
+						:limit_low, :limit_high";
+
+			$query = $this->db->prepare($sql);
+			$query->execute( array(':date_from' => $date_from, ':date_to' => $date_to, ':limit_low' => $limit_low, ':limit_high' => $limit_high) );
+			
+			if ($query->rowCount() > 0) {
+				return $query->fetchAll(PDO::FETCH_ASSOC);
+			} else {
+				return array();
 			}
 		}
 		
@@ -3649,7 +3968,7 @@
 		
 		private function getQueryLimit ($limit_low, $limit_high) {
 			if ($limit_low != "") {
-				$limit = "LIMIT " . $limit_low;
+				$limit = " LIMIT " . $limit_low;
 				
 				if ($limit_high != "") {
 					$limit .= ", " . $limit_high;

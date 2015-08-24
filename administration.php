@@ -14,6 +14,11 @@
 				$html .= "<span>Add played songs</span>";
 			$html .= "</a>";
 			
+			// Charts
+			$html .= "<a href='#' id='administration-charts' class='list-group-item'>";
+				$html .= "<span>Charts</span>";
+			$html .= "</a>";
+			
 			// Songs
 			$html .= "<a href='#' id='administration-songs' class='list-group-item'>";
 				$html .= "<span>Songs</span>";

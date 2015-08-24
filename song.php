@@ -18,6 +18,9 @@
 			
 			$added_date = new MysqlDate($mc->getMDB()->getSongAddedDate($sid));
 			
+			// get charts info
+			$charts_info = $mc->getMDB()->getChartsInfoForInstance("songs", $sid);
+			
 			if (!empty($history)) {
 				$first_played = $history[count($history) - 1]["timestamp"];
 				$last_played = $history[0]["timestamp"];
@@ -50,6 +53,14 @@
 						
 						$html .= "<div class='col-sm-3 bold'>Duration:</div>";
 						$html .= "<div class='col-sm-9'>" . millisecondsToMinutes($song_info["SongLength"]) . " min</div>";
+						
+						if (count($charts_info) > 0) {
+							$html .= "<div class='col-sm-3 bold'>Charts:</div>";
+							
+							$html .= "<div class='col-sm-9'>";
+								$html .= $mc->getFrontend()->getChartsInfoDisplay($charts_info);
+							$html .= "</div>";
+						}
 					$html .= "</div>";
 					
 					$html .= "<div class='song-general-info col-sm-7'>";

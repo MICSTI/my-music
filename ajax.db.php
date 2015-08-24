@@ -74,6 +74,75 @@
 				$response["success"] = true;
 			
 				break;
+			
+			// Charts favourites
+			case "charts_compilation":
+				$json_data = json_decode($data, true);
+				
+				$chart_type = $json_data["chart_type"];
+				$year = $json_data["year"];
+				
+				switch ($chart_type) {
+					case "favourites":					
+						// favourite songs
+						$songs = $mc->getMDB()->getMostPlayedSongs();
+						
+						// favourite artists
+						$artists = $mc->getMDB()->getMostPlayedArtists();
+						
+						// favourite records
+						$records = $mc->getMDB()->getMostPlayedRecords();
+						
+						// compile charts
+						$chart_id = $mc->getMDB()->compileCharts("favourites", $songs, $artists, $records);
+						
+						// update charts compilation timestamp
+						$mc->getMDB()->updateChartContainerTimestamp($chart_id);
+						
+						// set message
+						$response["message"] = $mc->getFrontend()->getChartCompilationStatus($mc->getMDB(), true, "favourites");
+							
+						$response["success"] = true;
+						
+						break;
+						
+					case "top2020":
+						// get songs
+						$songs = $mc->getMDB()->getTop2020Songs();
+						
+						// get artists
+						$artists = $mc->getMDB()->getTop2020Artists();
+						
+						// records (not needed here, we pass an empty array intentionally
+						$records = array();
+						
+						// compile charts_compilation
+						$chart_id = $mc->getMDB()->compileCharts("top2020", $songs, $artists, $records);
+						
+						// update charts compilation timestamp
+						$mc->getMDB()->updateChartContainerTimestamp($chart_id);
+						
+						// set message
+						$response["message"] = $mc->getFrontend()->getChartCompilationStatus($mc->getMDB(), true, "top2020");
+						
+						$response["songs"] = $songs;
+						$response["artists"] = $artists;
+						
+						$response["success"] = true;
+					
+						break;
+						
+					default:
+						$response["success"] = false;
+						$response["message"] = "Unknown chart type '" . $chart_type . "'";
+						
+						break;
+				}
+				
+				/*
+				*/
+			
+				break;
 				
 			default:
 				$response["success"] = false;

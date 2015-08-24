@@ -105,9 +105,9 @@
 							$menu .= "<a href='#' data-toggle='dropdown' class='dropdown-toggle'>Charts <b class='caret'></b></a>";
 							
 							$menu .= "<ul class='dropdown-menu'>";
-								$menu .= "<li><a href='#'>Top 20/20</a></li>";
+								$menu .= "<li><a href='top2020.php'>Top 20/20</a></li>";
 								$menu .= "<li><a href='favourites.php'>Favourites</a></li>";
-								$menu .= "<li><a href='#'>Years</a></li>";
+								$menu .= "<li><a href='calendarial.php'>Calendarial</a></li>";
 							$menu .= "</ul>";
 							
 						$menu .= "<li class='" . $this->getActiveText("history", $selected) . "'><a href='history.php'>History</a></li>";
@@ -712,6 +712,10 @@
 					$html .= $this->getAddPlayedAdministration($mdb, $params);
 					break;
 					
+				case "charts":
+					$html .= $this->getChartAdministration($mdb);
+					break;
+					
 				case "songs":
 					$html .= $this->getSongAdministration($mdb);
 					break;
@@ -840,6 +844,146 @@
 						
 						<div class='add-played-song-display col-sm-10'></div>
 					</div>";
+		}
+		
+		/**
+			Returns the content of the chart administration tab
+		*/
+		private function getChartAdministration($mdb) {
+			$html = "";
+			
+			// chart container
+			$html .= "<div id='charts-container'>";
+			
+				// top 20/20
+				$html .= "<div class='panel panel-default'>";
+					$html .= "<div class='panel-heading'>Top 20/20</div>";
+					
+					$html .= "<div class='panel-body'>";
+						// info when top 20/20 charts were last compiled
+						$html .= "<div class='panel-paragraph'>";
+							$html .= "<span id='charts-compilation-status-top2020'>";
+								$html .= $this->getChartCompilationStatus($mdb, true, "top2020");
+							$html .= "</span>";
+						$html .= "</div>";
+						
+						// compile now button
+						$html .= "<div>";
+							$html .= "<button id='charts-compile-top2020' type='button' class='btn btn-primary btn-chart'>Compile</button>";
+							$html .= $this->getCompilingStatic();
+						$html .= "</div>";
+					$html .= "</div>";
+				$html .= "</div>";
+				
+				// favourites
+				$html .= "<div class='panel panel-default'>";
+					$html .= "<div class='panel-heading'>Favourites</div>";
+					
+					$html .= "<div class='panel-body'>";
+						// info when favourites charts were last compiled
+						$html .= "<div class='panel-paragraph'>";
+							$html .= "<span id='charts-compilation-status-favourites'>";
+								$html .= $this->getChartCompilationStatus($mdb, true, "favourites");
+							$html .= "</span>";
+						$html .= "</div>";
+						
+						// compile now button
+						$html .= "<div>";
+							$html .= "<button id='charts-compile-favourites' type='button' class='btn btn-primary btn-chart'>Compile</button>";
+							$html .= $this->getCompilingStatic();
+						$html .= "</div>";
+					$html .= "</div>";
+				$html .= "</div>";
+				
+				// calendarial
+				$html .= "<div class='panel panel-default'>";
+					$html .= "<div class='panel-heading'>Calendarial</div>";
+					
+					$html .= "<div class='panel-body'>";
+						// all available years (a year is only shown when it has completely passed --> 2015 shows up on Jan 1, 2016)
+						$html .= "<table class='table'>";
+							$html .= "<thead>";
+								$html .= "<tr>";
+									$html .= "<td class='bold col-sm-2'>Year</td>";
+									$html .= "<td class='bold col-sm-3'>Last compiled</td>";
+									$html .= "<td class='col-sm-2'> </td>";
+									$html .= "<td class='col-sm-5'> </td>";
+								$html .= "</tr>";
+							$html .= "</thead>";
+							
+							$html .= "<tbody>";
+								// get current year minus 1 - the last completely finished year
+								$year = date("Y") - 1;
+								
+								// Charts go back to 2011 - the start year of taking record
+								$threshold_year = 2011;
+								
+								for ($year; $year >= $threshold_year; $year--) {
+									$html .= "<tr>";
+										$html .= "<td>" . $year . "</td>";
+										
+										$html .= "<td>";
+											$html .= $this->getChartCompilationStatus($mdb, false, "calendarial", $year);
+										$html .= "</td>";
+										
+										$html .= "<td>";
+											$html .= "<button id='charts-compile-calendarial-" . $year . "' type='button' class='btn btn-primary btn-chart'>Compile</button>";
+											$html .= $this->getCompilingStatic();
+										$html .= "</td>";
+										
+										$html .= "<td></td>";
+									$html .= "</tr>";
+								}
+							$html .= "</tbody>";
+						$html .= "</table>";
+					$html .= "</div>";
+				$html .= "</div>";
+			
+			$html .= "</div>";
+			
+			return $html;
+		}
+		
+		/**
+			Returns the compilation status for a certain chart type.
+			It is possible to specify if a longer or a short version should be returned ($with_text).
+		*/
+		public function getChartCompilationStatus($mdb, $with_text, $chart_type, $year = 0) {
+			// get status array
+			$status = $mdb->getChartInfo($chart_type, $year);
+			
+			if ($status !== false) {
+				$datetime = new MySqlDateTime($status["ChartCompileTimestamp"]);
+				
+				if ($with_text) {
+					return "Last successfully compiled on <span class='bold'>" . $datetime->convert2AustrianDateTime() . "</span>";
+				} else {
+					return $datetime->convert2AustrianDateTime();
+				}
+			} else {
+				if ($with_text) {
+					return "This chart has not been compiled yet.";
+				} else {
+					return "-";
+				}
+			}
+		}
+		
+		/**
+			Returns the content of the charts info display.
+		*/
+		public function getChartsInfoDisplay($charts_info) {
+			$html = "";
+			
+			if (count($charts_info) > 0) {
+				foreach ($charts_info as $chart_entry) {
+					$html .= "<div>";
+						$html .= $chart_entry["ChartType"] . ": " . $chart_entry["Rank"] . ".";
+					$html .= "</div>";
+				}
+			}
+			
+			return $html;
 		}
 		
 		/**
@@ -983,7 +1127,7 @@
 			$html .= "</div>";
 			
 			if ($file_count > 0) {
-				$html .= "<button type='button' class='btn btn-primary'>Update</button>";
+				$html .= "<button id='perform-update' type='button' class='btn btn-primary'>Update</button>";
 			}
 			
 			return $html;
@@ -1003,5 +1147,19 @@
 		*/
 		public function notImplementedYet() {
 			return "<p><mark>This feature has not yet been implemented. Come back, it will be here soon.</mark>";
+		}
+		
+		/**
+			Returns the static text for indicating that the page is loading.
+		*/
+		public function getLoadingStatic() {
+			return "<p class='loading-static bg-info'>Loading...</p>";
+		}
+		
+		/**
+			Returns the static text for indicating that the page is compiling.
+		*/
+		public function getCompilingStatic() {
+			return "<p class='loading-static bg-info'>Compiling...</p>";
 		}
 	}

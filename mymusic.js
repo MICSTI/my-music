@@ -9,7 +9,7 @@ var ADD_SONG_AC_OPTIONS = {
 	itemDisplay: function(_category, _item, _choiceClass) {
 		switch (_category) {
 			case "songs":
-				return "<div class='" + _choiceClass + "' data-category='" + _category + "' data-id='" + _item.SongId + "' data-artist='" + _item.ArtistName + "' data-song='" + _item.SongName + "' data-record='" + _item.RecordName + "'>" +
+				return "<div class='" + _choiceClass + "' data-category='" + _category + "' data-id='" + _item.SongId + "' data-artist=\"" + _item.ArtistName + "\" data-song=\"" + _item.SongName + "\" data-record=\"" + _item.RecordName + "\">" +
 							"<div class='search_artist_name'>" + _item.ArtistName + "</div>" +
 							"<div>" + _item.SongName + "</div>" +
 							"<div class='search_record_name'>" + _item.RecordName + "</div>" +
@@ -195,7 +195,7 @@ function addPlayedAdminSongInputControl() {
 		itemDisplay: function(_category, _item, _choiceClass) {
 			switch (_category) {
 				case "songs":
-					return "<div class='" + _choiceClass + "' data-category='" + _category + "' data-id='" + _item.SongId + "' data-artist='" + _item.ArtistName + "' data-song='" + _item.SongName + "' data-record='" + _item.RecordName + "'>" +
+					return "<div class='" + _choiceClass + "' data-category='" + _category + "' data-id='" + _item.SongId + "' data-artist=\"" + _item.ArtistName + "\" data-song=\"" + _item.SongName + "\" data-record=\"" + _item.RecordName + "\">" +
 								"<div class='search_artist_name'>" + _item.ArtistName + "</div>" +
 								"<div>" + _item.SongName + "</div>" +
 								"<div class='search_record_name'>" + _item.RecordName + "</div>" +
@@ -630,7 +630,16 @@ function addNewAddPlayedDiv() {
 function updateUpdateContent() {
 	getStatic("update", function(data) {
 		$("#update-container").html(data.content);
+		
+		$("#perform-update").on("click", performUpdate);
 	});
+}
+
+/**
+	Applies the update files to the database.
+*/
+function performUpdate() {
+	
 }
 
 function initAddPlayedSongAdministration() {
@@ -832,6 +841,69 @@ function getPlayedAdministrationDiv(played) {
 	return html;
 }
 
+function initCharts() {
+	// charts compilation buttons
+	$(".btn-chart").on("click", function() {
+		// hide button to avoid multiple execution
+		$(this).hide();
+		
+		// show next paragraph with the info class (loading indicator)
+		var loadingIndicator = $(this).next("p.loading-static");
+		
+		loadingIndicator.css("display", "inline-block");
+		
+		// get parameters
+		var _params = this.id.split("-");
+		
+		var chart_type = _params[2];
+		var chart_year = _params.length > 3 ? _params[3] : 0;
+		
+		// build data request object
+		var _data = {
+			chart_type: chart_type,
+			year: chart_year
+		};
+		
+		// AJAX request
+		$.ajax( {
+			method: "POST",
+			url: "ajax.db.php",
+			data: {
+				action: "charts_compilation",
+				data: JSON.stringify(_data)
+			}
+		}).done(function(resp) {
+			var response = JSON.parse(resp);
+			
+			if (response.success) {
+				// remove loading indicator
+				loadingIndicator.remove();
+				
+				// update status message
+				var status_id = "charts-compilation-status-" + chart_type;
+				status_id += chart_year > 0 ? "-" + chart_year : "";
+				
+				$("#" + status_id).html(response.message);
+				
+				globalNotify("Charts compilation finished successfully");
+			} else {
+				console.log("Error", response.message);
+				globalNotify("Charts compilation failed", "error");
+			}
+		}).fail(function(error) {
+			// log error
+			console.log("ajax.db.php", error);
+		});
+	});
+}
+
+/**
+	Compiles the charts and updates the content of the chart administration div.
+*/
+function compileCharts() {
+	
+}
+
 function switchToAddPlayedTab() {
 	// set date correct for add played tab
 	getNewSettingsTabContent("add-played", $("#played-administration-date").val());	
@@ -848,6 +920,12 @@ function getNewSettingsTabContent(target, params) {
 			params: params
 		}
 	}).done(function(data) {
+		// special case: jump to add-played
+		if (target == "add-played") {
+			$("#administration a").removeClass("active");
+			$("#administration-add-played").addClass("active");
+		}
+		
 		// set content
 		$("#administration-content").html(data);
 		
@@ -881,6 +959,11 @@ function getNewSettingsTabContent(target, params) {
 					getPlayedForDateAjax($(this).val());
 				}
 			});
+		}
+		
+		// charts initialization
+		if ($("#charts-container").length > 0) {
+			initCharts();
 		}
 		
 		// init admin search fields
@@ -1095,7 +1178,7 @@ $(document).ready( function () {
 			var administrationWidth = administration.innerWidth();
 			
 			administration.on("affixed.bs.affix", function() {
-				administration.css("width", settingsWidth + "px");
+				administration.css("width", administrationWidth + "px");
 				
 				// remove the listener immediately so we don't attach it over and over again if we scroll up and down
 				administration.off("affixed.bs.affix");

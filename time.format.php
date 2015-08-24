@@ -13,6 +13,10 @@
 			$this->mm_compare = new DateTime('1900-01-01');
 		}
 		
+		public function convert2MysqlDate () {
+			return date('Y-m-d', $this->unix);
+		}
+		
 		public function convert2MysqlDateTime () {
 			return date('Y-m-d H:i:s', $this->unix);
 		}

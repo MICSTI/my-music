@@ -38,6 +38,10 @@ a {
 	color: #f89406;
 }
 
+.panel-paragraph {
+	margin-bottom: 12px;
+}
+
 .song-general-info div {
 	padding-top: 4px;
 	padding-bottom: 4px;
@@ -90,6 +94,11 @@ a {
 
 #mm-link-suggestions {
 	margin-top: 12px;
+}
+
+.loading-static {
+	display: none;
+	padding: 9px 32px;
 }
 
 .administration-paragraph {
@@ -186,7 +195,7 @@ a {
 /* --------------------- */
 
 /* ---- SETTINGS ---- */
-#settings.affix {
+#settings.affix, #administration.affix {
 	position: fixed;
 	top: 16px;
 }

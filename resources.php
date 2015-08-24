@@ -12,5 +12,8 @@
 	// Default time zone
 	date_default_timezone_set("Europe/Vienna");
 	
+	// Execution time limit
+	set_time_limit(0);
+	
 	// Music controller
 	$mc = new MusicController();
