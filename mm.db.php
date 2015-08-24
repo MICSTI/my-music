@@ -186,7 +186,9 @@
 			$this->writePlayeds($playeds);
 			
 			// fill status array
-			$config = $xpath->query("config");
+			$config_array = $xpath->query("config");
+			
+			$config = $config_array[0];
 			
 			$status["mm_db_modification"] = $config->getElementsByTagName('mm_db_modification')->item(0)->nodeValue;
 			$status["last_played_id"] = $config->getElementsByTagName('last_imported_played_id')->item(0)->nodeValue;
