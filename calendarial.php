@@ -46,7 +46,7 @@
 						
 						$html .= "<div id='calendarial-" . $year . "' class='panel-collapse collapse" . $collapse_in . "'>";
 							$html .= "<div class='panel-body'>";
-								$html .= "<p>" . $year . " Charts</p>";
+								
 							$html .= "</div>";
 						$html .= "</div>";
 						
