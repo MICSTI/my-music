@@ -267,20 +267,21 @@
 	}
 	
 	/**
-		Returns an array containing all country statistics for a song array.
+		Returns an array containing all country statistics for a data array.
+		The data elements in the array must contain the attributes "ArtistMainCountryId", "ArtistSecondaryCountryId" and "PlayedCount".
 	*/
-	function getCountryStatistics($songs, $secondary_weight = 0.50) {
+	function getCountryStatistics($dataset, $secondary_weight = 0.30) {
 		$country_array = array();
 		
 		$sum = 0;
 		
 		$primary_weight = 1 - $secondary_weight;
 		
-		foreach ($songs as $song) {
-			$main_country_id = $song["ArtistMainCountryId"];
-			$secondary_country_id = $song["ArtistSecondaryCountryId"];
+		foreach ($dataset as $data) {
+			$main_country_id = $data["ArtistMainCountryId"];
+			$secondary_country_id = $data["ArtistSecondaryCountryId"];
 			
-			$value = $song["PlayedCount"];
+			$value = $data["PlayedCount"];
 			$sum += $value;
 			
 			if ($secondary_country_id == 0) {
@@ -305,6 +306,9 @@
 				}
 			}
 		}
+		
+		// sort country array
+		arsort($country_array);
 		
 		// build return array
 		$return_array = array();

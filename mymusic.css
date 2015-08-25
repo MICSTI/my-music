@@ -46,6 +46,11 @@ a {
 	cursor: pointer;
 }
 
+.statistics-sum {
+	display: inline-block;
+	margin-right: 3px;
+}
+
 .panel-paragraph {
 	margin-bottom: 12px;
 }

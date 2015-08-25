@@ -1371,6 +1371,34 @@
 		}
 		
 		/**
+			Returns the table with the country statistics.
+		*/
+		public function getCountryStatisticsTable($mdb, $country_statistics) {
+			$html = "";
+			
+			foreach ($country_statistics as $country_elem) {
+				$country_id = $country_elem["CountryId"];
+				$sum = $country_elem["Sum"];
+				$percentage = $country_elem["Percentage"];
+				
+				if ($country_id > 0) {
+					$country = $mdb->getCountry($country_id);
+					$country_flag = getCountryFlag($country, true);
+				} else {
+					$country_flag = "Unknown";
+				}
+				
+				$html .= "<tr>";
+					$html .= "<td>" . $country_flag . "</td>";
+					$html .= "<td class='text-right'>" . round($percentage * 100, 2) . " %</td>";
+					$html .= "<td class='text-right'>" . $sum . "</td>";
+				$html .= "</tr>";
+			}
+			
+			return $html;
+		}
+		
+		/**
 			Returns the right class for the MediaMonkey link confirmation page.
 			The song that has a later added date gets the success class, all other one the warning class.
 			The dates have to be passed as UNIX timestamps.
