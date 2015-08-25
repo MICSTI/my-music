@@ -32,15 +32,15 @@
 	
 	$html .= "<div class='tab-content'>";
 		$html .= "<div id='songs' class='tab-pane fade in active'>";
-			$html .= getSongContent($mc, $songs);
+			$html .= getSongContent($mc->getMDB(), $songs);
 		$html .= "</div>";
 		
 		$html .= "<div id='artists' class='tab-pane fade'>";
-			$html .= getArtistContent($mc, $artists);
+			$html .= getArtistContent($mc->getMDB(), $artists);
 		$html .= "</div>";
 		
 		$html .= "<div id='records' class='tab-pane fade'>";
-			$html .= getRecordContent($mc, $records);
+			$html .= getRecordContent($mc->getMDB(), $records);
 		$html .= "</div>";
 	$html .= "</div>";
 	
@@ -49,7 +49,7 @@
 	/**
 		Returns the content for the song tab
 	*/
-	function getSongContent($mc, $songs) {
+	function getSongContent($mdb, $songs) {
 		$content = "";
 
 		$previous = -1;
@@ -71,8 +71,8 @@
 					$played_count = $song["PlayedCount"];
 					
 					// country
-					$main_country = $mc->getMDB()->getCountry($song["ArtistMainCountryId"]);
-					$secondary_country = $mc->getMDB()->getCountry($song["ArtistSecondaryCountryId"]);
+					$main_country = $mdb->getCountry($song["ArtistMainCountryId"]);
+					$secondary_country = $mdb->getCountry($song["ArtistSecondaryCountryId"]);
 					
 					$main_country_flag = getCountryFlag($main_country);
 					$secondary_country_flag = getCountryFlag($secondary_country);
@@ -102,7 +102,7 @@
 	/**
 		Returns the content for the artist tab
 	*/
-	function getArtistContent($mc, $artists) {
+	function getArtistContent($mdb, $artists) {
 		$content = "";
 		
 		$previous = -1;
@@ -113,7 +113,7 @@
 					$content .= "<th class='col-sm-1 rank'>Place</th>";
 					$content .= "<th class='col-sm-3'>Artist</th>";
 					$content .= "<th class='col-sm-1'>Count</th>";
-					$content .= "<th class='col-sm-1'> </th>";
+					$content .= "<th class='col-sm-1'>Country</th>";
 					$content .= "<th class='col-sm-6'> </th>";
 				$content .= "</tr>";
 			$content .= "</thead>";
@@ -123,8 +123,8 @@
 					$played_count = $artist["PlayedCount"];
 					
 					// country
-					$main_country = $mc->getMDB()->getCountry($artist["ArtistMainCountryId"]);
-					$secondary_country = $mc->getMDB()->getCountry($artist["ArtistSecondaryCountryId"]);
+					$main_country = $mdb->getCountry($artist["ArtistMainCountryId"]);
+					$secondary_country = $mdb->getCountry($artist["ArtistSecondaryCountryId"]);
 					
 					$main_country_flag = getCountryFlag($main_country);
 					$secondary_country_flag = getCountryFlag($secondary_country);
@@ -153,7 +153,7 @@
 	/**
 		Returns the content for the record tab
 	*/
-	function getRecordContent($mc, $records) {
+	function getRecordContent($mdb, $records) {
 		$content = "";
 		
 		$previous = -1;
@@ -165,7 +165,7 @@
 					$content .= "<th class='col-sm-3'>Record</th>";
 					$content .= "<th class='col-sm-3'>Artist</th>";
 					$content .= "<th class='col-sm-1'>Count</th>";
-					$content .= "<th class='col-sm-1'> </th>";
+					$content .= "<th class='col-sm-1'>Country</th>";
 					$content .= "<th class='col-sm-3'> </th>";
 				$content .= "</tr>";
 			$content .= "</thead>";
@@ -175,8 +175,8 @@
 					$played_count = $record["PlayedCount"];
 					
 					// country
-					$main_country = $mc->getMDB()->getCountry($record["ArtistMainCountryId"]);
-					$secondary_country = $mc->getMDB()->getCountry($record["ArtistSecondaryCountryId"]);
+					$main_country = $mdb->getCountry($record["ArtistMainCountryId"]);
+					$secondary_country = $mdb->getCountry($record["ArtistSecondaryCountryId"]);
 					
 					$main_country_flag = getCountryFlag($main_country);
 					$secondary_country_flag = getCountryFlag($secondary_country);
