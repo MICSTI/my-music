@@ -251,6 +251,8 @@
 						so.name AS 'SongName',
 						ar.id AS 'ArtistId',
 						ar.name AS 'ArtistName',
+						ar.main_country_id AS 'ArtistMainCountryId',
+						ar.sec_country_id AS 'ArtistSecondaryCountryId',
 						re.id AS 'RecordId',
 						re.name AS 'RecordName',
 						so.length AS 'SongLength',
@@ -3391,6 +3393,8 @@
 						so.name AS 'SongName',
 						ar.id AS 'ArtistId',
 						ar.name AS 'ArtistName',
+						ar.main_country_id AS 'ArtistMainCountryId',
+						ar.sec_country_id AS 'ArtistSecondaryCountryId',
 						co.rank AS 'Rank',
 						co.cnt AS 'PlayedCount'
 					FROM
@@ -3445,6 +3449,8 @@
 			$sql = "SELECT
 						ar.id AS 'ArtistId',
 						ar.name AS 'ArtistName',
+						ar.main_country_id AS 'ArtistMainCountryId',
+						ar.sec_country_id AS 'ArtistSecondaryCountryId',
 						co.rank AS 'Rank',
 						co.cnt AS 'PlayedCount'
 					FROM
@@ -3473,6 +3479,8 @@
 						re.name AS 'RecordName',
 						ar.id AS 'ArtistId',
 						ar.name AS 'ArtistName',
+						ar.main_country_id AS 'ArtistMainCountryId',
+						ar.sec_country_id AS 'ArtistSecondaryCountryId',
 						co.rank AS 'Rank',
 						co.cnt AS 'PlayedCount'
 					FROM
