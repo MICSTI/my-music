@@ -1163,7 +1163,7 @@
 		public function getCalendarialChartsContent($mdb, $type, $year, $month = 0) {
 			$html = "";
 			
-			$secondary_country_weight = 0.3;
+			$secondary_country_weight = $mdb->getConfig("secondary_country_weight");
 			
 			// data
 			if ($month == 0) {
@@ -1403,44 +1403,46 @@
 		public function getCountryStatisticsTable($mdb, $country_statistics) {
 			$html = "";
 			
-			$dataset = $country_statistics["data"];
-			$sum = $country_statistics["sum"];
-			
-			$html .= "<table class='table table-striped'>";
-			
-				$html .= "<thead>";
-					$html .= "<tr>";
-						$html .= "<th class='col-sm-2'>Country</td>";
-						$html .= "<th class='col-sm-1 text-center'>Percentage</td>";
-						$html .= "<th class='col-sm-1 text-right'><span class='statistics-sum'>Sum</span></td>";
-						$html .= "<th class='col-sm-8'> </td>";
-					$html .= "</tr>";
-				$html .= "</thead>";
+			if (count($country_statistics) > 0) {
+				$dataset = $country_statistics["data"];
+				$sum = $country_statistics["sum"];
 				
-				$html .= "<tbody>";
-			
-					foreach ($dataset as $country_elem) {
-						$country_id = $country_elem["CountryId"];
-						$value = $country_elem["CountrySum"];
-						$percentage = round($value / $sum * 100, 2);
-						
-						if ($country_id > 0) {
-							$country = $mdb->getCountry($country_id);
-							$country_flag = getCountryFlag($country, true);
-						} else {
-							$country_flag = "Unknown";
-						}
-						
+				$html .= "<table class='table table-striped'>";
+				
+					$html .= "<thead>";
 						$html .= "<tr>";
-							$html .= "<td>" . $country_flag . "</td>";
-							$html .= "<td class='text-right'>" . $percentage . " %</td>";
-							$html .= "<td class='text-right'>" . $value . "</td>";
+							$html .= "<th class='col-sm-2'>Country</td>";
+							$html .= "<th class='col-sm-1 text-center'>Percentage</td>";
+							$html .= "<th class='col-sm-1 text-right'><span class='statistics-sum'>Sum</span></td>";
+							$html .= "<th class='col-sm-8'> </td>";
 						$html .= "</tr>";
-					}
-			
-				$html .= "</tbody>";
+					$html .= "</thead>";
+					
+					$html .= "<tbody>";
 				
-			$html .= "</table>";
+						foreach ($dataset as $country_elem) {
+							$country_id = $country_elem["CountryId"];
+							$value = $country_elem["CountrySum"];
+							$percentage = round($value / $sum * 100, 2);
+							
+							if ($country_id > 0) {
+								$country = $mdb->getCountry($country_id);
+								$country_flag = getCountryFlag($country, true);
+							} else {
+								$country_flag = "Unknown";
+							}
+							
+							$html .= "<tr>";
+								$html .= "<td>" . $country_flag . "</td>";
+								$html .= "<td class='text-right'>" . $percentage . " %</td>";
+								$html .= "<td class='text-right'>" . $value . "</td>";
+							$html .= "</tr>";
+						}
+				
+					$html .= "</tbody>";
+					
+				$html .= "</table>";
+			}
 			
 			return $html;
 		}
@@ -1451,40 +1453,42 @@
 		public function getActivityStatisticsTable($mdb, $activity_statistics) {
 			$html = "";
 			
-			$dataset = $activity_statistics["data"];
-			$sum = $activity_statistics["sum"];
-			
-			$html .= "<table class='table table-striped'>";
-			
-				$html .= "<thead>";
-					$html .= "<tr>";
-						$html .= "<th class='col-sm-1'>Activity</td>";
-						$html .= "<th class='col-sm-1 text-center'>Percentage</td>";
-						$html .= "<th class='col-sm-1 text-right'><span class='statistics-sum'>Sum</span></td>";
-						$html .= "<th class='col-sm-9'> </td>";
-					$html .= "</tr>";
-				$html .= "</thead>";
+			if (count($activity_statistics) > 0) {
+				$dataset = $activity_statistics["data"];
+				$sum = $activity_statistics["sum"];
 				
-				$html .= "<tbody>";
-			
-					foreach ($dataset as $activity_elem) {
-						$activity_id = $activity_elem["ActivityId"];
-						$value = $activity_elem["PlayedCount"];
-						$percentage = round($value / $sum * 100, 2);
-						
-						$activity = $mdb->getActivity($activity_id);
-						$activity_span = getActivitySpan($activity);
-						
+				$html .= "<table class='table table-striped'>";
+				
+					$html .= "<thead>";
 						$html .= "<tr>";
-							$html .= "<td>" . $activity_span . "</td>";
-							$html .= "<td class='text-right'>" . $percentage . " %</td>";
-							$html .= "<td class='text-right'>" . $value . "</td>";
+							$html .= "<th class='col-sm-1'>Activity</td>";
+							$html .= "<th class='col-sm-1 text-center'>Percentage</td>";
+							$html .= "<th class='col-sm-1 text-right'><span class='statistics-sum'>Sum</span></td>";
+							$html .= "<th class='col-sm-9'> </td>";
 						$html .= "</tr>";
-					}
+					$html .= "</thead>";
 					
-				$html .= "</tbody>";
+					$html .= "<tbody>";
 				
-			$html .= "</table>";
+						foreach ($dataset as $activity_elem) {
+							$activity_id = $activity_elem["ActivityId"];
+							$value = $activity_elem["PlayedCount"];
+							$percentage = round($value / $sum * 100, 2);
+							
+							$activity = $mdb->getActivity($activity_id);
+							$activity_span = getActivitySpan($activity);
+							
+							$html .= "<tr>";
+								$html .= "<td>" . $activity_span . "</td>";
+								$html .= "<td class='text-right'>" . $percentage . " %</td>";
+								$html .= "<td class='text-right'>" . $value . "</td>";
+							$html .= "</tr>";
+						}
+						
+					$html .= "</tbody>";
+					
+				$html .= "</table>";
+			}
 			
 			return $html;
 		}

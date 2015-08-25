@@ -8,6 +8,8 @@
 	
 	$chart_id = $chart_info["ChartId"];
 	
+	$secondary_country_weight = $mc->getMDB()->getConfig("secondary_country_weight");
+	
 	$songs = $mc->getMDB()->getChartsContentSongs($chart_id);
 	$artists = $mc->getMDB()->getChartsContentArtists($chart_id);
 	
@@ -23,6 +25,14 @@
 		$html .= "<li>";
 			$html .= "<a data-toggle='tab' href='#artists'>Artists</a>";
 		$html .= "</li>";
+		
+		$html .= "<li>";
+			$html .= "<a data-toggle='tab' href='#countries'>Countries</a>";
+		$html .= "</li>";
+		
+		$html .= "<li>";
+			$html .= "<a data-toggle='tab' href='#activities'>Activities</a>";
+		$html .= "</li>";
 	$html .= "</ul>";
 	
 	$html .= "<div class='tab-content'>";
@@ -32,6 +42,24 @@
 		
 		$html .= "<div id='artists' class='tab-pane fade'>";
 			$html .= getArtistContent($mc->getMDB(), $artists);
+		$html .= "</div>";
+		
+		$html .= "<div id='countries' class='tab-pane fade'>";
+		
+			// get country statistics content
+			$country_statistics = $mc->getMDB()->getTop2020CountryStatistics($secondary_country_weight);
+			
+			$html .= $mc->getFrontend()->getCountryStatisticsTable($mc->getMDB(), $country_statistics);
+			
+		$html .= "</div>";
+		
+		$html .= "<div id='activities' class='tab-pane fade'>";
+			
+			// get activity statistics content
+			$activity_statistics = $mc->getMDB()->getTop2020ActivityStatistics();
+			
+			$html .= $mc->getFrontend()->getActivityStatisticsTable($mc->getMDB(), $activity_statistics);
+			
 		$html .= "</div>";
 	$html .= "</div>";
 	

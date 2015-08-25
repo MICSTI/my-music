@@ -8,6 +8,8 @@
 	
 	$chart_id = $chart_info["ChartId"];
 	
+	$secondary_country_weight = $mc->getMDB()->getConfig("secondary_country_weight");
+	
 	$songs = $mc->getMDB()->getChartsContentSongs($chart_id);
 	$artists = $mc->getMDB()->getChartsContentArtists($chart_id);
 	$records = $mc->getMDB()->getChartsContentRecords($chart_id);
@@ -54,7 +56,7 @@
 		$html .= "<div id='countries' class='tab-pane fade'>";
 		
 			// get country statistics content
-			$country_statistics = $mc->getMDB()->getOverallCountryStatistics();
+			$country_statistics = $mc->getMDB()->getOverallCountryStatistics($secondary_country_weight);
 			
 			$html .= $mc->getFrontend()->getCountryStatisticsTable($mc->getMDB(), $country_statistics);
 			

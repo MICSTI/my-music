@@ -265,3 +265,17 @@
 		
 		return $html;
 	}
+	
+	/**
+		Returns a UnixTimestamp object for the start date of the Top 20/20 charts (e.g. 21 days ago)
+	*/
+	function getTop2020StartDate() {
+		return new UnixTimestamp(mktime(0, 0, 0, date("m"), date("d") - 21, date("Y")));
+	}
+	
+	/**
+		Returns a UnixTimestamp object for the end date of the Top 20/20 charts (e.g. yesterday)
+	*/
+	function getTop2020EndDate() {
+		return new UnixTimestamp(mktime(0, 0, 0, date("m"), date("d") - 1, date("Y")));
+	}

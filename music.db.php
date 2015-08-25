@@ -3669,8 +3669,8 @@
 			Returns the 20 most played songs over the last 20 days.
 		*/
 		public function getTop2020Songs() {
-			$date_from = new UnixTimestamp(mktime(0, 0, 0, date("m"), date("d") - 21, date("Y")));
-			$date_to = new UnixTimestamp(mktime(0, 0, 0, date("m"), date("d") - 1, date("Y")));
+			$date_from = getTop2020StartDate();
+			$date_to = getTop2020EndDate();
 			$limit_low = 0;
 			$limit_high = 20;
 			
@@ -3681,8 +3681,8 @@
 			Returns the 20 most played artists over the last 20 days.
 		*/
 		public function getTop2020Artists() {
-			$date_from = new UnixTimestamp(mktime(0, 0, 0, date("m"), date("d") - 21, date("Y")));
-			$date_to = new UnixTimestamp(mktime(0, 0, 0, date("m"), date("d") - 1, date("Y")));
+			$date_from = getTop2020StartDate();
+			$date_to = getTop2020EndDate();
 			$limit_low = 0;
 			$limit_high = 20;
 			
@@ -3965,7 +3965,7 @@
 		}
 		
 		/**
-			Gets the overall country statistics for the whole database.
+			Gets the overall activity statistics for the whole database.
 		*/
 		public function getOverallActivityStatistics($date_from = "", $date_to = "") {
 			if ($date_from == "") {
@@ -4010,6 +4010,22 @@
 			} else {
 				return array();
 			}
+		}
+		
+		/**
+			Gets the Top 20/20 country statistics.
+		*/
+		public function getTop2020CountryStatistics($secondary_weight = 0.3) {
+			$main_weight = 1 - $secondary_weight;
+			
+			return array();
+		}
+		
+		/**
+			Gets the the Top 20/20 activity statistics.
+		*/
+		public function getTop2020ActivityStatistics() {
+			return array();
 		}
 		
 		/**
