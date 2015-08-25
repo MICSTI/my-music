@@ -1163,6 +1163,8 @@
 		public function getCalendarialChartsContent($mdb, $type, $year, $month = 0) {
 			$html = "";
 			
+			$secondary_country_weight = 0.3;
+			
 			// data
 			if ($month == 0) {
 				// year mode
@@ -1175,6 +1177,9 @@
 				$songs = $mdb->getChartsContentSongs($chart_id);
 				$artists = $mdb->getChartsContentArtists($chart_id);
 				$records = $mdb->getChartsContentRecords($chart_id);
+				
+				$date_from = $year . "-01-01";
+				$date_to = $year . "-12-31";
 			} else {
 				// month mode
 				
@@ -1198,6 +1203,14 @@
 				$html .= "<li>";
 					$html .= "<a data-toggle='tab' href='#records'>Records</a>";
 				$html .= "</li>";
+				
+				$html .= "<li>";
+					$html .= "<a data-toggle='tab' href='#countries'>Countries</a>";
+				$html .= "</li>";
+				
+				$html .= "<li>";
+					$html .= "<a data-toggle='tab' href='#activities'>Activities</a>";
+				$html .= "</li>";
 			$html .= "</ul>";
 			
 			$html .= "<div class='tab-content'>";
@@ -1211,6 +1224,20 @@
 				
 				$html .= "<div id='records' class='tab-pane fade'>";
 					$html .= $this->getCalendarialRecordContent($mdb, $records);
+				$html .= "</div>";
+				
+				$html .= "<div id='countries' class='tab-pane fade'>";
+					// get country statistics content
+					$country_statistics = $mdb->getOverallCountryStatistics($secondary_country_weight, $date_from, $date_to);
+					
+					$html .= $this->getCountryStatisticsTable($mdb, $country_statistics);
+				$html .= "</div>";
+				
+				$html .= "<div id='activities' class='tab-pane fade'>";
+					// get activity statistics content
+					$activity_statistics = $mdb->getOverallActivityStatistics($date_from, $date_to);
+					
+					$html .= $this->getActivityStatisticsTable($mdb, $activity_statistics);
 				$html .= "</div>";
 			$html .= "</div>";
 			
