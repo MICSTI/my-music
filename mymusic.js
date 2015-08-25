@@ -127,6 +127,11 @@ function crudModal(_action, _id, _params) {
 				persistCrud(content.save, _id, $("#" + content.form_name).serialize(), content.tab_name);
 			});
 			
+			// attach ok button handler
+			modal.find(".modal-action-ok").on("click", function() {
+				modal.modal("hide");
+			});
+			
 			// show modal
 			modal.modal("show");
 		} else {
@@ -447,6 +452,12 @@ function globalNotify(_text, _type, _position) {
 */
 function addTooltips() {
 	$("[data-toggle='tooltip']").tooltip();
+	
+	// add country overview modal on click
+	$(".flag-icon").off("click");
+	$(".flag-icon").on("click", function() {
+		crudModal("olfOmquv", this.dataset.id);
+	});
 }
 
 /**

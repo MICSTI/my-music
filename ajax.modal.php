@@ -1436,7 +1436,38 @@
 				$data["success"] = $success;
 			
 				break;
-			
+				
+			// country overview
+			case "olfOmquv":
+				// data
+				$country_id = $id;
+				
+				$country = $mc->getMDB()->getCountry($country_id);
+				$country_flag = getCountryFlag($country);
+				
+				// title
+				$title = $country_flag . " " . $country["CountryName"];
+				$data["title"] = $title;
+				
+				$body = "";
+				
+				// Artists from this country
+				$country_artists = $mc->getMDB()->getArtistsFromCountry($country_id);
+				
+				if (count($country_artists) > 0) {
+					foreach ($country_artists as $artist) {
+						
+					}
+				}
+				
+				$data["body"] = $body;
+				
+				// footer
+				$footer = $mc->getFrontend()->getModalButtons(array("ok"));
+				$data["footer"] = $footer;
+				
+				break;
+				
 			default:
 				$data["status"] = "error";
 				$data["message"] = "unknown action";

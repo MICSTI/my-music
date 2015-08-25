@@ -248,6 +248,11 @@
 				$html .= "<button type='button' class='btn btn-primary modal-action-save'>Save</button>";
 			}
 			
+			// ok button
+			if (in_array("ok", $button_array)) {
+				$html .= "<button type='button' class='btn btn-primary modal-action-ok'>Ok</button>";
+			}
+			
 			return $html;
 		}
 		

@@ -38,6 +38,14 @@ a {
 	color: #f89406;
 }
 
+.flag-icon {
+	margin-right: 3px;
+}
+
+.flag-icon:hover {
+	cursor: pointer;
+}
+
 .panel-paragraph {
 	margin-bottom: 12px;
 }

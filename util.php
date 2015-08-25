@@ -85,7 +85,7 @@
 			$country_name = "";
 		}
 		
-		return "<span class='flag-icon flag-icon-" . $country["CountryShort"] . "'" . $data_tooltip . "></span>" . $country_name;
+		return "<span data-id='" . $country["CountryId"] . "' class='flag-icon flag-icon-" . $country["CountryShort"] . "'" . $data_tooltip . "></span>" . $country_name;
 	}
 	
 	function getIconRef($icon, $img_path = "", $tooltip = "") {

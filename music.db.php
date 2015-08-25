@@ -3523,6 +3523,14 @@
 		}
 		
 		/**
+			Returns an array containing all artists from the specified country.
+			If the country is not found, an empty array is returned.
+		*/
+		public function getArtistsFromCountry($country_id) {
+			return array();
+		}
+		
+		/**
 			Returns the 250 most played songs in the database
 		*/
 		public function getMostPlayedSongs() {
