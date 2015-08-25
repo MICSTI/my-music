@@ -3893,6 +3893,57 @@
 		}
 		
 		/**
+			Utility function to remove mutliple entries of the same information in the MM link table.
+			A temporary table will be created that will be deleted after successful execution.
+		*/
+		public function correctDoubleMMLinkEntries() {
+			// create temp table if not exists
+			$sql = "CREATE TABLE IF NOT EXISTS mmlink_temp LIKE mmlink";
+			$query = $this->db->prepare($sql);
+			$query->execute();
+			
+			// truncate temp table for good measure
+			$sql = "TRUNCATE TABLE mmlink_temp";
+			$query = $this->db->prepare($sql);
+			$query->execute();
+			
+			// get all data from mmlink
+			$sql = "SELECT * FROM mmlink";
+			$query = $this->db->prepare($sql);
+			$query->execute();
+			
+			if ($query->rowCount() > 0) {
+				$mmlinks = $query->fetchAll(PDO::FETCH_ASSOC);
+			
+				foreach ($mmlinks as $mmlink) {
+					// see if entry exists in the temp table
+					$sql = "SELECT id FROM mmlink_temp WHERE sid = :sid AND mmid = :mmid AND added = :added";
+					$query = $this->db->prepare($sql);
+					$query->execute( array(':sid' => $mmlink["sid"], ':mmid' => $mmlink["mmid"], ':added' => $mmlink["added"]) );
+					
+					if ($query->rowCount() > 0) {
+						// it already exisits --> don't do anything
+					} else {
+						// it doesn't exist --> add to temp table
+						$sql = "INSERT INTO mmlink_temp (sid, mmid, added) VALUES (:sid, :mmid, :added)";
+						$query = $this->db->prepare($sql);
+						$query->execute( array(':sid' => $mmlink["sid"], ':mmid' => $mmlink["mmid"], ':added' => $mmlink["added"]) );
+					}
+				}
+			}
+			
+			// drop original mmlink table
+			$sql = "DROP TABLE mmlink";
+			$query = $this->db->prepare($sql);
+			$query->execute();
+			
+			// rename temp table to mmlink
+			$sql = "RENAME TABLE mmlink_temp TO mmlink";
+			$query = $this->db->prepare($sql);
+			$query->execute();
+		}
+		
+		/**
 			Returns an array containing the song statistics for the specified date range.
 		*/
 		public function getPlayedSongStatistics ($date_from, $date_to, $limit_low, $limit_high) {
