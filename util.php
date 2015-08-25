@@ -265,3 +265,61 @@
 		
 		return $html;
 	}
+	
+	/**
+		Returns an array containing all country statistics for a song array.
+	*/
+	function getCountryStatistics($songs, $secondary_weight = 0.50) {
+		$country_array = array();
+		
+		$sum = 0;
+		
+		$primary_weight = 1 - $secondary_weight;
+		
+		foreach ($songs as $song) {
+			$main_country_id = $song["ArtistMainCountryId"];
+			$secondary_country_id = $song["ArtistSecondaryCountryId"];
+			
+			$value = $song["PlayedCount"];
+			$sum += $value;
+			
+			if ($secondary_country_id == 0) {
+				// only one country
+				if (array_key_exists($main_country_id, $country_array)) {
+					$country_array[$main_country_id] += $value;
+				} else {
+					$country_array[$main_country_id] = $value;
+				}
+			} else {
+				// two countries
+				if (array_key_exists($main_country_id, $country_array)) {
+					$country_array[$main_country_id] += ($primary_weight * $value);
+				} else {
+					$country_array[$main_country_id] = ($primary_weight * $value);
+				}
+				
+				if (array_key_exists($secondary_country_id, $country_array)) {
+					$country_array[$secondary_country_id] += ($secondary_weight * $value);
+				} else {
+					$country_array[$secondary_country_id] = ($secondary_weight * $value);
+				}
+			}
+		}
+		
+		// build return array
+		$return_array = array();
+		
+		$country_keys = array_keys($country_array);
+		
+		foreach ($country_keys as $country_id) {
+			$country_sum = $country_array[$country_id];
+			
+			$percent = round($country_sum / $sum, 6);
+			
+			$country = array("CountryId" => $country_id, "Sum" => $country_sum, "Percentage" => $percent);
+			
+			array_push($return_array, $country);
+		}
+		
+		return $return_array;
+	}

@@ -28,6 +28,14 @@
 		$html .= "<li>";
 			$html .= "<a data-toggle='tab' href='#records'>Records</a>";
 		$html .= "</li>";
+		
+		$html .= "<li>";
+			$html .= "<a data-toggle='tab' href='#countries'>Countries</a>";
+		$html .= "</li>";
+		
+		$html .= "<li>";
+			$html .= "<a data-toggle='tab' href='#activities'>Activities</a>";
+		$html .= "</li>";
 	$html .= "</ul>";
 	
 	$html .= "<div class='tab-content'>";
@@ -41,6 +49,49 @@
 		
 		$html .= "<div id='records' class='tab-pane fade'>";
 			$html .= getRecordContent($mc->getMDB(), $records);
+		$html .= "</div>";
+		
+		$html .= "<div id='countries' class='tab-pane fade'>";
+			
+			$country_statistics = getCountryStatistics($songs);
+			
+			$html .= "<table class='table table-striped'>";
+			
+				$html .= "<thead>";
+					$html .= "<tr>";
+						$html .= "<th class='col-sm-2'>Country</td>";
+						$html .= "<th class='col-sm-1'>Percentage</td>";
+						$html .= "<th class='col-sm-1'>Sum</td>";
+						$html .= "<th class='col-sm-8'> </td>";
+					$html .= "</tr>";
+				$html .= "</thead>";
+				
+				$html .= "<tbody>";
+					foreach ($country_statistics as $country_elem) {
+						$country_id = $country_elem["CountryId"];
+						$sum = $country_elem["Sum"];
+						$percentage = $country_elem["Percentage"];
+						
+						if ($country_id > 0) {
+							$country = $mc->getMDB()->getCountry($country_id);
+							$country_flag = getCountryFlag($country, true);
+						} else {
+							$country_flag = "Unknown";
+						}
+						
+						$html .= "<tr>";
+							$html .= "<td>" . $country_flag . "</td>";
+							$html .= "<td>" . round($percentage * 100, 2) . " %</td>";
+							$html .= "<td>" . $sum . "</td>";
+						$html .= "</tr>";
+					}
+				$html .= "</tbody>";
+			$html .= "</div>";
+			
+		$html .= "</div>";
+		
+		$html .= "<div id='activities' class='tab-pane fade'>";
+			$html .= "ACTIVITY";
 		$html .= "</div>";
 	$html .= "</div>";
 	
