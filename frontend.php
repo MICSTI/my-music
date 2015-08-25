@@ -1197,15 +1197,15 @@
 			
 			$html .= "<div class='tab-content'>";
 				$html .= "<div id='songs' class='tab-pane fade in active'>";
-					$html .= $this->getCalendarialSongContent($songs);
+					$html .= $this->getCalendarialSongContent($mdb, $songs);
 				$html .= "</div>";
 				
 				$html .= "<div id='artists' class='tab-pane fade'>";
-					$html .= $this->getCalendarialArtistContent($artists);
+					$html .= $this->getCalendarialArtistContent($mdb, $artists);
 				$html .= "</div>";
 				
 				$html .= "<div id='records' class='tab-pane fade'>";
-					$html .= $this->getCalendarialRecordContent($records);
+					$html .= $this->getCalendarialRecordContent($mdb, $records);
 				$html .= "</div>";
 			$html .= "</div>";
 			
@@ -1215,7 +1215,7 @@
 		/**
 			Returns the content for the song tab
 		*/
-		private function getCalendarialSongContent($songs) {
+		private function getCalendarialSongContent($mdb, $songs) {
 			$content = "";
 
 			$previous = -1;
@@ -1225,14 +1225,22 @@
 					$content .= "<tr>";
 						$content .= "<th class='col-sm-1 rank'>Place</th>";
 						$content .= "<th class='col-sm-5'>Song</th>";
-						$content .= "<th class='col-sm-5'>Artist</th>";
+						$content .= "<th class='col-sm-4'>Artist</th>";
 						$content .= "<th class='col-sm-1'>Count</th>";
+						$content .= "<th class='col-sm-1'>Country</th>";
 					$content .= "</tr>";
 				$content .= "</thead>";
 				
 				$content .= "<tbody>";
 					foreach ($songs as $song) {
 						$played_count = $song["PlayedCount"];
+						
+						// country
+						$main_country = $mdb->getCountry($song["ArtistMainCountryId"]);
+						$secondary_country = $mdb->getCountry($song["ArtistSecondaryCountryId"]);
+						
+						$main_country_flag = getCountryFlag($main_country);
+						$secondary_country_flag = getCountryFlag($secondary_country);
 						
 						// don't display rank if it's the same count as before - they are tied
 						$rank = $song["Rank"];
@@ -1245,7 +1253,8 @@
 							$content .= "<td class='rank'>" . $rank_display . "</td>";
 							$content .= "<td><a href='song.php?id=" . $song["SongId"] . "'>" . $song["SongName"] . "</a></td>";
 							$content .= "<td><a href='artist.php?id=" . $song["ArtistId"] . "'>" . $song["ArtistName"] . "</a></td>";
-							$content .= "<td>" . $played_count . "</td>";-
+							$content .= "<td>" . $played_count . "</td>";
+							$content .= "<td>" . $main_country_flag . " " . $secondary_country_flag . "</td>";
 						$content .= "</tr>";
 					}
 				$content .= "</tbody>";
@@ -1257,7 +1266,7 @@
 		/**
 			Returns the content for the artist tab
 		*/
-		private function getCalendarialArtistContent($artists) {
+		private function getCalendarialArtistContent($mdb, $artists) {
 			$content = "";
 			
 			$previous = -1;
@@ -1268,13 +1277,21 @@
 						$content .= "<th class='col-sm-1 rank'>Place</th>";
 						$content .= "<th class='col-sm-5'>Artist</th>";
 						$content .= "<th class='col-sm-1'>Count</th>";
-						$content .= "<th class='col-sm-5'> </th>";
+						$content .= "<th class='col-sm-1'>Country</th>";
+						$content .= "<th class='col-sm-4'> </th>";
 					$content .= "</tr>";
 				$content .= "</thead>";
 				
 				$content .= "<tbody>";
 					foreach ($artists as $artist) {
 						$played_count = $artist["PlayedCount"];
+						
+						// country
+						$main_country = $mdb->getCountry($artist["ArtistMainCountryId"]);
+						$secondary_country = $mdb->getCountry($artist["ArtistSecondaryCountryId"]);
+						
+						$main_country_flag = getCountryFlag($main_country);
+						$secondary_country_flag = getCountryFlag($secondary_country);
 						
 						// don't display rank if it's the same count as before - they are tied
 						$rank = $artist["Rank"];
@@ -1287,6 +1304,7 @@
 							$content .= "<td class='rank'>" . $rank_display . "</td>";
 							$content .= "<td><a href='artist.php?id=" . $artist["ArtistId"] . "'>" . $artist["ArtistName"] . "</a></td>";
 							$content .= "<td>" . $played_count . "</td>";
+							$content .= "<td>" . $main_country_flag . " " . $secondary_country_flag . "</td>";
 							$content .= "<td> </td>";
 						$content .= "</tr>";
 					}
@@ -1299,7 +1317,7 @@
 		/**
 			Returns the content for the record tab
 		*/
-		private function getCalendarialRecordContent($records) {
+		private function getCalendarialRecordContent($mdb, $records) {
 			$content = "";
 			
 			$previous = -1;
@@ -1309,14 +1327,22 @@
 					$content .= "<tr>";
 						$content .= "<th class='col-sm-1 rank'>Place</th>";
 						$content .= "<th class='col-sm-5'>Record</th>";
-						$content .= "<th class='col-sm-5'>Artist</th>";
+						$content .= "<th class='col-sm-4'>Artist</th>";
 						$content .= "<th class='col-sm-1'>Count</th>";
+						$content .= "<th class='col-sm-1'>Country</th>";
 					$content .= "</tr>";
 				$content .= "</thead>";
 				
 				$content .= "<tbody>";
 					foreach ($records as $record) {
 						$played_count = $record["PlayedCount"];
+						
+						// country
+						$main_country = $mdb->getCountry($record["ArtistMainCountryId"]);
+						$secondary_country = $mdb->getCountry($record["ArtistSecondaryCountryId"]);
+						
+						$main_country_flag = getCountryFlag($main_country);
+						$secondary_country_flag = getCountryFlag($secondary_country);
 						
 						// don't display rank if it's the same count as before - they are tied
 						$rank = $record["Rank"];
@@ -1330,7 +1356,7 @@
 							$content .= "<td><a href='record.php?id=" . $record["RecordId"] . "'>" . $record["RecordName"] . "</a></td>";
 							$content .= "<td><a href='artist.php?id=" . $record["ArtistId"] . "'>" . $record["ArtistName"] . "</a></td>";
 							$content .= "<td>" . $played_count . "</td>";
-							$content .= "<td> </td>";
+							$content .= "<td>" . $main_country_flag . " " . $secondary_country_flag . "</td>";
 						$content .= "</tr>";
 					}
 				$content .= "</tbody>";

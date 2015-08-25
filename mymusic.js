@@ -1262,6 +1262,9 @@ $(document).ready( function () {
 				if (response.success) {
 					// set content
 					$("#calendarial-content").html(response.content);
+					
+					// add tooltips
+					addTooltips();
 				} else {
 					console.log("Error", response.message);
 					globalNotify("Error getting charts content", "error");
