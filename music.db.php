@@ -3527,7 +3527,31 @@
 			If the country is not found, an empty array is returned.
 		*/
 		public function getArtistsFromCountry($country_id) {
-			return array();
+			$sql = "SELECT
+						ar.id AS 'ArtistId',
+						ar.name AS 'ArtistName',
+						COUNT(pl.id) AS 'PlayedCount'
+					FROM
+						artists ar INNER JOIN
+						songs so ON so.aid = ar.id INNER JOIN
+						played pl ON pl.sid = so.id
+					WHERE
+						ar.main_country_id = :main_country_id OR
+						ar.sec_country_id = :sec_country_id
+					GROUP BY
+						ar.id
+					ORDER BY
+						PlayedCount DESC,
+						ArtistName";
+						
+			$query = $this->db->prepare($sql);
+			$query->execute( array(':main_country_id' => $country_id, ':sec_country_id' => $country_id) );
+			
+			if ($query->rowCount() > 0) {
+				return $query->fetchAll(PDO::FETCH_ASSOC);
+			} else {
+				return array();
+			}
 		}
 		
 		/**

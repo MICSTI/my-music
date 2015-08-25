@@ -1455,9 +1455,27 @@
 				$country_artists = $mc->getMDB()->getArtistsFromCountry($country_id);
 				
 				if (count($country_artists) > 0) {
-					foreach ($country_artists as $artist) {
+					
+					$body .= "<table class='table table-striped'>";
+					
+						$body .= "<thead>";
+							$body .= "<tr>";
+								$body .= "<th class='col-sm-6'>Artist</th>";
+								$body .= "<th class='col-sm-6'># times played</th>";
+							$body .= "</tr>";
+						$body .= "</thead>";
 						
-					}
+						$body .= "<tbody>";
+					
+							foreach ($country_artists as $artist) {
+								$body .= "<tr>";
+									$body .= "<td>" . getArtistLink($artist["ArtistId"], $artist["ArtistName"]) . "</td>";
+									$body .= "<td>" . $artist["PlayedCount"] . "</td>";
+								$body .= "</tr>";
+							}
+						$body .= "</tbody>";
+						
+					$body .= "</table>";
 				}
 				
 				$data["body"] = $body;
