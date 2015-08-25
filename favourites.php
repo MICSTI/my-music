@@ -52,34 +52,21 @@
 		$html .= "</div>";
 		
 		$html .= "<div id='countries' class='tab-pane fade'>";
+		
+			// get country statistics content
+			$country_statistics = $mc->getMDB()->getOverallCountryStatistics();
 			
-			$html .= "<table class='table table-striped'>";
-			
-				$html .= "<thead>";
-					$html .= "<tr>";
-						$html .= "<th class='col-sm-2'>Country</td>";
-						$html .= "<th class='col-sm-1 text-center'>Percentage</td>";
-						$html .= "<th class='col-sm-1 text-right'><span class='statistics-sum'>Sum</span></td>";
-						$html .= "<th class='col-sm-8'> </td>";
-					$html .= "</tr>";
-				$html .= "</thead>";
-				
-				$html .= "<tbody>";
-					
-					// get country statistics content
-					$country_statistics = $mc->getMDB()->getOverallCountryStatistics();
-					
-					//$html .= $mc->getFrontend()->getCountryStatisticsTable($mc->getMDB(), $country_statistics);
-					$html .= $mc->getFrontend()->abc($mc->getMDB(), $country_statistics);
-					
-				$html .= "</tbody>";
-				
-			$html .= "</table>";
+			$html .= $mc->getFrontend()->getCountryStatisticsTable($mc->getMDB(), $country_statistics);
 			
 		$html .= "</div>";
 		
 		$html .= "<div id='activities' class='tab-pane fade'>";
-			$html .= "ACTIVITY";
+			
+			// get activity statistics content
+			$activity_statistics = $mc->getMDB()->getOverallActivityStatistics();
+			
+			$html .= $mc->getFrontend()->getActivityStatisticsTable($mc->getMDB(), $activity_statistics);
+			
 		$html .= "</div>";
 	$html .= "</div>";
 	

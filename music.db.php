@@ -3885,7 +3885,7 @@
 				$exec_array = array(':mw' => $main_weight, ':sw' => $secondary_weight);
 			} else {
 				$where = "DATE(pl.timestamp) >= :date_from AND DATE(pl.timestamp) <= :date_to";
-				$exec_array = array(':mw1' => $main_weight, ':sw1' => $secondary_weight, ':mw2' => $main_weight, ':sw2' => $secondary_weight, ':date_from' => $date_from, ':date_to' => $date_to);
+				$exec_array = array(':mw' => $main_weight, ':sw' => $secondary_weight, ':date_from' => $date_from, ':date_to' => $date_to);
 			}
 			
 			$sql = "SELECT
@@ -3951,6 +3951,53 @@
 				
 				foreach ($data as $elem) {
 					$sum += $elem["CountrySum"];
+				}
+				
+				$result["data"] = $data;
+				$result["sum"] = $sum;
+				
+				return $result;
+			} else {
+				return array();
+			}
+		}
+		
+		/**
+			Gets the overall country statistics for the whole database.
+		*/
+		public function getOverallActivityStatistics($date_from = "", $date_to = "") {
+			if ($date_from == "") {
+				$where = "";
+				$exec_array = array();
+			} else {
+				$where = "DATE(pl.timestamp) >= :date_from AND DATE(pl.timestamp) <= :date_to";
+				$exec_array = array(':date_from' => $date_from, ':date_to' => $date_to);
+			}
+			
+			$sql = "SELECT
+						ac.id AS 'ActivityId',
+						ac.name AS 'ActivityName',
+						COUNT(pl.id) AS 'PlayedCount'
+					FROM
+						played pl INNER JOIN
+						activities ac ON ac.id = pl.actid
+					GROUP BY
+						ac.id
+					ORDER BY
+						PlayedCount DESC";
+			
+			$query = $this->db->prepare($sql);
+			$query->execute( $exec_array );
+			
+			if ($query->rowCount() > 0) {
+				$result = array();
+				
+				$sum = 0;
+				
+				$data = $query->fetchAll(PDO::FETCH_ASSOC);
+				
+				foreach ($data as $elem) {
+					$sum += $elem["PlayedCount"];
 				}
 				
 				$result["data"] = $data;
