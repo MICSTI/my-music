@@ -3875,6 +3875,94 @@
 		}
 		
 		/**
+			Gets the overall country statistics for the whole database.
+		*/
+		public function getOverallCountryStatistics($secondary_weight = 0.3, $date_from = "", $date_to = "") {
+			$main_weight = 1 - $secondary_weight;
+			
+			if ($date_from == "") {
+				$where = "";
+				$exec_array = array(':mw' => $main_weight, ':sw' => $secondary_weight);
+			} else {
+				$where = "DATE(pl.timestamp) >= :date_from AND DATE(pl.timestamp) <= :date_to";
+				$exec_array = array(':mw1' => $main_weight, ':sw1' => $secondary_weight, ':mw2' => $main_weight, ':sw2' => $secondary_weight, ':date_from' => $date_from, ':date_to' => $date_to);
+			}
+			
+			$sql = "SELECT
+						CountryId,
+						SUM(CountryValue) AS 'CountrySum'
+					FROM
+					( (
+						SELECT
+							ag.ArtistMainCountryId AS 'CountryId',
+							SUM(ag.MainCountryValue) AS 'CountryValue'
+						FROM
+							(
+								SELECT
+									ar.main_country_id AS 'ArtistMainCountryId',
+									COUNT(ar.id) AS 'PlayedCount',
+									IF(ar.sec_country_id > 0, COUNT(ar.id) * :mw, COUNT(ar.id)) AS 'MainCountryValue'
+								FROM
+									played pl INNER JOIN
+									songs so ON so.id = pl.sid INNER JOIN
+									artists ar ON ar.id = so.aid
+								GROUP BY
+									ar.id
+							) ag
+						GROUP BY
+							ag.ArtistMainCountryId
+						) 
+							UNION
+						(
+						SELECT
+							ah.ArtistSecondaryCountryId AS 'CountryId',
+							SUM(ah.SecondaryCountryValue) AS 'CountryValue'
+						FROM
+							(
+								SELECT
+									ar.sec_country_id AS 'ArtistSecondaryCountryId',
+									COUNT(ar.id) * :sw AS 'SecondaryCountryValue'
+								FROM
+									played pl INNER JOIN
+									songs so ON so.id = pl.sid INNER JOIN
+									artists ar ON ar.id = so.aid
+								WHERE
+									ar.sec_country_id > 0
+								GROUP BY
+									ar.id
+							) ah
+						GROUP BY
+							ah.ArtistSecondaryCountryId
+					) ) st
+					GROUP BY
+						CountryId
+					ORDER BY
+						CountrySum DESC";
+						
+			$query = $this->db->prepare($sql);
+			$query->execute( $exec_array );
+			
+			if ($query->rowCount() > 0) {
+				$result = array();
+				
+				$sum = 0;
+				
+				$data = $query->fetchAll(PDO::FETCH_ASSOC);
+				
+				foreach ($data as $elem) {
+					$sum += $elem["CountrySum"];
+				}
+				
+				$result["data"] = $data;
+				$result["sum"] = $sum;
+				
+				return $result;
+			} else {
+				return array();
+			}
+		}
+		
+		/**
 			Method to correct a song added date.
 			All songs in the array are corrected.
 			In the array there has to be one key "mmid" (integer) and one key "added" (MySql date).

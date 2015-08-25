@@ -67,9 +67,10 @@
 				$html .= "<tbody>";
 					
 					// get country statistics content
-					$country_statistics = getCountryStatistics($artists);
+					$country_statistics = $mc->getMDB()->getOverallCountryStatistics();
 					
-					$html .= $mc->getFrontend()->getCountryStatisticsTable($mc->getMDB(), $country_statistics);
+					//$html .= $mc->getFrontend()->getCountryStatisticsTable($mc->getMDB(), $country_statistics);
+					$html .= $mc->getFrontend()->abc($mc->getMDB(), $country_statistics);
 					
 				$html .= "</tbody>";
 				

@@ -1376,10 +1376,13 @@
 		public function getCountryStatisticsTable($mdb, $country_statistics) {
 			$html = "";
 			
-			foreach ($country_statistics as $country_elem) {
+			$dataset = $country_statistics["data"];
+			$sum = $country_statistics["sum"];
+			
+			foreach ($dataset as $country_elem) {
 				$country_id = $country_elem["CountryId"];
-				$sum = $country_elem["Sum"];
-				$percentage = $country_elem["Percentage"];
+				$value = $country_elem["CountrySum"];
+				$percentage = round($value / $sum * 100, 2);
 				
 				if ($country_id > 0) {
 					$country = $mdb->getCountry($country_id);
@@ -1390,8 +1393,8 @@
 				
 				$html .= "<tr>";
 					$html .= "<td>" . $country_flag . "</td>";
-					$html .= "<td class='text-right'>" . round($percentage * 100, 2) . " %</td>";
-					$html .= "<td class='text-right'>" . $sum . "</td>";
+					$html .= "<td class='text-right'>" . $percentage . " %</td>";
+					$html .= "<td class='text-right'>" . $value . "</td>";
 				$html .= "</tr>";
 			}
 			
