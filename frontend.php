@@ -1262,6 +1262,8 @@
 		private function getCalendarialSongContent($mdb, $songs) {
 			$content = "";
 
+			$rank = 1;
+			
 			$previous = -1;
 			
 			$content .= "<table class='table table-striped'>";
@@ -1287,8 +1289,6 @@
 						$secondary_country_flag = getCountryFlag($secondary_country);
 						
 						// don't display rank if it's the same count as before - they are tied
-						//$rank = $song["Rank"];
-						$rank = 1;
 						$rank_display = $played_count == $previous ? "" : $rank;
 						
 						// set previous value to current value for next loop
@@ -1301,6 +1301,9 @@
 							$content .= "<td>" . $played_count . "</td>";
 							$content .= "<td>" . $main_country_flag . " " . $secondary_country_flag . "</td>";
 						$content .= "</tr>";
+						
+						// increase rank
+						$rank++;
 					}
 				$content .= "</tbody>";
 			$content .= "</table>";
@@ -1313,6 +1316,8 @@
 		*/
 		private function getCalendarialArtistContent($mdb, $artists) {
 			$content = "";
+			
+			$rank = 1;
 			
 			$previous = -1;
 			
@@ -1339,8 +1344,6 @@
 						$secondary_country_flag = getCountryFlag($secondary_country);
 						
 						// don't display rank if it's the same count as before - they are tied
-						//$rank = $song["Rank"];
-						$rank = 1;
 						$rank_display = $played_count == $previous ? "" : $rank;
 						
 						// set previous value to current value for next loop
@@ -1353,6 +1356,9 @@
 							$content .= "<td>" . $main_country_flag . " " . $secondary_country_flag . "</td>";
 							$content .= "<td> </td>";
 						$content .= "</tr>";
+						
+						// increase rank
+						$rank++;
 					}
 				$content .= "</tbody>";
 			$content .= "</table>";
@@ -1365,6 +1371,8 @@
 		*/
 		private function getCalendarialRecordContent($mdb, $records) {
 			$content = "";
+			
+			$rank = 1;
 			
 			$previous = -1;
 			
@@ -1391,8 +1399,6 @@
 						$secondary_country_flag = getCountryFlag($secondary_country);
 						
 						// don't display rank if it's the same count as before - they are tied
-						//$rank = $song["Rank"];
-						$rank = 1;
 						$rank_display = $played_count == $previous ? "" : $rank;
 						
 						// set previous value to current value for next loop
@@ -1405,6 +1411,9 @@
 							$content .= "<td>" . $played_count . "</td>";
 							$content .= "<td>" . $main_country_flag . " " . $secondary_country_flag . "</td>";
 						$content .= "</tr>";
+						
+						// increase rank
+						$rank++;
 					}
 				$content .= "</tbody>";
 			$content .= "</table>";
