@@ -1183,7 +1183,18 @@
 				$date_to = $year . "-12-31";
 			} else {
 				// month mode
+				$title = getMonthName($month) . " " . $year . " Charts";
 				
+				$month_leading = "0" . $month;
+				
+				$month_end_day = getMonthEndDay($month, $year);
+				
+				$date_from = $year . "-" . substr($month_leading, -2) . "-01";
+				$date_to = $year . "-" . substr($month_leading, -2) . "-" . $month_end_day;
+				
+				$songs = $mdb->getPlayedSongStatistics($date_from, $date_to, 0, 50);
+				$artists = $mdb->getPlayedArtistStatistics($date_from, $date_to, 0, 50);
+				$records = $mdb->getPlayedRecordStatistics($date_from, $date_to, 0, 50);
 			}
 			
 			// title
@@ -1276,7 +1287,8 @@
 						$secondary_country_flag = getCountryFlag($secondary_country);
 						
 						// don't display rank if it's the same count as before - they are tied
-						$rank = $song["Rank"];
+						//$rank = $song["Rank"];
+						$rank = 1;
 						$rank_display = $played_count == $previous ? "" : $rank;
 						
 						// set previous value to current value for next loop
@@ -1327,7 +1339,8 @@
 						$secondary_country_flag = getCountryFlag($secondary_country);
 						
 						// don't display rank if it's the same count as before - they are tied
-						$rank = $artist["Rank"];
+						//$rank = $song["Rank"];
+						$rank = 1;
 						$rank_display = $played_count == $previous ? "" : $rank;
 						
 						// set previous value to current value for next loop
@@ -1378,7 +1391,8 @@
 						$secondary_country_flag = getCountryFlag($secondary_country);
 						
 						// don't display rank if it's the same count as before - they are tied
-						$rank = $record["Rank"];
+						//$rank = $song["Rank"];
+						$rank = 1;
 						$rank_display = $played_count == $previous ? "" : $rank;
 						
 						// set previous value to current value for next loop

@@ -1247,11 +1247,10 @@ $(document).ready( function () {
 	if (calendarial.length > 0) {
 		// accordion items
 		$(".calendarial-item").on("click", function() {
-			var _params = this.id.split("-");
-			
-			var _type = _params[1];
-			var _year = _params[2];
-			var _month = _params[3] ? _params[3] : 0;
+
+			var _type = $(this).attr("data-type");
+			var _year = $(this).attr("data-year");
+			var _month = $(this).attr("data-month") ? $(this).attr("data-month") : 0;
 			
 			// data object
 			var _data = {
@@ -1287,21 +1286,9 @@ $(document).ready( function () {
 			
 			// hide open accordion elements
 			$("a.calendarial-item[aria-expanded='true']").each(function(i, item) {
-				var parent_id = this.id.split("-");
-				
-				$("#calendarial-" + parent_id[2]).collapse("hide");
+				if (item.dataset.year != _year)
+					$("#calendarial-" + item.dataset.year).collapse("hide");
 			});
-			
-			// add months to nav
-			var monthContent = "";
-			
-			for (var i = 1; i <= 12; i++) {
-				monthContent += "<div>" + 
-									"<a href='#'>" + i + "</a>" +
-								"</div>";
-			}
-			
-			$("#calendarial-" + _year + " .panel-body").html(monthContent);
 		});
 		
 		// affix for accordion nav always to be visible

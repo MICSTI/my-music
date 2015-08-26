@@ -46,6 +46,11 @@ a {
 	cursor: pointer;
 }
 
+.calendarial-month {
+	display: inline-block;
+	margin: 2px 0px;
+}
+
 .statistics-sum {
 	display: inline-block;
 	margin-right: 3px;

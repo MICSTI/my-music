@@ -3385,7 +3385,7 @@
 		}
 		
 		/**
-			Returns the content of the favourite song charts.
+			Returns the content of the song charts with the specified id.
 		*/
 		public function getChartsContentSongs($chart_id) {
 			$sql = "SELECT
@@ -4126,6 +4126,8 @@
 						so.name AS 'SongName',
 						ar.id AS 'ArtistId',
 						ar.name AS 'ArtistName',
+						ar.main_country_id AS 'ArtistMainCountryId',
+						ar.sec_country_id AS 'ArtistSecondaryCountryId',
 						re.id AS 'RecordId',
 						re.name AS 'RecordName',
 						COUNT(pl.sid) AS 'PlayedCount'
@@ -4162,6 +4164,8 @@
 			$sql = "SELECT
 						ar.id AS 'ArtistId',
 						ar.name AS 'ArtistName',
+						ar.main_country_id AS 'ArtistMainCountryId',
+						ar.sec_country_id AS 'ArtistSecondaryCountryId',
 						COUNT(pl.sid) AS 'PlayedCount'
 					FROM
 						played pl
@@ -4196,6 +4200,8 @@
 						re.name AS 'RecordName',
 						ar.id AS 'ArtistId',
 						ar.name AS 'ArtistName',
+						ar.main_country_id AS 'ArtistMainCountryId',
+						ar.sec_country_id AS 'ArtistSecondaryCountryId',
 						COUNT(pl.sid) AS 'PlayedCount'
 					FROM
 						played pl
