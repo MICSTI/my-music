@@ -4250,9 +4250,89 @@
 		}
 		
 		/**
+			Deletes the previous Top 20/20 charts.
+		*/
+		private function deleteOldTop2020Previous() {
+			// get previous Top 20/20 chart id.
+			$sql = "SELECT id FROM charts WHERE chart_type = 'top2020_previous'";
+			$query = $this->db->prepare($sql);
+			$query->execute();
+			
+			if ($query->rowCount() > 0) {
+				$fetch = $query->fetch(PDO::FETCH_ASSOC);
+				$id = $fetch["id"];
+				
+				// delete charts content
+				$sql = "DELETE FROM chart_content WHERE chart_id = :id";
+				$query = $this->db->prepare($sql);
+				$query->execute( array(':id' => $id) );
+				
+				// delete chart container entry
+				$sql = "DELETE FROM charts WHERE id = :id";
+				$query = $this->db->prepare($sql);
+				$query->execute( array(':id' => $id) );
+			}
+		}
+		
+		/**
+			Moves the current Top 20/20 to previous.
+		*/
+		private function moveTop2020ToPrevious() {
+			$sql = "UPDATE charts SET chart_type='top2020_previous', timestamp=timestamp WHERE chart_type='top2020'";
+			$query = $this->db->prepare($sql);
+			$query->execute();
+		}
+		
+		/**
+			Returns the rank difference to the previous Top 20/20 charts for the instance with specified id.
+			Returns an integer indicating the difference, or "NEW" if it's new in the ranking.
+		*/
+		public function getTop2020Diff($type, $id) {
+			$current_charts = $this->getChartInfo("top2020");
+			$previous_charts = $this->getChartInfo("top2020_previous");
+			
+			$current_id = $current_charts["ChartId"];
+			$previous_id = $previous_charts["ChartId"];
+			
+			$rank_now = $this->getChartRank($current_id, $type, $id);
+			$rank_then = $this->getChartRank($previous_id, $type, $id);
+			
+			if ($rank_then !== false) {
+				// return diff
+				return $rank_then - $rank_now;
+			} else {
+				// return new
+				return "NEW";
+			}
+		}
+		
+		/**
+			Returns the chart rank for the specified chart, instance type and instance id.
+			If no entry is found, false is returned.
+		*/
+		private function getChartRank($chart_id, $instance, $id) {
+			$sql = "SELECT rank FROM chart_content WHERE chart_id = :chart_id AND instance_type = :instance AND instance_id = :id";
+			$query = $this->db->prepare($sql);
+			$query->execute( array(':chart_id' => $chart_id, ':instance' => $instance, ':id' => $id) );
+			
+			if ($query->rowCount() > 0) {
+				$fetch = $query->fetch(PDO::FETCH_ASSOC);
+				return $fetch["rank"];
+			}
+			
+			return false;
+		}
+		
+		/**
 			Compiles the Top 20/20 charts.
 		*/
 		public function compileTop2020() {
+			// delete old previous Top 20/20 charts
+			$this->deleteOldTop2020Previous();
+			
+			// re-write to old Top 20/20 to previous
+			$this->moveTop2020ToPrevious();
+			
 			// get songs
 			$songs = $this->getTop2020Songs();
 			

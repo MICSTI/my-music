@@ -75,11 +75,12 @@
 			$content .= "<thead>";
 				$content .= "<tr>";
 					$content .= "<th class='col-sm-1 rank'>Place</th>";
+					$content .= "<th class='col-sm-1 text-center'>Diff</th>";
 					$content .= "<th class='col-sm-3'>Song</th>";
 					$content .= "<th class='col-sm-3'>Artist</th>";
 					$content .= "<th class='col-sm-1'>Count</th>";
 					$content .= "<th class='col-sm-1'>Country</th>";
-					$content .= "<th class='col-sm-3'> </th>";
+					$content .= "<th class='col-sm-2'> </th>";
 				$content .= "</tr>";
 			$content .= "</thead>";
 			
@@ -101,8 +102,12 @@
 					// set previous value to current value for next loop
 					$previous = $played_count;
 					
+					// get rank diff
+					$rank_diff = $mdb->getTop2020Diff("songs", $song["SongId"]);
+					
 					$content .= "<tr>";
 						$content .= "<td class='rank'>" . $rank_display . "</td>";
+						$content .= "<td class='text-center'>" . $rank_diff . "</td>";
 						$content .= "<td><a href='song.php?id=" . $song["SongId"] . "'>" . $song["SongName"] . "</a></td>";
 						$content .= "<td><a href='artist.php?id=" . $song["ArtistId"] . "'>" . $song["ArtistName"] . "</a></td>";
 						$content .= "<td>" . $played_count . "</td>";
@@ -128,6 +133,7 @@
 			$content .= "<thead>";
 				$content .= "<tr>";
 					$content .= "<th class='col-sm-1 rank'>Place</th>";
+					$content .= "<th class='col-sm-1 text-center'>Diff</th>";
 					$content .= "<th class='col-sm-3'>Artist</th>";
 					$content .= "<th class='col-sm-1'>Count</th>";
 					$content .= "<th class='col-sm-1'>Country</th>";
@@ -153,8 +159,12 @@
 					// set previous value to current value for next loop
 					$previous = $played_count;
 					
+					// get rank diff
+					$rank_diff = $mdb->getTop2020Diff("artists", $artist["ArtistId"]);
+					
 					$content .= "<tr>";
 						$content .= "<td class='rank'>" . $rank_display . "</td>";
+						$content .= "<td class='text-center'>" . $rank_diff . "</td>";
 						$content .= "<td><a href='artist.php?id=" . $artist["ArtistId"] . "'>" . $artist["ArtistName"] . "</a></td>";
 						$content .= "<td>" . $played_count . "</td>";
 						$content .= "<td>" . $main_country_flag . " " . $secondary_country_flag . "</td>";
