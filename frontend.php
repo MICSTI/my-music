@@ -1159,6 +1159,78 @@
 		}
 		
 		/**
+			Returns the content for the custom range statistics page.
+		*/
+		public function getCustomRangeStatisticsContent($mdb, $from, $to) {
+			$date_from = getMysqlDate($from);
+			$date_to = getMysqlDate($to);
+			
+			$limit_low = 0;
+			$limit_high = 500;
+			
+			$secondary_country_weight = $mdb->getConfig("secondary_country_weight");
+			
+			$songs = $mdb->getPlayedSongStatistics($date_from, $date_to, $limit_low, $limit_high);
+			$artists = $mdb->getPlayedArtistStatistics($date_from, $date_to, $limit_low, $limit_high);
+			$records = $mdb->getPlayedRecordStatistics($date_from, $date_to, $limit_low, $limit_high);
+			
+			$html = "";
+			
+			// Tabs for songs, artists and records
+			$html .= "<ul class='nav nav-tabs'>";
+				$html .= "<li class='active'>";
+					$html .= "<a data-toggle='tab' href='#songs'>Songs</a>";
+				$html .= "</li>";
+				
+				$html .= "<li>";
+					$html .= "<a data-toggle='tab' href='#artists'>Artists</a>";
+				$html .= "</li>";
+				
+				$html .= "<li>";
+					$html .= "<a data-toggle='tab' href='#records'>Records</a>";
+				$html .= "</li>";
+				
+				$html .= "<li>";
+					$html .= "<a data-toggle='tab' href='#countries'>Countries</a>";
+				$html .= "</li>";
+				
+				$html .= "<li>";
+					$html .= "<a data-toggle='tab' href='#activities'>Activities</a>";
+				$html .= "</li>";
+			$html .= "</ul>";
+			
+			$html .= "<div class='tab-content'>";
+				$html .= "<div id='songs' class='tab-pane fade in active'>";
+					$html .= $this->getCalendarialSongContent($mdb, $songs);
+				$html .= "</div>";
+				
+				$html .= "<div id='artists' class='tab-pane fade'>";
+					$html .= $this->getCalendarialArtistContent($mdb, $artists);
+				$html .= "</div>";
+				
+				$html .= "<div id='records' class='tab-pane fade'>";
+					$html .= $this->getCalendarialRecordContent($mdb, $records);
+				$html .= "</div>";
+				
+				$html .= "<div id='countries' class='tab-pane fade'>";
+					// get country statistics content
+					$country_statistics = $mdb->getOverallCountryStatistics($secondary_country_weight, $date_from, $date_to);
+					
+					$html .= $this->getCountryStatisticsTable($mdb, $country_statistics);
+				$html .= "</div>";
+				
+				$html .= "<div id='activities' class='tab-pane fade'>";
+					// get activity statistics content
+					$activity_statistics = $mdb->getOverallActivityStatistics($date_from, $date_to);
+					
+					$html .= $this->getActivityStatisticsTable($mdb, $activity_statistics);
+				$html .= "</div>";
+			$html .= "</div>";
+			
+			return $html;
+		}
+		
+		/**
 			Returns the content for the calendarial charts for the specified year or month.
 		*/
 		public function getCalendarialChartsContent($mdb, $type, $year, $month = 0) {

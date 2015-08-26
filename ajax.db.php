@@ -149,6 +149,17 @@
 				
 				break;
 				
+			case "custom_range_statistics":
+				$json_data = json_decode($data, true);
+				
+				$from = $json_data["from"];
+				$to = $json_data["to"];
+				
+				$response["content"] = $mc->getFrontend()->getCustomRangeStatisticsContent($mc->getMDB(), $from, $to);
+				$response["success"] = true;
+			
+				break;
+				
 			default:
 				$response["success"] = false;
 				$response["message"] = "Unknown action";

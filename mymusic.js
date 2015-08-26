@@ -1242,6 +1242,43 @@ $(document).ready( function () {
 		$("#settings a").removeClass("active");
 	}
 	
+	// custom range statistics
+	var custom_statistics = $("#custom-statistics-result");
+	if (custom_statistics.length > 0) {
+		// calculate button
+		$("#custom-range-calculate").on("click", function() {
+			_data = {
+				from: $("#custom-statistics-start-date").val(),
+				to: $("#custom-statistics-end-date").val()
+			};
+			
+			$.ajax( {
+				method: "POST",
+				url: "ajax.db.php",
+				data: {
+					action: "custom_range_statistics",
+					data: JSON.stringify(_data)
+				}
+			}).done(function(resp) {
+				var response = JSON.parse(resp);
+				
+				if (response.success) {
+					// set content
+					custom_statistics.html(response.content);
+					
+					// add tooltips
+					addTooltips();
+				} else {
+					console.log("Error", response.message);
+					globalNotify("Error getting custom range statistics content", "error");
+				}
+			}).fail(function(error) {
+				// log error
+				console.log("ajax.db.php", error);
+			});
+		});
+	}
+	
 	// calendarial charts
 	var calendarial = $("#calendarial-accordion");
 	if (calendarial.length > 0) {

@@ -65,6 +65,19 @@ a {
 	padding-bottom: 4px;
 }
 
+.custom-statistics-control .date-picker {
+	width: 100px;
+}
+
+.custom-statistics-between {
+	margin: 0px 16px;
+	font-weight: bold;
+}
+
+#custom-statistics-result {
+	margin-top: 32px;
+}
+
 #history-dp {
 	display: inline-block;
 	padding: 0px 16px 0px 16px;
