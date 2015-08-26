@@ -4230,6 +4230,46 @@
 		}
 		
 		/**
+			Compiles the favourites charts.
+		*/
+		public function compileFavourites() {
+			// favourite songs
+			$songs = $this->getMostPlayedSongs();
+			
+			// favourite artists
+			$artists = $this->getMostPlayedArtists();
+			
+			// favourite records
+			$records = $this->getMostPlayedRecords();
+			
+			// compile charts
+			$chart_id = $this->compileCharts("favourites", $songs, $artists, $records);
+			
+			// update charts compilation timestamp
+			$this->updateChartContainerTimestamp($chart_id);
+		}
+		
+		/**
+			Compiles the Top 20/20 charts.
+		*/
+		public function compileTop2020() {
+			// get songs
+			$songs = $this->getTop2020Songs();
+			
+			// get artists
+			$artists = $this->getTop2020Artists();
+			
+			// records (not needed here, we pass an empty array intentionally
+			$records = array();
+			
+			// compile charts
+			$chart_id = $this->compileCharts("top2020", $songs, $artists, $records);
+			
+			// update charts compilation timestamp
+			$this->updateChartContainerTimestamp($chart_id);
+		}
+		
+		/**
 			Truncates all tables that contain non-config data (i.e. data that comes from the MM.DB file)
 		*/
 		public function truncateTables () {

@@ -83,21 +83,9 @@
 				$year = $json_data["year"];
 				
 				switch ($chart_type) {
-					case "favourites":					
-						// favourite songs
-						$songs = $mc->getMDB()->getMostPlayedSongs();
-						
-						// favourite artists
-						$artists = $mc->getMDB()->getMostPlayedArtists();
-						
-						// favourite records
-						$records = $mc->getMDB()->getMostPlayedRecords();
-						
-						// compile charts
-						$chart_id = $mc->getMDB()->compileCharts("favourites", $songs, $artists, $records);
-						
-						// update charts compilation timestamp
-						$mc->getMDB()->updateChartContainerTimestamp($chart_id);
+					case "favourites":
+						// compile favourites
+						$mc->getMDB()->compileFavourites();
 						
 						// set message
 						$response["message"] = $mc->getFrontend()->getChartCompilationStatus($mc->getMDB(), true, "favourites");
@@ -107,20 +95,8 @@
 						break;
 						
 					case "top2020":
-						// get songs
-						$songs = $mc->getMDB()->getTop2020Songs();
-						
-						// get artists
-						$artists = $mc->getMDB()->getTop2020Artists();
-						
-						// records (not needed here, we pass an empty array intentionally
-						$records = array();
-						
 						// compile charts
-						$chart_id = $mc->getMDB()->compileCharts("top2020", $songs, $artists, $records);
-						
-						// update charts compilation timestamp
-						$mc->getMDB()->updateChartContainerTimestamp($chart_id);
+						$mc->getMDB()->compileTop2020();
 						
 						// set message
 						$response["message"] = $mc->getFrontend()->getChartCompilationStatus($mc->getMDB(), true, "top2020");
