@@ -101,8 +101,8 @@
 				$menu .= "<div id='navbarCollapse' class='collapse navbar-collapse'>";
 					$menu .= "<ul class='nav navbar-nav'>";
 						$menu .= "<li class='" . $this->getActiveText("home", $selected) . "'><a href='index.php'>Home</a></li>";
-						$menu .= "<li class='dropdown " . $this->getActiveText("charts", $selected) . "'>";
-							$menu .= "<a href='#' data-toggle='dropdown' class='dropdown-toggle'>Charts <b class='caret'></b></a>";
+						$menu .= "<li class='dropdown " . $this->getActiveText("statistics", $selected) . "'>";
+							$menu .= "<a href='#' data-toggle='dropdown' class='dropdown-toggle'>Statistics <b class='caret'></b></a>";
 							
 							$menu .= "<ul class='dropdown-menu'>";
 								$menu .= "<li><a href='top2020.php'>Top 20/20</a></li>";

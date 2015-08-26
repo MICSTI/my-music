@@ -72,7 +72,7 @@
 		$html .= "</div>";
 	$html .= "</div>";
 	
-	echo $mc->getIndexHTML($html, "charts");
+	echo $mc->getIndexHTML($html, "statistics");
 	
 	/**
 		Returns the content for the song tab
