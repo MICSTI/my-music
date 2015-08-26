@@ -301,3 +301,24 @@
 	function getTop2020EndDate() {
 		return new UnixTimestamp(mktime(0, 0, 0, date("m"), date("d") - 1, date("Y")));
 	}
+	
+	/**
+		Returns a span displaying the rank diff for charts.
+	*/
+	function getRankDiffSpan($diff) {
+		if ($diff > 0) {
+			// up
+			$glyphicon = "glyphicon-chevron-up";
+			$colour = "text-success";
+		} else if ($diff < 0) {
+			// down
+			$glyphicon = "glyphicon-chevron-down";
+			$colour = "text-danger";
+		} else {
+			// same
+			$glyphicon = "glyphicon-option-horizontal";
+			$colour = "text-default";
+		}
+		
+		return "<span class='" . $colour . "'><span class='glyphicon " . $glyphicon . "'></span> " . $diff . "</span>";
+	}

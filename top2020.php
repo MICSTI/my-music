@@ -107,7 +107,7 @@
 					
 					$content .= "<tr>";
 						$content .= "<td class='rank'>" . $rank_display . "</td>";
-						$content .= "<td class='text-center'>" . $rank_diff . "</td>";
+						$content .= "<td class='text-center'>" . getRankDiffSpan($rank_diff) . "</td>";
 						$content .= "<td><a href='song.php?id=" . $song["SongId"] . "'>" . $song["SongName"] . "</a></td>";
 						$content .= "<td><a href='artist.php?id=" . $song["ArtistId"] . "'>" . $song["ArtistName"] . "</a></td>";
 						$content .= "<td>" . $played_count . "</td>";
@@ -164,7 +164,7 @@
 					
 					$content .= "<tr>";
 						$content .= "<td class='rank'>" . $rank_display . "</td>";
-						$content .= "<td class='text-center'>" . $rank_diff . "</td>";
+						$content .= "<td class='text-center'>" . getRankDiffSpan($rank_diff) . "</td>";
 						$content .= "<td><a href='artist.php?id=" . $artist["ArtistId"] . "'>" . $artist["ArtistName"] . "</a></td>";
 						$content .= "<td>" . $played_count . "</td>";
 						$content .= "<td>" . $main_country_flag . " " . $secondary_country_flag . "</td>";
