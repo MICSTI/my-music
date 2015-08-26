@@ -4016,16 +4016,36 @@
 			Gets the Top 20/20 country statistics.
 		*/
 		public function getTop2020CountryStatistics($secondary_weight = 0.3) {
-			$main_weight = 1 - $secondary_weight;
+			$top2020 = $this->getChartInfo("top2020");
 			
-			return array();
+			$compile_date = $top2020["ChartCompileTimestamp"];
+			
+			$year = substr($compile_date, 0, 4);
+			$month = substr($compile_date, 5, 2);
+			$day = substr($compile_date, 8, 2);
+			
+			$start_date = new UnixTimestamp(mktime(0, 0, 0, $month, $day - 21, $year));
+			$end_date = new UnixTimestamp(mktime(0, 0, 0, $month, $day - 1, $year));
+			
+			return $this->getOverallCountryStatistics($secondary_weight, $start_date->convert2MySqlDate(), $end_date->convert2MySqlDate());
 		}
 		
 		/**
 			Gets the the Top 20/20 activity statistics.
 		*/
 		public function getTop2020ActivityStatistics() {
-			return array();
+			$top2020 = $this->getChartInfo("top2020");
+			
+			$compile_date = $top2020["ChartCompileTimestamp"];
+			
+			$year = substr($compile_date, 0, 4);
+			$month = substr($compile_date, 5, 2);
+			$day = substr($compile_date, 8, 2);
+			
+			$start_date = new UnixTimestamp(mktime(0, 0, 0, $month, $day - 21, $year));
+			$end_date = new UnixTimestamp(mktime(0, 0, 0, $month, $day - 1, $year));
+			
+			return $this->getOverallActivityStatistics($start_date->convert2MySqlDate(), $end_date->convert2MySqlDate());
 		}
 		
 		/**
