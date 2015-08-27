@@ -29,6 +29,10 @@ a {
 	font-size: 82% !important;
 }
 
+.text-grey {
+	color: #999;
+}
+
 .icon-external img {
 	width: 16px;
 	height: 13px;

@@ -315,15 +315,18 @@
 			// up
 			$glyphicon = "glyphicon-chevron-up";
 			$colour = "text-success";
+			$text = $diff;
 		} else if ($diff < 0) {
 			// down
 			$glyphicon = "glyphicon-chevron-down";
 			$colour = "text-danger";
+			$text = $diff * (-1);
 		} else {
 			// same
 			$glyphicon = "glyphicon-option-horizontal";
-			$colour = "text-default";
+			$colour = "text-grey";
+			$text = "";
 		}
 		
-		return "<span class='" . $colour . "'><span class='glyphicon " . $glyphicon . "'></span> " . $diff . "</span>";
+		return "<span class='" . $colour . "'><span class='glyphicon " . $glyphicon . "'></span> " . $text . "</span>";
 	}
