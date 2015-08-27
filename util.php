@@ -306,6 +306,11 @@
 		Returns a span displaying the rank diff for charts.
 	*/
 	function getRankDiffSpan($diff) {
+		if ($diff === "NEW") {
+			// new
+			return "<span class='label label-warning'>New</span>";
+		}
+		
 		if ($diff > 0) {
 			// up
 			$glyphicon = "glyphicon-chevron-up";
