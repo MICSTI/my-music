@@ -602,6 +602,61 @@ function addMMLinkConnection(_parent_id, _child_id) {
 }
 
 /**
+	Special function for adding a MM link from the update status report.
+	There is no page redirection with this function.
+*/
+function addMMLinkFromUpdateReport(_parent_id, _child_id) {
+	var modal = $("#music-modal");
+	
+	if (modal.length > 0) {
+		// start process as soon as modal is hidden
+		modal.on("hidden.bs.modal", function() {
+			var _data = {
+				parent_id: _parent_id,
+				child_id: _child_id
+			};
+			
+			$.ajax( {
+				method: "POST",
+				url: "ajax.db.php",
+				data: {
+					action: "add_mm_link",
+					data: JSON.stringify(_data)
+				}
+			}).done(function(resp) {
+				var response = JSON.parse(resp);
+				
+				if (response.success) {
+					// remove suggestion from update report page
+					$("#update-status-song-" + _parent_id).fadeOut(200, function() {
+						// remove element from DOM
+						$(this).remove();
+						
+						// check if there are any other left
+						if ($(".update-status-suggestions .update-status-report-song").length <= 0) {
+							$("#update-status-suggestions-no-more").show();
+						}
+						
+						globalNotify("MediaMonkey link connection was successfully set");
+					});
+				} else {
+					console.log("Error", response.message);
+					globalNotify("MediaMonkey link connection could not be established", "error");
+				}
+			}).fail(function(error) {
+				// log error
+				console.log("ajax.db.php", error);
+			});
+			
+			modal.off("hidden.bs.modal");
+		});
+		
+		// hide modal
+		modal.modal("hide");
+	}
+}
+
+/**
 	Adds input control to a played song div.
 */
 function addPlayedSongInputControl(_id) {

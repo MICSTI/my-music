@@ -3,6 +3,9 @@
 	
 	$html = "";
 	
+	// Action ids
+	$ADD_MMLINK = "372L6uL0";
+	
 	// Headline
 	$html .= "<h3>Update status report</h3>";
 	
@@ -22,10 +25,12 @@
 				$html .= "<div class='panel panel-default'>";
 					$html .= "<div class='panel-heading bold'>Suggested MediaMonkey links</div>";
 					
-					$html .= "<div class='panel-body'>";
+					$html .= "<div class='update-status-suggestions panel-body'>";
 						foreach ($suggestions as $song) {
-							$html .= getSongItem($song, true);
+							$html .= getSongItem($song, $ADD_MMLINK, true);
 						}
+						
+						$html .= "<div id='update-status-suggestions-no-more'>No more MediaMonkey link suggestions are available.</div>";
 					$html .= "</div>";
 				$html .= "</div>";
 			}
@@ -37,7 +42,7 @@
 				$html .= "<div class='panel-body'>";
 					if (!empty($added)) {
 						foreach ($added as $song) {
-							$html .= getSongItem($song);
+							$html .= getSongItem($song, $ADD_MMLINK);
 						}
 					} else {
 						$html .= "No songs were added to the library during the update.";
@@ -52,7 +57,7 @@
 				$html .= "<div class='panel-body'>";
 					if (!empty($updated)) {
 						foreach ($updated as $song) {
-							$html .= getSongItem($song);
+							$html .= getSongItem($song, $ADD_MMLINK);
 						}
 					} else {
 						$html .= "No songs were updated during the update.";
@@ -67,10 +72,10 @@
 	
 	echo $mc->getIndexHTML($html);
 	
-	function getSongItem($song, $suggestion = false) {
+	function getSongItem($song, $action_id, $suggestion = false) {
 		$html = "";
 		
-		$html .= "<div class='update-status-report-song'>";
+		$html .= "<div class='update-status-report-song' id='update-status-song-" . $song["SongId"] . "'>";
 			
 			// song details
 			$html .= "<div class='col-xs-5'>";
@@ -88,7 +93,7 @@
 			// MM link suggestion
 			$html .= "<div class='col-xs-2'>";
 				if ($suggestion) {
-					$html .= "<button type='button' class='btn btn-primary' onclick=''>Add link</button>";
+					$html .= "<button type='button' class='btn btn-primary' onclick=\"crudModal('" . $action_id . "', '" . $song["SongId"] . "')\">Choose suggestion</button>";
 				}
 			$html .= "</div>";
 			

@@ -1114,7 +1114,7 @@
 			
 			// Files panel
 			$html .= "<div class='panel panel-default'>";
-				$html .= "<div class='panel-heading'>Available files</div>";
+				$html .= "<div class='panel-heading bold'>Available files</div>";
 				
 				$html .= "<div class='panel-body'>";
 					if ($file_count > 0) {

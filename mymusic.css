@@ -181,6 +181,10 @@ a {
 	margin: 8px 0px;
 }
 
+#update-status-suggestions-no-more {
+	display: none;
+}
+
 /* ------- Calendarial ------- */
 #calendarial-accordion.affix {
 	position: fixed;

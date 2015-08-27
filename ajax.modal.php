@@ -780,7 +780,7 @@
 			
 				break;
 				
-			// MM link
+			// MM link (normal)
 			case "5r8G1TS4":
 				if ($id > 0) {
 					// get data
@@ -888,6 +888,136 @@
 												$button_class = $mc->getFrontend()->getMMLinkConfirmButtonClass($date_added->convert2UnixTimestamp(), $candidate_added->convert2UnixTimestamp());
 											
 												$body .= "<button type='button' class='btn btn-" . $button_class . "' onclick=\"performMMLinkSafeCheck(this, '" . $song_details["SongId"] . "', '" . $candidate_song["SongId"] . "')\">Add link</button>";
+											$body .= "</div>";
+										$body .= "</div>";
+									}
+								} else {
+									$body .= "We couldn't find any link suggestions for this song.";
+								}
+							$body .= "</div>";
+						$body .= "</div>";
+					$body .= "</form>";
+						
+					$data["body"] = $body;
+					
+					// footer
+					$footer = $mc->getFrontend()->getModalButtons(array("cancel"));
+					$data["footer"] = $footer;
+				} else {
+					$data["status"] = "error";
+					$data["message"] = "No valid id was passed";
+				}
+				
+				break;
+				
+			// MM link (from update report)
+			case "372L6uL0":
+				if ($id > 0) {
+					// get data
+					$song_details = $mc->getMDB()->getSong($id);
+					
+					// form name (for processing data in Javascript)
+					$form_name = "song-mm-link-data";
+					$data["form_name"] = $form_name;
+				
+					// title
+					$title = "Add MediaMonkey song link";
+					$data["title"] = $title;
+					
+					// body
+					$body = "";
+					
+					$body .= "<form class='form-horizontal' id='" . $form_name . "'>";
+						// song name (static)
+						$body .= "<div class='form-group'>";
+							$body .= "<label for='mm-link-song-name' class='control-label col-xs-3'>Song</label>";
+							$body .= "<div class='col-xs-9'>";
+								$body .= "<p class='form-control-static' id='mm-link-song-name'>" . $song_details["SongName"] . "</p>";
+							$body .= "</div>";
+						$body .= "</div>";
+						
+						// artist name (static)
+						$body .= "<div class='form-group'>";
+							$body .= "<label for='mm-link-artist-name' class='control-label col-xs-3'>Artist</label>";
+							$body .= "<div class='col-xs-9'>";
+								$body .= "<p class='form-control-static' id='mm-link-artist-name'>" . $song_details["ArtistName"] . "</p>";
+							$body .= "</div>";
+						$body .= "</div>";
+						
+						// record name (static)
+						$body .= "<div class='form-group'>";
+							$body .= "<label for='mm-link-record-name' class='control-label col-xs-3'>Record</label>";
+							$body .= "<div class='col-xs-9'>";
+								$body .= "<p class='form-control-static' id='mm-link-record-name'>" . $song_details["RecordName"] . "</p>";
+							$body .= "</div>";
+						$body .= "</div>";
+						
+						// song length
+						$body .= "<div class='form-group'>";
+							$body .= "<label for='mm-link-song-length' class='control-label col-xs-3'>Length</label>";
+							$body .= "<div class='col-xs-9'>";
+								$body .= "<p class='form-control-static' id='mm-link-song-length'>" . millisecondsToMinutes($song_details["SongLength"]) . " min</p>";
+							$body .= "</div>";
+						$body .= "</div>";
+						
+						// date added (static)
+						$date_added = new MysqlDate($mc->getMDB()->getSongAddedDate($song_details["SongId"]));
+						
+						$body .= "<div class='form-group'>";
+							$body .= "<label for='mm-link-date-added' class='control-label col-xs-3'>Date added</label>";
+							$body .= "<div class='col-xs-9'>";
+								$body .= "<p class='form-control-static' id='mm-link-date-added'>" . $date_added->convert2AustrianDate() . "</p>";
+							$body .= "</div>";
+						$body .= "</div>";
+						
+						// suggestion panel
+						$candidates = $mc->getMDB()->getPossibleMMLinkCandidates($song_details["SongId"]);
+						
+						$body .= "<div class='panel panel-default' id='mm-link-suggestions'>";
+							$body .= "<div class='panel-heading bold'>Link suggestions</div>";
+							
+							$body .= "<div class='panel-body'>";
+									if (count($candidates) > 0) {
+									foreach ($candidates as $candidate) {
+										$candidate_song = $mc->getMDB()->getSong($candidate);
+										
+										$body .= "<div class='mm-link-suggestion'>";
+											$body .= "<div class='col-xs-5'>";
+												// song name
+												$body .= "<div>";
+													$body .= getSongLink($candidate_song["SongId"], $candidate_song["SongName"]);
+												$body .= "</div>";
+												
+												// artist name
+												$body .= "<div>";
+													$body .= $candidate_song["ArtistName"];
+												$body .= "</div>";
+												
+												// record name
+												$body .= "<div>";
+													$body .= $candidate_song["RecordName"];
+												$body .= "</div>";
+											$body .= "</div>";
+											
+											$body .= "<div class='col-xs-5'>";
+												// Date added
+												$candidate_added = new MysqlDate($mc->getMDB()->getSongAddedDate($candidate_song["SongId"]));
+												
+												$body .= "<div>";
+													$body .= "Added on " . $candidate_added->convert2AustrianDate();
+												$body .= "</div>";
+											
+												// Song length
+												$body .= "<div>";
+													$body .= millisecondsToMinutes($candidate_song["SongLength"]) . " min";
+												$body .= "</div>";
+											$body .= "</div>";
+											
+											$body .= "<div class='col-xs-2'>";
+												// get right class for button
+												$button_class = $mc->getFrontend()->getMMLinkConfirmButtonClass($date_added->convert2UnixTimestamp(), $candidate_added->convert2UnixTimestamp());
+											
+												$body .= "<button type='button' class='btn btn-" . $button_class . "' onclick=\"addMMLinkFromUpdateReport('" . $song_details["SongId"] . "', '" . $candidate_song["SongId"] . "')\">Add link</button>";
 											$body .= "</div>";
 										$body .= "</div>";
 									}
