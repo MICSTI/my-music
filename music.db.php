@@ -3456,6 +3456,57 @@
 		}
 		
 		/**
+			Returns the total number of songs in the database.
+		*/
+		public function getSongsTotal() {
+			$sql = "SELECT COUNT(*) AS 'SongsTotal' FROM songs";
+			$query = $this->db->prepare($sql);
+			$query->execute();
+			
+			if ($query->rowCount() > 0) {
+				$fetch = $query->fetch(PDO::FETCH_ASSOC);
+				
+				return $fetch["SongsTotal"];
+			}
+			
+			return 0;
+		}
+		
+		/**
+			Returns the total number of artists in the database.
+		*/
+		public function getArtistsTotal() {
+			$sql = "SELECT COUNT(*) AS 'ArtistsTotal' FROM artists";
+			$query = $this->db->prepare($sql);
+			$query->execute();
+			
+			if ($query->rowCount() > 0) {
+				$fetch = $query->fetch(PDO::FETCH_ASSOC);
+				
+				return $fetch["ArtistsTotal"];
+			}
+			
+			return 0;
+		}
+		
+		/**
+			Returns the total number of played entries in the database.
+		*/
+		public function getPlayedTotal() {
+			$sql = "SELECT COUNT(*) AS 'PlayedTotal' FROM played";
+			$query = $this->db->prepare($sql);
+			$query->execute();
+			
+			if ($query->rowCount() > 0) {
+				$fetch = $query->fetch(PDO::FETCH_ASSOC);
+				
+				return $fetch["PlayedTotal"];
+			}
+			
+			return 0;
+		}
+		
+		/**
 			Returns the content of the song charts with the specified id.
 		*/
 		public function getChartsContentSongs($chart_id) {

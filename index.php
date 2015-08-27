@@ -25,7 +25,16 @@
 			$html .= "<div class='panel-heading'><h4>A few interesting facts...</h4></div>";
 			
 			$html .= "<div class='panel-body'>";
-				$html .= "";
+				// songs in library
+				$no_songs = $mc->getMDB()->getSongsTotal();
+				$no_artists = $mc->getMDB()->getArtistsTotal();
+				
+				$html .= "<p>There are <strong>" . addThousandComma($no_songs) . " songs</strong> of <strong>" . addThousandComma($no_artists) . " artists</strong> in your music library.</p>";
+				
+				// listened songs
+				$no_listened = $mc->getMDB()->getPlayedTotal();
+				
+				$html .= "<p>You listened to a total of <strong>" . addThousandComma($no_listened) . " songs</strong>.</p>";
 			$html .= "</div>";
 		$html .= "</div>";
 	$html .= "</div>";

@@ -330,3 +330,16 @@
 		
 		return "<span class='" . $colour . "'><span class='glyphicon " . $glyphicon . "'></span> " . $text . "</span>";
 	}
+	
+	/**
+		Adds a thousand comma to a number (e.g. 27500 -> 27,500)
+	*/
+	function addThousandComma($number) {
+		$len = strlen($number);
+		
+		if ($len > 3) {
+			return substr($number, 0, $len - 3) . "," . substr($number, $len - 3);
+		}
+		
+		return $number;
+	}
