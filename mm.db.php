@@ -177,7 +177,7 @@
 			$songs = $xpath->query("songs/song");
 			
 			// process songs
-			$this->writeSongs($songs);
+			$songs_status = $this->writeSongs($songs);
 			
 			// get playeds
 			$playeds = $xpath->query("playeds/played");
@@ -195,6 +195,11 @@
 			}
 
 			$status["success"] = true;
+			
+			// append song status data objects
+			$status["suggestions"] = $songs_status["suggestions"];
+			$status["added"] = $songs_status["added"];
+			$status["updated"] = $songs_status["updated"];
 			
 			return $status;
 		}
@@ -236,6 +241,12 @@
 		}
 		
 		private function writeSongs ($songs) {
+			$status = array();
+			
+			$suggestions = array();
+			$new = array();
+			$updated = array();
+			
 			foreach ($songs as $song) {
 				// Get element node values from song element
 				$name = $song->getElementsByTagName('name')->item(0)->nodeValue;
@@ -277,10 +288,31 @@
 					
 					// Add MM link
 					$this->music_db->addMMLink($sid, $mmid, $added_mysql);
+					
+					// add to added data array
+					$song = array("SongId" => $sid, "SongName" => $name, "ArtistName" => $artist, "RecordName" => $record, "SongLength" => $length, "SongRating" => $rating);
+					array_push($new, $song);
 				} else {
 					$this->music_db->updateSong($sid, $name, $aid, $rid, $length, $bitrate, $discno, $trackno, $rating);
+					
+					// add to updated data array
+					$song = array("SongId" => $sid, "SongName" => $name, "ArtistName" => $artist, "RecordName" => $record, "SongLength" => $length, "SongRating" => $rating);
+					array_push($updated, $song);
+				}
+				
+				// check MM link suggestions
+				$candidates = $this->music_db->getPossibleMMLinkCandidates($sid);
+				
+				if (!empty($candidates)) {
+					array_push($suggestions, $song);
 				}
 			}
+			
+			$status["suggestions"] = $suggestions;
+			$status["added"] = $new;
+			$status["updated"] = $updated;
+			
+			return $status;
 		}
 		
 		private function writePlayeds ($playeds) {

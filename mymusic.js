@@ -161,8 +161,12 @@ function getStatic(_content, onSuccess) {
 	});
 }
 
-function addSuccessMessage() {
-	return "&messageType=success&messageText=" + encodeURIComponent("The changes have been saved successfully");
+function addSuccessMessage(text) {
+	if (text === undefined) {
+		text = "The changes have been saved successfully";
+	}
+	
+	return "&messageType=success&messageText=" + encodeURIComponent(text);
 }
 
 /**
@@ -670,7 +674,15 @@ function performUpdate() {
 		var response = JSON.parse(resp);
 		
 		if (response.success) {
-			globalNotify("Update successful");
+			// overview data object
+			var overview_data = {
+				suggestions: response.suggestions,
+				added: response.added,
+				updated: response.updated
+			};
+			
+			// redirect to update result overview page
+			$.redirect("update_overview.php?" + addSuccessMessage("Database update was successful"), { data: JSON.stringify(overview_data) }, "POST");
 		} else {
 			globalNotify("Update not successful", "error");
 			console.log("ajax.update_perform.php", response.message);

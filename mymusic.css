@@ -173,6 +173,14 @@ a {
 	display: none;
 }
 
+#update-status-report {
+	margin-top: 16px;
+}
+
+.update-status-report-length-rating div {
+	margin: 8px 0px;
+}
+
 /* ------- Calendarial ------- */
 #calendarial-accordion.affix {
 	position: fixed;

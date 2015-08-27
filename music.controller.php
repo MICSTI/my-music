@@ -358,6 +358,18 @@
 			$last_played_id = -1;
 			$mm_db_modification = -1;
 			
+			// response array
+			$response = array();
+			
+			// suggestions response element
+			$suggestions = array();
+			
+			// added response element
+			$added = array();
+			
+			// updated response element
+			$updated = array();
+			
 			// upload folder
 			$upload_folder = $this->getUploadFolder();
 			
@@ -378,8 +390,14 @@
 					case "desktop":
 						// Import file to database
 						$status = $this->importFromDesktopFile($file_path);
+						 
+						// push status data objects to the end of their arrays
+						$suggestions = array_merge($suggestions, $status["suggestions"]);
+						$added = array_merge($added, $status["added"]);
+						$updated = array_merge($updated, $status["updated"]);
 						
-						$last_played_id = $status["last_played_id"];
+						if ($status["last_played_id"] > $last_played_id)
+							$last_played_id = $status["last_played_id"];
 						
 						if ($status["mm_db_modification"] > $mm_db_modification)
 							$mm_db_modification = $status["mm_db_modification"];
@@ -438,7 +456,15 @@
 			// add log entry
 			$this->getMDB()->addLog(__FUNCTION__, "success", $log_message);
 			
-			return true;
+			// set response success
+			$response["success"] = true;
+			
+			// add status data objects
+			$response["suggestions"] = $suggestions;
+			$response["added"] = $added;
+			$response["updated"] = $updated;
+			
+			return $response;
 		}
 
 		/**
