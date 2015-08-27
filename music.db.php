@@ -7,10 +7,10 @@
 		private $mobile_db;
 	
 		// Should vital database transactions (insert, update, delete) be logged?
-		private $logging = true;
+		private $logging = false;
 		
 		// Should every database transaction (even select) be logged?
-		private $verbose = true;
+		private $verbose = false;
 		
 		// Mobile database file
 		private static $mobile_db_file = "files/myMobileMusic.DB";

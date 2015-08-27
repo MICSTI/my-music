@@ -405,7 +405,13 @@
 					default:
 						break;
 				}
-			}				
+			}
+			
+			// get end time
+			$time_end = microtime(true);
+			
+			// get execution time
+			$time = $time_end - $time_start;
 			
 			// write config values to database
 			if ($last_played_id > 0) {
@@ -416,20 +422,21 @@
 				$this->getMDB()->setConfig('mm_db_modification', $mm_db_modification);
 			}
 			
-			$successful_update = mktime();
-			$this->getMDB()->setConfig('successful_update', $successful_update);
-			
-			$unix_mm_db_modification = new UnixTimestamp($mm_db_modification);
-			$austrian_mm_db_modification = $unix_mm_db_modification->convert2AustrianDateTime();
-		
-			// get end time
-			$time_end = microtime(true);
-			
-			// get execution time
-			$time = $time_end - $time_start;
+			if ($last_played_id > 0 AND $mm_db_modification > 0) {
+				$successful_update = mktime();
+				$this->getMDB()->setConfig('successful_update', $successful_update);
 				
+				$unix_mm_db_modification = new UnixTimestamp($mm_db_modification);
+				$austrian_mm_db_modification = $unix_mm_db_modification->convert2AustrianDateTime();
+				
+				$log_message = "performed update in " . $time . " seconds, new database file modification time " . $austrian_mm_db_modification . " (" . $mm_db_modification . "), new current played id " . $last_played_id;
+			} else {
+				// no files or only mobile files were imported
+				$log_message = "performed update in " . $time . " seconds, no new database file modification time or new last played id.";
+			}
+			
 			// add log entry
-			$this->getMDB()->addLog(__FUNCTION__, "success", "performed update in " . $time . " seconds, new database file modification time " . $austrian_mm_db_modification . " (" . $mm_db_modification . "), new current played id " . $last_played_id);
+			$this->getMDB()->addLog(__FUNCTION__, "success", $log_message);
 			
 			return true;
 		}
