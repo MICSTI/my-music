@@ -185,6 +185,10 @@ a {
 	display: none;
 }
 
+.home-welcome {
+	font-size: 120%;
+}
+
 /* ------- Calendarial ------- */
 #calendarial-accordion.affix {
 	position: fixed;

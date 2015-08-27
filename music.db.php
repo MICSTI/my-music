@@ -3385,6 +3385,77 @@
 		}
 		
 		/**
+			Returns the top x number of favourite song charts.
+		*/
+		public function getTopXSongs($cap) {
+			$chart_info = $this->getChartInfo("favourites");
+			
+			$chart_id = $chart_info["ChartId"];
+			
+			$sql = "SELECT
+						so.id AS 'SongId',
+						so.name AS 'SongName',
+						ar.id AS 'ArtistId',
+						ar.name AS 'ArtistName',
+						ar.main_country_id AS 'ArtistMainCountryId',
+						ar.sec_country_id AS 'ArtistSecondaryCountryId',
+						co.rank AS 'Rank',
+						co.cnt AS 'PlayedCount'
+					FROM
+						chart_content co INNER JOIN
+						songs so ON co.instance_id = so.id INNER JOIN
+						artists ar ON so.aid = ar.id
+					WHERE
+						co.chart_id = :chart_id AND
+						co.instance_type = 'songs'
+					LIMIT
+						0, :cap";
+						
+			$query = $this->db->prepare($sql);
+			$query->execute( array(':chart_id' => $chart_id, ':cap' => $cap) );
+			
+			if ($query->rowCount() > 0) {
+				return $query->fetchAll(PDO::FETCH_ASSOC);
+			} else {
+				return array();
+			}
+		}
+		
+		/**
+			Returns the top x number of favourite artists charts.
+		*/
+		public function getTopXArtists($cap) {
+			$chart_info = $this->getChartInfo("favourites");
+			
+			$chart_id = $chart_info["ChartId"];
+			
+			$sql = "SELECT
+						ar.id AS 'ArtistId',
+						ar.name AS 'ArtistName',
+						ar.main_country_id AS 'ArtistMainCountryId',
+						ar.sec_country_id AS 'ArtistSecondaryCountryId',
+						co.rank AS 'Rank',
+						co.cnt AS 'PlayedCount'
+					FROM
+						chart_content co INNER JOIN
+						artists ar ON co.instance_id = ar.id
+					WHERE
+						co.chart_id = :chart_id AND
+						co.instance_type = 'artists'
+					LIMIT
+						0, :cap";
+						
+			$query = $this->db->prepare($sql);
+			$query->execute( array(':chart_id' => $chart_id, ':cap' => $cap) );
+			
+			if ($query->rowCount() > 0) {
+				return $query->fetchAll(PDO::FETCH_ASSOC);
+			} else {
+				return array();
+			}
+		}
+		
+		/**
 			Returns the content of the song charts with the specified id.
 		*/
 		public function getChartsContentSongs($chart_id) {
