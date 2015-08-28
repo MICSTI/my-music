@@ -1600,17 +1600,14 @@
 			
 			Returned is an array containing the results, or false if an error occurred during the SQL query.
 		*/
-		public function shortSingleSearch ($mode, $search, $limit = 10) {
-			// escape string in case there's any apostrophes in it
-			$search = mysql_real_escape_string($search);
-			
+		public function shortSingleSearch ($mode, $search, $limit = 10) {			
 			switch ($mode) {
 				case "songs":
-					$sql = "SELECT SongId, SongName, ArtistName, RecordName FROM SongsView WHERE SongName LIKE '" . $search . "%' OR ArtistName LIKE '" . $search . "%' LIMIT :limit";
+					$sql = "SELECT SongId, SongName, ArtistName, RecordName FROM SongsView WHERE SongName LIKE :search1 OR ArtistName LIKE :search2 LIMIT :limit";
 			
 					try {
 						$query = $this->db->prepare($sql);
-						$query->execute( array(':limit' => $limit) );
+						$query->execute( array(':search1' => $search . "%", ':search2' => $search . "%", ':limit' => $limit) );
 						
 						return $query->fetchAll(PDO::FETCH_ASSOC);
 					} catch (Exception $e) {
@@ -1620,11 +1617,11 @@
 					break;
 					
 				case "artists":
-					$sql = "SELECT id AS 'ArtistId', name AS 'ArtistName' FROM artists WHERE name LIKE '" . $search . "%' LIMIT :limit";
+					$sql = "SELECT id AS 'ArtistId', name AS 'ArtistName' FROM artists WHERE name LIKE :search LIMIT :limit";
 			
 					try {
 						$query = $this->db->prepare($sql);
-						$query->execute( array(':limit' => $limit) );
+						$query->execute( array(':search' => $search . "%", ':limit' => $limit) );
 						
 						return $query->fetchAll(PDO::FETCH_ASSOC);
 					} catch (Exception $e) {
@@ -1634,18 +1631,16 @@
 					break;
 					
 				case "records":
-					$sql = "SELECT re.id AS 'RecordId', re.name AS 'RecordName', ar.name AS 'ArtistName' FROM records re INNER JOIN artists ar ON re.aid = ar.id WHERE re.name LIKE '" . $search . "%' LIMIT :limit";
+					$sql = "SELECT re.id AS 'RecordId', re.name AS 'RecordName', ar.name AS 'ArtistName' FROM records re INNER JOIN artists ar ON re.aid = ar.id WHERE re.name LIKE :search LIMIT :limit";
 			
 					try {
 						$query = $this->db->prepare($sql);
-						$query->execute( array(':limit' => $limit) );
+						$query->execute( array(':search' => $search . "%", ':limit' => $limit) );
 						
 						return $query->fetchAll(PDO::FETCH_ASSOC);
 					} catch (Exception $e) {
 						return false;
 					}
-					
-					break;
 					
 					break;
 					
@@ -1665,16 +1660,13 @@
 			Returned is an array containing the results, or false if an error occurred during the SQL query.
 		*/
 		public function longSingleSearch ($mode, $search, $limit = 10) {
-			// escape string in case there's any apostrophes in it
-			$search = mysql_real_escape_string($search);
-			
 			switch ($mode) {
 				case "songs":
-					$sql = "SELECT SongId, SongName, ArtistName, RecordName FROM SongsView WHERE SongName LIKE '%" . $search . "%' OR ArtistName LIKE '%" . $search . "%' LIMIT :limit";
+					$sql = "SELECT SongId, SongName, ArtistName, RecordName FROM SongsView WHERE SongName LIKE :search1 OR ArtistName LIKE :search2 LIMIT :limit";
 			
 					try {
 						$query = $this->db->prepare($sql);
-						$query->execute( array(':limit' => $limit) );
+						$query->execute( array(':search1' => "%" . $search . "%", ':search2' => "%" . $search . "%",':limit' => $limit) );
 						
 						return $query->fetchAll(PDO::FETCH_ASSOC);
 					} catch (Exception $e) {
@@ -1684,11 +1676,11 @@
 					break;
 					
 				case "artists":
-					$sql = "SELECT id AS 'ArtistId', name AS 'ArtistName' FROM artists WHERE name LIKE '%" . $search . "%' LIMIT :limit";
+					$sql = "SELECT id AS 'ArtistId', name AS 'ArtistName' FROM artists WHERE name LIKE :search LIMIT :limit";
 			
 					try {
 						$query = $this->db->prepare($sql);
-						$query->execute( array(':limit' => $limit) );
+						$query->execute( array(':search' => "%" . $search . "%", ':limit' => $limit) );
 						
 						return $query->fetchAll(PDO::FETCH_ASSOC);
 					} catch (Exception $e) {
@@ -1698,11 +1690,11 @@
 					break;
 					
 				case "records":
-					$sql = "SELECT re.id AS 'RecordId', re.name AS 'RecordName', ar.name AS 'ArtistName' FROM records re INNER JOIN artists ar ON re.aid = ar.id WHERE re.name LIKE '%" . $search . "%' LIMIT :limit";
+					$sql = "SELECT re.id AS 'RecordId', re.name AS 'RecordName', ar.name AS 'ArtistName' FROM records re INNER JOIN artists ar ON re.aid = ar.id WHERE re.name LIKE :search LIMIT :limit";
 			
 					try {
 						$query = $this->db->prepare($sql);
-						$query->execute( array(':limit' => $limit) );
+						$query->execute( array(':search' => "%" . $search . "%", ':limit' => $limit) );
 						
 						return $query->fetchAll(PDO::FETCH_ASSOC);
 					} catch (Exception $e) {
@@ -1730,13 +1722,24 @@
 		public function multiSearch ($mode, $search_array, $limit = 10) {
 			$term_query = "";
 			
+			$count = 1;
+			
+			$exec_array = array(':limit' => $limit, ':term_count' => count($search_array));
+			
 			switch ($mode) {
 				case "songs":
 					foreach ($search_array as $term) {
-						$term = mysql_real_escape_string($term);
+						$term_str1 = ":term" . $count;
+						$count++;
+						
+						$term_str2 = ":term" . $count;
+						$count++;
+						
+						$exec_array[$term_str1] = "%" . $term . "%";
+						$exec_array[$term_str2] = "%" . $term . "%";
 						
 						// for multi-search, we always match like "%XXX%"
-						$tq = "( SELECT SongId FROM SongsView WHERE SongName LIKE '%" . $term . "%' OR ArtistName LIKE '%" . $term . "%' )";
+						$tq = "( SELECT SongId FROM SongsView WHERE SongName LIKE " . $term_str1 . " OR ArtistName LIKE " . $term_str2 . " )";
 						
 						if ($term_query != "") {
 							$term_query .= " UNION ALL ";
@@ -1751,7 +1754,7 @@
 					
 					try {
 						$query = $this->db->prepare($main_sql);
-						$query->execute( array(':limit' => $limit, ':term_count' => count($search_array)) );
+						$query->execute( $exec_array );
 						
 						return $query->fetchAll(PDO::FETCH_ASSOC);
 					} catch (Exception $e) {
@@ -1762,10 +1765,13 @@
 					
 				case "artists":
 					foreach ($search_array as $term) {
-						$term = mysql_real_escape_string($term);
+						$term_str = ":term" . $count;
+						$count++;
+						
+						$exec_array[$term_str] = "%" . $term . "%";
 						
 						// for multi-search, we always match like "%XXX%"
-						$tq = "( SELECT id FROM artists WHERE name LIKE '%" . $term . "%' )";
+						$tq = "( SELECT id FROM artists WHERE name LIKE " . $term_str . " )";
 						
 						if ($term_query != "") {
 							$term_query .= " UNION ALL ";
@@ -1780,7 +1786,7 @@
 					
 					try {
 						$query = $this->db->prepare($main_sql);
-						$query->execute( array(':limit' => $limit, ':term_count' => count($search_array)) );
+						$query->execute( $exec_array );
 						
 						return $query->fetchAll(PDO::FETCH_ASSOC);
 					} catch (Exception $e) {
@@ -1791,10 +1797,13 @@
 					
 				case "records":
 					foreach ($search_array as $term) {
-						$term = mysql_real_escape_string($term);
+						$term_str = ":term" . $count;
+						$count++;
+						
+						$exec_array[$term_str] = "%" . $term . "%";
 						
 						// for multi-search, we always match like "%XXX%"
-						$tq = "( SELECT id FROM records WHERE name LIKE '%" . $term . "%' )";
+						$tq = "( SELECT id FROM records WHERE name LIKE " . $term_str . " )";
 						
 						if ($term_query != "") {
 							$term_query .= " UNION ALL ";
@@ -1809,7 +1818,7 @@
 					
 					try {
 						$query = $this->db->prepare($main_sql);
-						$query->execute( array(':limit' => $limit, ':term_count' => count($search_array)) );
+						$query->execute( $exec_array );
 						
 						return $query->fetchAll(PDO::FETCH_ASSOC);
 					} catch (Exception $e) {
