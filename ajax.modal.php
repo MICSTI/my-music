@@ -1428,9 +1428,9 @@
 				$name = $get["record-admin-record-name"];
 				$typeid = $get["record-admin-record-type"];
 				
-				$publish = $get["record-admin-publish-date"];
+				$publish = trim($get["record-admin-publish-date"]);
 				
-				if (empty(trim($publish))) {
+				if (empty($publish)) {
 					$publish_date = "0000-00-00";
 				} else {
 					$publish_date = getMysqlDate($publish);
