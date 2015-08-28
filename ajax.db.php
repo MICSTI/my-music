@@ -7,6 +7,9 @@
 		$action = isset($_POST['action']) ? trim($_POST['action']) : "";
 		$data = isset($_POST['data']) ? trim($_POST['data']) : "";
 		
+		// stupid PHP workaround
+		$data = stripslashes($data);
+		
 		switch ($action) {
 			// add songs data
 			case "add_songs_data":
