@@ -4184,7 +4184,7 @@
 			All songs in the array are corrected.
 			In the array there has to be one key "mmid" (integer) and one key "added" (MySql date).
 		*/
-		public function correctSongAddedDate($songs) {
+		public function correctSongAddedDate($songs) {	
 			if (count($songs) > 0) {
 				foreach ($songs as $song) {
 					// convert MM id to sid
