@@ -39,6 +39,9 @@
 				// put info into database
 				$success = $mc->getMDB()->addMMLinkConnection($parent_id, $child_id);
 				
+				// set db modification timestamp (for mobile devices to know that the database has changed)
+				$mc->getMDB()->setDbModificationTimestamp();
+				
 				$response["success"] = $success;
 			
 				break;

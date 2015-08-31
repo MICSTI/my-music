@@ -1216,6 +1216,9 @@
 				// save the song to the database
 				$sid = $mc->getMDB()->saveSong($id, $name, $aid, $rid, $length, $bitrate, $discno, $trackno, $rating, $comment);
 				
+				// set db modification timestamp (for mobile devices to know that the database has changed)
+				$mc->getMDB()->setDbModificationTimestamp();
+				
 				if ($sid !== false) {
 					$success = true;
 					
@@ -1318,6 +1321,9 @@
 						$success = true;
 					}
 				}
+				
+				// set db modification timestamp (for mobile devices to know that the database has changed)
+				$mc->getMDB()->setDbModificationTimestamp();
 				
 				// add artist id for success action (no need for error checking since it won't get executed if an error occurred)
 				$data["ArtistId"] = $id;
@@ -1441,6 +1447,9 @@
 				
 				if ($rid !== false) {
 					$success = true;
+					
+					// set db modification timestamp (for mobile devices to know that the database has changed)
+					$mc->getMDB()->setDbModificationTimestamp();
 					
 					$data["RecordId"] = $rid;
 				} else {

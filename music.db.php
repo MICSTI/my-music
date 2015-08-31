@@ -2914,6 +2914,18 @@
 		}
 		
 		/**
+			Sets the database modification timestamp to the specified timestamp.
+			If no timestamp is passed, it is set to now.
+		*/
+		public function setDbModificationTimestamp($timestamp = -1) {
+			if ($timestamp < 0) {
+				$timestamp = mktime();
+			}
+			
+			$this->setConfig('mm_db_modification', $timestamp);
+		}
+		
+		/**
 			Adds a MediaMonkey link connection.
 			The child will be removed from this database, the played history is added to the parent.
 		*/
