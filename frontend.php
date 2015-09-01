@@ -1522,6 +1522,13 @@
 							$value = $country_elem["CountrySum"];
 							$percentage = round($value / $sum * 100, 2);
 							
+							// round value if necessary
+							$value = round($value, 1);
+							
+							if (substr($value, -2) == ",0") {
+								$value = substr($value, 0, -2);
+							}
+							
 							if ($country_id > 0) {
 								$country = $mdb->getCountry($country_id);
 								$country_flag = getCountryFlag($country, true);

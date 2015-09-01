@@ -10,11 +10,19 @@
 	$year = date("Y");
 	
 	// previous month
-	$month = date("m") - 1;	
+	$month = date("m") - 1;
 	
-	// prepend it to the array of year charts we get from the database
-	$current_year = array(array('ChartId' => 0, 'ChartYear' => $year));
-	$year_array = array_merge($current_year, $year_charts);
+	// special case: January, go back to last year
+	if ($month == 0) {
+		$year--;
+		$month = 12;
+		
+		$year_array = $year_charts;
+	} else {
+		// prepend it to the array of year charts we get from the database
+		$current_year = array(array('ChartId' => 0, 'ChartYear' => $year));
+		$year_array = array_merge($current_year, $year_charts);
+	}
 	
 	// flag for setting "in" class for first element
 	$first = true;
