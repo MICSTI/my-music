@@ -3938,13 +3938,15 @@
 						re.id AS 'RecordId',
 						re.name AS 'RecordTitle',
 						re.publish AS 'RecordPublishDate',
-						rt.name AS 'RecordType'
+						rt.name AS 'RecordType',
+						rt.level AS 'RecordTypeLevel'
 					FROM
 						records re INNER JOIN
 						record_type rt ON rt.id = re.typeid
 					WHERE
 						re.aid = :aid
 					ORDER BY
+						rt.level ASC,
 						re.publish " . $order;
 
 			$sql .= $this->getQueryLimit($limit_low, $limit_high);
