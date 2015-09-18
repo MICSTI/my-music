@@ -14,6 +14,9 @@
 		if ($_POST) {
 			$data = isset($_POST["data"]) ? $_POST["data"] : "";
 			
+			// stupid PHP workaround
+			$data = stripslashes($data);
+			
 			$json_data = json_decode($data, true);
 			
 			$suggestions = $json_data["suggestions"];
