@@ -1625,6 +1625,41 @@
 				
 				break;
 				
+			// select record
+			case "4sncwonu":
+				// title
+				$title = "Select album";
+				$data["title"] = $title;
+				
+				$body = "";
+				
+				
+				
+				$data["body"] = $body;
+				
+				// footer
+				$footer = $mc->getFrontend()->getModalButtons(array("cancel", "save"));
+				$data["footer"] = $footer;
+				
+				$data["save"] = "J55pluHk";
+			
+				break;
+				
+			// chosen record
+			case "J55pluHk":
+				parse_str($params, $get);
+				
+				// get form data
+				
+				
+				// on success action
+				$data["onSuccess"] = "chosenRecord";
+			
+				$data["success"] = true;
+			
+			
+				break;
+				
 			default:
 				$data["status"] = "error";
 				$data["message"] = "unknown action";

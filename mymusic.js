@@ -278,18 +278,30 @@ function persistCrud(_action, _id, _params, _tab) {
 				switch (content.onSuccess) {
 					case "updateSettings":
 						updateSettingsContent(_tab);
+						
+						// show success message
+						globalNotify("Changes saved successfully");
 						break;
 						
 					case "updateAdministration":
 						updateAdministrationContent(_tab);
+						
+						// show success message
+						globalNotify("Changes saved successfully");
 						break;
 						
 					case "updateRecordInformation":
 						updateRecordInformation(_id);
+						
+						// show success message
+						globalNotify("Changes saved successfully");
 						break;
 						
 					case "updateArtistInformation":
 						updateArtistInformation(_id);
+						
+						// show success message
+						globalNotify("Changes saved successfully");
 						break;
 						
 					case "savedSong":
@@ -308,12 +320,14 @@ function persistCrud(_action, _id, _params, _tab) {
 						updatePlayedOnDate();
 						break;
 						
+					case "chosenRecord":
+						// show success message
+						globalNotify("Hello");
+						break;
+						
 					default:
 						break;
 				}
-				
-				// show success message
-				globalNotify("Changes saved successfully");
 			} else {
 				// show error message
 				globalNotify("Changes could not be saved", "error");
@@ -858,6 +872,13 @@ function initAddPlayedSongAdministration() {
 		
 		// add the container click function to the pre-existing add div
 		addPlayedSongInputControl("add-played-song-1");
+		
+		// listen to whole album options
+		if ($("#add-played-whole-album").length > 0) {
+			$("#add-played-whole-album").on("click", function() {
+				crudModal('4sncwonu');
+			});
+		}
 		
 		// set the focus to this element if it's visible
 		if ($("#add-played-song-1").length > 0) {
