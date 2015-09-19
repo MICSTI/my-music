@@ -321,8 +321,9 @@ function persistCrud(_action, _id, _params, _tab) {
 						break;
 						
 					case "chosenRecord":
-						// show success message
-						globalNotify("Hello");
+						var songs = content.songs;
+					
+						fillRecordSongs(songs);
 						break;
 						
 					default:
@@ -343,6 +344,13 @@ function persistCrud(_action, _id, _params, _tab) {
 		// log error
 		console.log("persistCrud", error);
 	});
+}
+
+/**
+	Fills all the songs from the record in the add played song page
+*/
+function fillRecordSongs(song_array) {
+	globalNotify(song_array.length);
 }
 
 /**

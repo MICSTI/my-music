@@ -1650,7 +1650,10 @@
 				parse_str($params, $get);
 				
 				// get form data
+				//$record_id = $get["record-id"];
 				
+				// get songs from this record
+				$data["songs"] = array();
 				
 				// on success action
 				$data["onSuccess"] = "chosenRecord";
