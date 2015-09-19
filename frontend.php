@@ -798,7 +798,7 @@
 					$html .= "</div>";
 					
 					// activity
-					$html .= "<div class='col-sm-7'>";
+					$html .= "<div class='col-sm-5'>";
 						$html .= "<div class='bold'>Activity</div>";
 						$html .= "<div><select class='selectpicker form-control' id='administration-activity' name='administration-activity'>";
 							// display all options
@@ -811,6 +811,14 @@
 								$html .= "<option value='" . $activity["ActivityId"] . "' data-content=\"<span class='label label-big label-" . $activity["ActivityColor"] . "'>#" . $activity["ActivityName"] . "</span> \" " . compareOption($default_activity, $activity["ActivityId"]) . ">"  . "</option>";
 							}
 						$html .= "</select></div>";
+					$html .= "</div>";
+					
+					// whole album option
+					$html .= "<div class='col-sm-2'>";
+						$html .= "<div class='invisible'>Whole album</div>";
+							$html .= "<span><button type='button' id='add-played-whole-album' class='btn btn-warning'>Whole album</button></span> ";
+						$html .= "<div>";
+						$html .= "</div>";
 					$html .= "</div>";
 				$html .= "</div>";
 			$html .= "</div>";
