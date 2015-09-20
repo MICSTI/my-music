@@ -1651,15 +1651,23 @@
 				
 				// get form data
 				//$record_id = $get["record-id"];
+				$record_id = 3718;
 				
 				// get songs from this record
-				$data["songs"] = array();
+				$record_info = $mc->getMDB()->getRecord($record_id);
 				
-				// on success action
-				$data["onSuccess"] = "chosenRecord";
-			
-				$data["success"] = true;
-			
+				if (count($record_info["SongList"]) > 0) {
+					$data["songs"] = $record_info["SongList"];
+					
+					// on success action
+					$data["onSuccess"] = "chosenRecord";
+				
+					$success = true;
+				} else {
+					$success = false;
+				}
+				
+				$data["success"] = $success;
 			
 				break;
 				
