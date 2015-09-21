@@ -132,6 +132,11 @@ function crudModal(_action, _id, _params) {
 				persistCrud(content.save, _id, $("#" + content.form_name).serialize(), content.tab_name);
 			});
 			
+			// attach choose button handler
+			modal.find(".modal-action-choose").on("click", function() {
+				persistCrud(content.choose, _id, $("#" + content.form_name).serialize(), content.tab_name);
+			});
+			
 			// attach ok button handler
 			modal.find(".modal-action-ok").on("click", function() {
 				modal.modal("hide");
@@ -312,7 +317,7 @@ function addRecordInputControl() {
 			$(".ac_result").empty();
 			
 			// set focus to save button
-			$(".modal-action-save").first().focus();
+			$(".modal-action-choose").first().focus();
 		}
 	};
 	
@@ -408,8 +413,12 @@ function persistCrud(_action, _id, _params, _tab) {
 						break;
 				}
 			} else {
-				// show error message
-				globalNotify("Changes could not be saved", "error");
+				if (content.message !== undefined) {
+					globalNotify(content.message, "error");
+				} else {
+					// show error message
+					globalNotify("Changes could not be saved", "error");
+				}
 			}
 			
 			// remove this handler to avoid performing it more than once

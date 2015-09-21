@@ -1668,10 +1668,10 @@
 				$data["body"] = $body;
 				
 				// footer
-				$footer = $mc->getFrontend()->getModalButtons(array("cancel", "save"));
+				$footer = $mc->getFrontend()->getModalButtons(array("cancel", "choose"));
 				$data["footer"] = $footer;
 				
-				$data["save"] = "J55pluHk";
+				$data["choose"] = "J55pluHk";
 			
 				break;
 				
@@ -1698,6 +1698,7 @@
 					$success = true;
 				} else {
 					$success = false;
+					$data["message"] = "No songs were found for this record";
 				}
 				
 				$data["success"] = $success;
