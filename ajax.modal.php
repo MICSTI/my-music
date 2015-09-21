@@ -1216,6 +1216,16 @@
 				// save the song to the database
 				$sid = $mc->getMDB()->saveSong($id, $name, $aid, $rid, $length, $bitrate, $discno, $trackno, $rating, $comment);
 				
+				// if a new song is added, add a mm link with id 0!
+				if ($id <= 0) {
+					$mmid = 0;
+					
+					$now = new UnixTimestamp(mktime());
+					$added_mysql = $now->convert2MysqlDate();
+					
+					$mc->getMDB()->addMMLink($sid, $mmid, $added_mysql);
+				}
+				
 				// set db modification timestamp (for mobile devices to know that the database has changed)
 				$mc->getMDB()->setDbModificationTimestamp();
 				
