@@ -322,6 +322,11 @@ function addRecordInputControl() {
 		recordDisplay.toggle();
 		recordInputContainer.toggle();
 	});
+	
+	// prevent form submit on enter
+	$("#listen-whole-album").submit(function() {
+	  return false;
+	});
 }
 
 function persistCrud(_action, _id, _params, _tab) {
