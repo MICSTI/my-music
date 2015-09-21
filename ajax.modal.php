@@ -85,7 +85,7 @@
 				parse_str($params, $get);
 				
 				// save the icon to the database
-				$success = $mc->getMDB()->saveIcon($id, $get["icon-name"], $get["icon-type"], $get["icon-path"]);
+				$success = $mc->getMDB()->saveIcon($id, removeslashes(trim($get["icon-name"])), $get["icon-type"], $get["icon-path"]);
 				
 				// on success action
 				$data["onSuccess"] = "updateSettings";
@@ -179,7 +179,7 @@
 				$active = isset($get["device-active"]) ? 1 : 0;
 				
 				// save the device type to the database
-				$success = $mc->getMDB()->saveDevice($id, $get["device-name"], $get["device-type"], $active);
+				$success = $mc->getMDB()->saveDevice($id, removeslashes(trim($get["device-name"])), $get["device-type"], $active);
 				
 				// on success action
 				$data["onSuccess"] = "updateAdministration";
@@ -256,7 +256,7 @@
 				parse_str($params, $get);
 				
 				// save the device type to the database
-				$success = $mc->getMDB()->saveDeviceType($id, $get["device-type-name"], $get["device-type-icon"]);
+				$success = $mc->getMDB()->saveDeviceType($id, removeslashes(trim($get["device-type-name"])), $get["device-type-icon"]);
 				
 				// on success action
 				$data["onSuccess"] = "updateSettings";
@@ -333,7 +333,7 @@
 				parse_str($params, $get);
 				
 				// save the activity to the database
-				$success = $mc->getMDB()->saveActivity($id, $get["activity-name"], $get["activity-color"]);
+				$success = $mc->getMDB()->saveActivity($id, removeslashes(trim($get["activity-name"])), $get["activity-color"]);
 				
 				// on success action
 				$data["onSuccess"] = "updateAdministration";
@@ -403,7 +403,7 @@
 				parse_str($params, $get);
 				
 				// save the country to the database
-				$success = $mc->getMDB()->saveCountry($id, $get["country-name"], $get["country-short"]);
+				$success = $mc->getMDB()->saveCountry($id, removeslashes(trim($get["country-name"])), removeslashes(trim($get["country-short"])));
 				
 				// on success action
 				$data["onSuccess"] = "updateSettings";
@@ -473,7 +473,7 @@
 				parse_str($params, $get);
 				
 				// save the country to the database
-				$success = $mc->getMDB()->saveConfigProperty($id, $get["config-property"], $get["config-value"]);
+				$success = $mc->getMDB()->saveConfigProperty($id, removeslashes(trim($get["config-property"])), removeslashes(trim($get["config-value"])));
 				
 				// on success action
 				$data["onSuccess"] = "updateSettings";
@@ -545,7 +545,7 @@
 				}
 				
 				// save the record type to the database
-				$success = $mc->getMDB()->saveRecordType($id, $get["record-type-name"], $level);
+				$success = $mc->getMDB()->saveRecordType($id, removeslashes(trim($get["record-type-name"])), $level);
 				
 				// on success action
 				$data["onSuccess"] = "updateSettings";
@@ -1189,15 +1189,19 @@
 			case "y2DqnxCB":
 				parse_str($params, $get);
 				
+				$song_name = removeslashes(trim($get["song-admin-song-title"]));
+				$artist_name = removeslashes(trim($get["song-admin-artist-name"]));
+				$record_name = removeslashes(trim($get["song-admin-record-name"]));
+				
 				// get artist id
-				$aid = $mc->getMDB()->pushArtist(trim($get["song-admin-artist-name"]));
+				$aid = $mc->getMDB()->pushArtist($artist_name);
 				
 				// get record id
-				$rid = $mc->getMDB()->pushRecord(trim($get["song-admin-record-name"]), $aid);
+				$rid = $mc->getMDB()->pushRecord($record_name, $aid);
 				
 				// get other form values
-				$name = $get["song-admin-song-title"];
-				$comment  = $get["song-admin-comment"];
+				$name = $song_name;
+				$comment  = removeslashes(trim($get["song-admin-comment"]));
 				
 				if ($id > 0) {
 					$length = $get["song-admin-song-length"];
@@ -1318,7 +1322,7 @@
 				$success = false;
 				
 				// get artist info form form
-				$name = trim($get["artist-admin-artist-name"]);
+				$name = removeslashes(trim($get["artist-admin-artist-name"]));
 				$main_country_id = $get["artist-admin-main-country-id"];
 				$secondary_country_id = $get["artist-admin-secondary-country-id"];
 				
@@ -1438,10 +1442,10 @@
 				parse_str($params, $get);
 				
 				// get artist id
-				$aid = $mc->getMDB()->pushArtist(trim($get["record-admin-artist-name"]));
+				$aid = $mc->getMDB()->pushArtist(removeslashes(trim($get["record-admin-artist-name"])));
 				
 				// get other form values
-				$name = $get["record-admin-record-name"];
+				$name = removeslashes(trim($get["record-admin-record-name"]));
 				$typeid = $get["record-admin-record-type"];
 				
 				$publish = trim($get["record-admin-publish-date"]);

@@ -343,3 +343,12 @@
 		
 		return $number;
 	}
+	
+	/**
+		Removes all escaping slashes from a string
+	*/
+	function removeslashes($string)	{
+		$string = implode("",explode("\\",$string));
+		
+		return stripslashes(trim($string));
+	}
