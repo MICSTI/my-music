@@ -310,6 +310,9 @@ function addRecordInputControl() {
 			
 			// hide result divs
 			$(".ac_result").empty();
+			
+			// set focus to save button
+			$(".modal-action-save").first().focus();
 		}
 	};
 	
@@ -395,8 +398,10 @@ function persistCrud(_action, _id, _params, _tab) {
 						
 					case "chosenRecord":
 						var songs = content.songs;
+						var artist = content.artist;
+						var record = content.record;
 					
-						fillRecordSongs(songs);
+						fillRecordSongs(songs, artist, record);
 						break;
 						
 					default:
@@ -422,11 +427,53 @@ function persistCrud(_action, _id, _params, _tab) {
 /**
 	Fills all the songs from the record in the add played song page
 */
-function fillRecordSongs(song_array) {
-	
-	
-	
-	globalNotify(song_array.length);
+function fillRecordSongs(song_array, artist, record) {	
+	for (var idx in song_array) {
+		var track = song_array[idx];
+		
+		var html = "";
+		var _id = "song-id-" + track.SongId;
+		
+		var _time = idx == 0 ? getTimeString() : "";
+		
+		// display
+		html += "<div id='" + _id + "-container' class='form-group add-played-song-div'>";
+			html += "<div class='col-sm-2'>";
+				html += "<input class='form-control add-played-song-time' type='text' value='" + _time + "' placeholder='Time' />";
+			html += "</div>";
+			
+			html += "<div class='add-played-song-display col-sm-10' style='display: block;'>";
+				// remove button
+				html += "<div class='pull-right'>";
+					html += "<button class='btn btn-danger' onclick=\"$('#" + _id + "-container').remove()\" type='button'>Remove</button>";
+				html += "</div>";
+				
+				html += "<div>";
+					html += "<input id='" + _id + "-song-id' type='hidden' value='" + track.SongId + "' />";
+					html += "<div>" + track.SongName + "</div>";
+					html += "<div>" + artist + "</div>";
+					html += "<div>" + record + "</div>";
+				html += "</div>";
+			html += "</div>";
+		html += "</div>";
+		
+		// add to form
+		if ($(".add-played-song-div").length > 0) {
+			if ($("#add-played-song-1-song-id").length == 0) {
+				// if there is only the default add div, remove it
+				$("#add-played-song-1-container").remove();
+				
+				// append it to the form
+				$("#add-played-song-form").append(html);
+			} else {
+				// append the new div after the last div
+				$(".add-played-song-div").last().after(html);
+			}
+		} else {
+			// if all divs have been deleted, append it to the form instead
+			$("#add-played-song-form").append(html);
+		}
+	}
 }
 
 /**

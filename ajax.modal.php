@@ -1656,7 +1656,7 @@
 						$body .= "<label for='whole-album-record-name' class='control-label col-xs-2'>Record</label>";
 						
 						$body .= "<div id='whole-album-record-input' class='col-xs-10'>";
-							$body .= "<input type='text' id='whole-album-record-id' class='form-control autofocus' placeholder='Choose record' />";
+							$body .= "<input type='text' id='whole-album-record-id' class='form-control autofocus' placeholder='Choose record' autocomplete='off' />";
 						$body .= "</div>";
 						
 						$body .= "<div id='whole-album-record-display' class='col-xs-10'>";
@@ -1687,6 +1687,10 @@
 				
 				if (count($record_info["SongList"]) > 0) {
 					$data["songs"] = $record_info["SongList"];
+					
+					// add artist and record name
+					$data["artist"] = $record_info["ArtistName"];
+					$data["record"] = $record_info["RecordName"];
 					
 					// on success action
 					$data["onSuccess"] = "chosenRecord";
