@@ -1518,7 +1518,7 @@
 						$body .= "<label for='played-admin-song-id' class='control-label col-xs-2'>Song</label>";
 						
 						$body .= "<div id='played-admin-song-input' class='col-xs-10'>";
-							$body .= "<input type='text' id='played-admin-song-id' class='form-control' placeholder='Choose song' value='" . $song["SongName"] . "' />";
+							$body .= "<input type='text' id='played-admin-song-id' class='form-control' placeholder='Choose song' value=\"" . $song["SongName"] . "\" />";
 						$body .= "</div>";
 						
 						$body .= "<div id='played-admin-song-display' class='col-xs-10'>";
