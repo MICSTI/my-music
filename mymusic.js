@@ -91,6 +91,11 @@ function crudModal(_action, _id, _params) {
 			addPlayedAdminSongInputControl();
 		}
 		
+		// add control for listen to whole record input
+		if ($("#whole-album-record-id").length > 0) {
+			addRecordInputControl();
+		}
+		
 		// immediately remove handler to avoid attaching it over and over again
 		modal.off("shown.bs.modal");
 	});
@@ -256,6 +261,69 @@ function addPlayedAdminSongInputControl() {
 	});
 }
 
+/**
+	control for listen to whole record input control
+*/
+function addRecordInputControl() {
+	var recordDisplay = $("#whole-album-record-display");
+	var recordInput = $("#whole-album-record-id");
+	var recordInputContainer = $("#whole-album-record-input");
+	
+	// add auto complete
+	var recordOptions = {
+		url: "search.php",
+		id: "whole-album-record-id",
+		categories: ["records"],
+		itemDisplay: function(_category, _item, _choiceClass) {
+			switch (_category) {
+				case "records":
+					return "<div class='" + _choiceClass + "' data-category='" + _category + "' data-id='" + _item.RecordId + "' data-artist=\"" + _item.ArtistName + "\" data-record=\"" + _item.RecordName + "\">" +
+								"<div class='search_artist_name'>" + _item.ArtistName + "</div>" +
+								"<div class='search_record_name'>" + _item.RecordName + "</div>" +
+							"</div>";
+					
+					break;
+					
+				default:
+					return "";
+					break;
+			}
+		},
+		itemSelection: function(elem) {
+			// set record id in hidden input element
+			$("#record-id").val(elem.dataset.id);
+			
+			switch (elem.dataset.category) {
+				case "records":
+					$("#whole-album-record-ac-result").hide();
+					recordInputContainer.hide();
+					recordDisplay.html(	"<div>" +
+											"<div>" + elem.dataset.artist + "</div>" + 
+											"<div>" + elem.dataset.record + "</div>" +
+										"</div>")
+								 .show();
+					break;
+					
+				default:
+					break;
+			}
+			
+			// hide result divs
+			$(".ac_result").empty();
+		}
+	};
+	
+	// init autocomplete
+	var wholeAlbumAC = new AutoComplete();
+	wholeAlbumAC.init(recordOptions);
+	
+	recordDisplay.on("click", function() {
+		// toggle visibility
+		recordDisplay.toggle();
+		recordInputContainer.toggle();
+	});
+}
+
 function persistCrud(_action, _id, _params, _tab) {
 	var modal = $("#music-modal");
 	
@@ -350,6 +418,9 @@ function persistCrud(_action, _id, _params, _tab) {
 	Fills all the songs from the record in the add played song page
 */
 function fillRecordSongs(song_array) {
+	
+	
+	
 	globalNotify(song_array.length);
 }
 

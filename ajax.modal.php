@@ -1631,9 +1631,29 @@
 				$title = "Select album";
 				$data["title"] = $title;
 				
+				// form name (for processing data in Javascript)
+				$form_name = "listen-whole-album";
+				$data["form_name"] = $form_name;
+				
 				$body = "";
 				
+				$body .= "<form class='form-horizontal' id='" . $form_name . "'>";
 				
+					// record
+					$body .= "<input type='hidden' id='record-id' name='record-id' value='0' />";
+					
+					$body .= "<div class='form-group'>";
+						$body .= "<label for='whole-album-record-name' class='control-label col-xs-2'>Record</label>";
+						
+						$body .= "<div id='whole-album-record-input' class='col-xs-10'>";
+							$body .= "<input type='text' id='whole-album-record-id' class='form-control autofocus' placeholder='Choose record' />";
+						$body .= "</div>";
+						
+						$body .= "<div id='whole-album-record-display' class='col-xs-10'>";
+						$body .= "</div>";
+					$body .= "</div>";
+				
+				$body .= "</form>";
 				
 				$data["body"] = $body;
 				
@@ -1650,8 +1670,7 @@
 				parse_str($params, $get);
 				
 				// get form data
-				//$record_id = $get["record-id"];
-				$record_id = 3718;
+				$record_id = $get["record-id"];
 				
 				// get songs from this record
 				$record_info = $mc->getMDB()->getRecord($record_id);
