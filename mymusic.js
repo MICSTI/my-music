@@ -437,7 +437,7 @@ function fillRecordSongs(song_array, artist, record) {
 		var _time = idx == 0 ? getTimeString() : "";
 		
 		// display
-		html += "<div id='" + _id + "-container' class='form-group add-played-song-div'>";
+		html += "<div id='" + _id + "-container' class='form-group add-played-song-div row'>";
 			html += "<div class='col-sm-2'>";
 				html += "<input class='form-control add-played-song-time' type='text' value='" + _time + "' placeholder='Time' />";
 			html += "</div>";

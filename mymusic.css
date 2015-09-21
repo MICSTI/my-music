@@ -193,6 +193,11 @@ a {
 	font-size: 120%;
 }
 
+.add-played-song-div {
+    padding: 6px 0px 0px 15px;
+    margin-top: 8px;
+}
+
 /* ------- Calendarial ------- */
 #calendarial-accordion.affix {
 	position: fixed;

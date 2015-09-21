@@ -848,7 +848,7 @@
 		public function getAddPlayedSongLine($id, $fill_time = false) {
 			$time = $fill_time ? date("H:i") : "";
 			
-			return "<div id='" . $id . "-container' class='form-group add-played-song-div'>
+			return "<div id='" . $id . "-container' class='form-group add-played-song-div row'>
 						<div class='col-sm-2'>
 							<input type='text' class='form-control add-played-song-time' placeholder='Time' value='" . $time . "' />
 						</div>
