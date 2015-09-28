@@ -1080,7 +1080,7 @@
 					$body .= "<div class='form-group'>";
 						$body .= "<label for='song-admin-song-title' class='control-label col-xs-2'>Title</label>";
 						$body .= "<div class='col-xs-10'>";
-							$body .= "<input type='text' class='form-control autofocus' id='song-admin-song-title' name='song-admin-song-title' placeholder='Song title' value='" . $song["SongName"] . "' />";
+							$body .= "<input type='text' class='form-control autofocus' id='song-admin-song-title' name='song-admin-song-title' placeholder='Song title' value=\"" . $song["SongName"] . "\" />";
 						$body .= "</div>";
 					$body .= "</div>";
 					
@@ -1088,7 +1088,7 @@
 					$body .= "<div class='form-group'>";
 						$body .= "<label for='song-admin-artist-name' class='control-label col-xs-2'>Artist</label>";
 						$body .= "<div class='col-xs-10'>";
-							$body .= "<input type='text' class='form-control' id='song-admin-artist-name' name='song-admin-artist-name' placeholder='Artist name' value='" . $song["ArtistName"] . "' />";
+							$body .= "<input type='text' class='form-control' id='song-admin-artist-name' name='song-admin-artist-name' placeholder='Artist name' value=\"" . $song["ArtistName"] . "\" />";
 						$body .= "</div>";
 					$body .= "</div>";
 					
@@ -1096,7 +1096,7 @@
 					$body .= "<div class='form-group'>";
 						$body .= "<label for='song-admin-record-name' class='control-label col-xs-2'>Record</label>";
 						$body .= "<div class='col-xs-10'>";
-							$body .= "<input type='text' class='form-control' id='song-admin-record-name' name='song-admin-record-name' placeholder='Record name' value='" . $song["RecordName"] . "' />";
+							$body .= "<input type='text' class='form-control' id='song-admin-record-name' name='song-admin-record-name' placeholder='Record name' value=\"" . $song["RecordName"] . "\" />";
 						$body .= "</div>";
 					$body .= "</div>";
 					
@@ -1278,7 +1278,7 @@
 					$body .= "<div class='form-group'>";
 						$body .= "<label for='artist-admin-artist-name' class='control-label col-xs-2'>Name</label>";
 						$body .= "<div class='col-xs-10'>";
-							$body .= "<input type='text' class='form-control autofocus' id='artist-admin-artist-name' name='artist-admin-artist-name' placeholder='Name' value='" . $artist["ArtistName"] . "' />";
+							$body .= "<input type='text' class='form-control autofocus' id='artist-admin-artist-name' name='artist-admin-artist-name' placeholder='Name' value=\"" . $artist["ArtistName"] . "\" />";
 						$body .= "</div>";
 					$body .= "</div>";
 					
@@ -1381,7 +1381,7 @@
 					$body .= "<div class='form-group'>";
 						$body .= "<label for='record-admin-record-name' class='control-label col-xs-3'>Title</label>";
 						$body .= "<div class='col-xs-9'>";
-							$body .= "<input type='text' class='form-control autofocus' id='record-admin-record-name' name='record-admin-record-name' placeholder='Name' value='" . $record["RecordName"] . "' />";
+							$body .= "<input type='text' class='form-control autofocus' id='record-admin-record-name' name='record-admin-record-name' placeholder='Name' value=\"" . $record["RecordName"] . "\" />";
 						$body .= "</div>";
 					$body .= "</div>";
 				
