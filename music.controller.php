@@ -540,6 +540,80 @@
 		}
 		
 		/**
+			Returns an object containing the compiled info for a chart (containing ranks)
+		*/
+		public function getChartsObject($type, $data, $diff = false) {
+			$charts = array();
+			
+			switch ($type) {
+				case "songs":
+					$charts = $this->getSongsChartsObject($data, $diff);
+					break;
+					
+				case "artists":
+					$charts = $this->getArtistsChartsObject($data, $diff);
+					break;
+					
+				default:
+					break;
+			}
+			
+			return $charts;
+		}
+		
+		/**
+			Returns an object containing the charts info for songs
+		*/
+		private function getSongsChartsObject($data, $diff = false) {
+			$charts = array();
+			
+			foreach ($data as $song_info) {
+				$song = array();
+				
+				$played_count = $song_info["PlayedCount"];
+				
+				$song["Rank"] = $song_info["Rank"];
+				$song["SongId"] = $song_info["SongId"];
+				$song["SongName"] = $song_info["SongName"];
+				$song["ArtistId"] = $song_info["ArtistId"];
+				$song["ArtistName"] = $song_info["ArtistName"];
+				$song["PlayedCount"] = $played_count;
+				
+				if ($diff)
+					$song["RankDiff"] = $this->getMDB()->getTop2020Diff("songs", $song_info["SongId"]);
+				
+				array_push($charts, $song);
+			}
+			
+			return $charts;
+		}
+		
+		/**
+			Returns an object containing the charts info for artists
+		*/
+		private function getArtistsChartsObject($data, $diff = false) {
+			$charts = array();
+			
+			foreach ($data as $artist_info) {
+				$artist = array();
+				
+				$played_count = $artist_info["PlayedCount"];
+				
+				$artist["PlayedCount"] = $played_count;
+				$artist["ArtistId"] = $artist_info["ArtistId"];
+				$artist["ArtistName"] = $artist_info["ArtistName"];
+				$artist["Rank"] = $artist_info["Rank"];
+				
+				if ($diff)
+					$artist["RankDiff"] = $this->getMDB()->getTop2020Diff("artists", $artist_info["ArtistId"]);
+				
+				array_push($charts, $artist);
+			}
+			
+			return $charts;
+		}
+		
+		/**
 			Correct the song added dates for either one specific song or all songs in the database.
 			If the id is omitted or lower than zero, all songs are corrected.
 		*/
