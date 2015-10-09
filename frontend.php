@@ -106,14 +106,14 @@
 							$menu .= "<a href='#' data-toggle='dropdown' class='dropdown-toggle'>Statistics <b class='caret'></b></a>";
 							
 							$menu .= "<ul class='dropdown-menu'>";
-								$menu .= "<li><a href='top2020.php'>Top 20/20</a></li>";
 								$menu .= "<li><a href='favourites.php'>Favourites</a></li>";
 								$menu .= "<li><a href='calendarial.php'>Calendarial</a></li>";
 								$menu .= "<li><a href='custom_range.php'>Custom range</a></li>";
 							$menu .= "</ul>";
 							
+						$menu .= "<li class='" . $this->getActiveText("top2020", $selected) . "'><a href='top2020.php'>Top 20/20</a></li>";
 						$menu .= "<li class='" . $this->getActiveText("history", $selected) . "'><a href='history.php'>History</a></li>";
-						$menu .= "<li class='" . $this->getActiveText("concerts", $selected) . "'><a href='concerts.php'>Concerts</a></li>";
+						//$menu .= "<li class='" . $this->getActiveText("concerts", $selected) . "'><a href='concerts.php'>Concerts</a></li>";
 						$menu .= "<li class='" . $this->getActiveText("update", $selected) . "'><a href='update.php'>Update</a></li>";
 						$menu .= "<li class='" . $this->getActiveText("administration", $selected) . "'><a href='administration.php'>Administration</a></li>";
 						$menu .= "<li class='" . $this->getActiveText("settings", $selected) . "'><a href='settings.php'>Settings</a></li>";

@@ -62,7 +62,7 @@
 		$html .= "</div>";
 	$html .= "</div>";
 	
-	echo $mc->getIndexHTML($html, "statistics");
+	echo $mc->getIndexHTML($html, "top2020");
 	
 	/**
 		Returns the content for the song tab
