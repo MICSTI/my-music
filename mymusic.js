@@ -1426,6 +1426,7 @@ $(document).ready( function () {
 				settings.css("width", settingsWidth + "px");
 				
 				// remove the listener immediately so we don't attach it over and over again if we scroll up and down
+				settings.off("affix.bs.affix");
 				settings.off("affixed.bs.affix");
 			});
 		});
@@ -1458,6 +1459,7 @@ $(document).ready( function () {
 				administration.css("width", administrationWidth + "px");
 				
 				// remove the listener immediately so we don't attach it over and over again if we scroll up and down
+				administration.off("affix.bs.affix");
 				administration.off("affixed.bs.affix");
 			});
 		});
@@ -1565,6 +1567,7 @@ $(document).ready( function () {
 				calendarial.css("width", calendarialWidth + "px");
 				
 				// remove the listener immediately so we don't attach it over and over again if we scroll up and down
+				calendarial.off("affix.bs.affix");
 				calendarial.off("affixed.bs.affix");
 			});
 		});

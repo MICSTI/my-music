@@ -311,3 +311,12 @@ a {
 	background-color: tomato;
 }
 /* --------------- */
+
+
+/* ---- NO AFFIX ON SMALL DEVICES ---- */
+@media (max-width: 765px) {
+	#calendarial-accordion.affix, #settings.affix, #administration.affix {
+		position: static;
+	}
+}
+/* ----------------------------------- */
