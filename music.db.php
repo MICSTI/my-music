@@ -4492,6 +4492,86 @@
 			
 			// update charts compilation timestamp
 			$this->updateChartContainerTimestamp($chart_id);
+			
+			// add stats
+			$this->addTop2020Stats($chart_id);
+		}
+		
+		/**
+			Adds the statistics for the current Top 20/20 charts to the database.
+		*/
+		public function addTop2020Stats($chart_id) {
+			$songs = array();
+			
+			// delete previous entries for this day first
+			$this->removeTop2020StatsEntries();
+			
+			// get #1 song(s) and artist(s)
+			$songs = $this->getTops($chart_id, "songs");
+			
+			$artists = $this->getTops($chart_id, "artists");
+			
+			// add them to the database
+			foreach ($songs as $song) {
+				$this->addTop2020StatsEntry($song);
+			}
+			
+			foreach ($artists as $artist) {
+				$this->addTop2020StatsEntry($artist);
+			}
+		}
+		
+		/**
+			Returns the #1 instance for the specified type and chart id.
+		*/
+		public function getTops($chart_id, $instance_type) {
+			$sql = "SELECT
+						instance_type, instance_id, cnt
+					FROM
+						chart_content
+					WHERE
+						chart_id = :chart_id AND 
+						instance_type = :instance_type AND 
+						rank = 1";
+
+			$query = $this->db->prepare($sql);
+			$query->execute( array(':chart_id' => $chart_id, ':instance_type' => $instance_type) );
+			
+			if ($query->rowCount() > 0) {
+				return $query->fetchAll(PDO::FETCH_ASSOC);
+			} else {
+				return array();
+			}
+		}
+		
+		/**
+			Removes Top 20/20 stats entries for a day (defaults to yesterday)
+		*/
+		public function removeTop2020StatsEntries($date = "") {
+			if ($date == "") {
+				$timestamp = getTop2020EndDate();
+				$date = $timestamp->convert2MysqlDate();
+			}
+			
+			$sql = "DELETE FROM stats WHERE _date = :date";
+			
+			$query = $this->db->prepare($sql);
+			$query->execute( array(':date' => $date) );
+		}
+		
+		/**
+			Adds a Top 20/20 stats entry to the stats table.
+		*/
+		public function addTop2020StatsEntry($row) {
+			$timestamp = getTop2020EndDate();
+			
+			$date = $timestamp->convert2MysqlDate();
+			$year = substr($date, 0, 4);
+			
+			$sql = "INSERT INTO stats (year, _date, instance_type, instance_id, cnt) VALUES (:year, :date, :instance_type, :instance_id, :cnt)";
+
+			$query = $this->db->prepare($sql);
+			$query->execute( array(':year' => $year, ':date' => $date, ':instance_type' => $row["instance_type"], ':instance_id' => $row["instance_id"], ':cnt' => $row["cnt"]) );
 		}
 		
 		/**
