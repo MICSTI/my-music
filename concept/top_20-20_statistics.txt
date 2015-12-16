@@ -1,0 +1,8 @@
+date, sid, amount
+
+date, aid, amount
+
+views
+  - highest amount ranking per year
+  - no of #1 dates ranking
+  - all per year, grouped by dates (e.g. 10.12.2015 - 16.12.2015: Small Feet - Gold)
