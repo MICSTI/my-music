@@ -104,11 +104,19 @@ TABLE chart_content
 TABLE chart_additional
 	id			INT
 	chart_id	INT
-	instance_type	INT
+	instance_type	VARCHAR
 	instance_id	INT
 	rank		INT
 	cnt			INT
 	fraction	DECIMAL (6,5)
+	
+TABLE stats
+	id			INT
+	year		INT
+	_date		DATE
+	instance_type	VARCHAR
+	instance_id INT
+	amount		INT
 
 
 CREATE VIEW SongsView AS
