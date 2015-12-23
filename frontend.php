@@ -1566,6 +1566,13 @@
 		}
 		
 		/**
+			Returns the content with the Top 20/20 stats content
+		*/
+		public function getTop2020StatsContent($mdb, $type, $year) {
+			return $type . " / " . $year;
+		}
+		
+		/**
 			Returns the table with the activity statistics.
 		*/
 		public function getActivityStatisticsTable($mdb, $activity_statistics) {

@@ -9,6 +9,9 @@
 	// flag for setting "in" class for first element
 	$first = true;
 	
+	// latest year
+	$latest_year = 0;
+	
 	// Headline
 	$html .= "<h3>Top 20/20 Stats</h3>";
 	
@@ -21,6 +24,7 @@
 					foreach ($years as $year_elem) {
 						if ($first) {
 							$first = false;
+							$latest_year = $year_elem["year"];
 							
 							$collapse_in = " in";
 							$aria_expanded = "true";
@@ -63,8 +67,8 @@
 		$html .= "</div>";
 		
 		// content right
-		$html .= "<div class='col-sm-9'>";
-			$html .= "CONTENT";
+		$html .= "<div id='top2020-stats-content' class='col-sm-9'>";
+			$html .= $mc->getFrontend()->getTop2020StatsContent($mc->getMDB(), "history", $latest_year);
 		$html .= "</div>";
 	$html .= "</div>";
 	

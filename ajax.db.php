@@ -46,6 +46,19 @@
 			
 				break;
 				
+			// Top 2020 stats
+			case "top2020_stats":
+				$json_data = json_decode($data, true);
+				
+				// get info from JSON data
+				$type = $json_data["type"];
+				$year = $json_data["year"];
+				
+				$response["content"] = $mc->getFrontend()->getTop2020StatsContent($mc->getMDB(), $type, $year);
+				$response["success"] = true;
+			
+				break;
+				
 			// played date data
 			case "played_date":
 				$json_data = json_decode($data, true);

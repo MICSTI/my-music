@@ -1573,6 +1573,68 @@ $(document).ready( function () {
 		});
 	}
 	
+	// Top 20/20 stats
+	var top2020stats = $("#top2020-stats-accordion");
+	if (top2020stats.length > 0) {
+		// accordion items
+		$(".top2020-stats-item").on("click", function() {
+
+			var _type = $(this).attr("data-type");
+			var _year = $(this).attr("data-year");
+			
+			// data object
+			var _data = {
+				type: _type,
+				year: _year
+			}
+			
+			$.ajax( {
+				method: "POST",
+				url: "ajax.db.php",
+				data: {
+					action: "top2020_stats",
+					data: JSON.stringify(_data)
+				}
+			}).done(function(resp) {
+				var response = JSON.parse(resp);
+				
+				if (response.success) {
+					// set content
+					$("#top2020-stats-content").html(response.content);
+					
+					// add tooltips
+					//addTooltips();
+				} else {
+					console.log("Error", response.message);
+					globalNotify("Error getting charts content", "error");
+				}
+			}).fail(function(error) {
+				// log error
+				console.log("ajax.db.php", error);
+			});
+			
+			// hide open accordion elements
+			$("a.top2020-stats-item[aria-expanded='true']").each(function(i, item) {
+				if (item.dataset.year != _year)
+					$("#top2020-stats-" + item.dataset.year).collapse("hide");
+			});
+		});
+		
+		// affix for accordion nav always to be visible
+		top2020stats.on("affix.bs.affix", function() {
+			// a small hack to contain the width of the accordion nav div
+			var top2020statsWidth = top2020stats.innerWidth();
+			
+			top2020stats.on("affixed.bs.affix", function() {
+				top2020stats.css("width", top2020statsWidth + "px");
+				
+				// remove the listener immediately so we don't attach it over and over again if we scroll up and down
+				top2020stats.off("affix.bs.affix");
+				top2020stats.off("affixed.bs.affix");
+			});
+		});
+	}
+	
 	var removeAdministrationActive = function() {
 		$("#administration a").removeClass("active");
 	}
