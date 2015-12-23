@@ -3276,6 +3276,31 @@
 		}
 		
 		/**
+			Returns an array containing all available Top 20/20 stats years, by default ordered by descending year.
+			The sort order can be changed via the ascending flag.
+			If no Top 20/20 stats years are found, an empty array is returned.
+		*/
+		public function getTop2020StatsYears($ascending = false) {
+			$order = $ascending ? "ASC" : "DESC";
+			
+			$sql = "SELECT DISTINCT
+						year
+					FROM
+						stats
+					ORDER BY
+						year " . $order;
+						
+			$query = $this->db->prepare($sql);
+			$query->execute();
+			
+			if ($query->rowCount() > 0) {
+				return $query->fetchAll(PDO::FETCH_ASSOC);
+			} else {
+				return array();
+			}			
+		}
+		
+		/**
 			Returns an array containing all calendarial year charts, by default ordered by descending year.
 			The sort order can be changed via the ascending flag.
 			If no calendarial year charts are found, an empty array is returned.
