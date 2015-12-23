@@ -57,7 +57,7 @@
 								
 								// No of #1 ranks
 								$html .= "<div>";
-									$html .= "<a href='#' class='top2020-stats-item' data-type='no1s' data-year='" . $year . "'># #1s</a>";
+									$html .= "<a href='#' class='top2020-stats-item' data-type='no1s' data-year='" . $year . "'># of #1's</a>";
 								$html .= "</div>";
 							$html .= "</div>";
 						$html .= "</div>";

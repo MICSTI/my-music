@@ -916,7 +916,7 @@
 					$html .= "</div>";
 				$html .= "</div>";
 				
-				// calendarial
+				// -
 				$html .= "<div class='panel panel-default'>";
 					$html .= "<div class='panel-heading bold'>Calendarial</div>";
 					
@@ -1569,7 +1569,88 @@
 			Returns the content with the Top 20/20 stats content
 		*/
 		public function getTop2020StatsContent($mdb, $type, $year) {
-			return $type . " / " . $year;
+			$html = "";
+			
+			$song_content = "songs";
+			$artist_content = "artists";
+			
+			switch ($type) {
+				case "history":
+					$title_text = "History";
+					
+					// songs
+					$data = $mdb->getTop2020StatsHistory("songs", $year);
+					
+					$song_content = "";
+					
+					foreach ($data as $elem) {
+						$song_id = $elem["InstanceId"];
+						$date = $elem["Date"];
+						$cnt = $elem["PlayCount"];
+						
+						$song_content .= "<div>";
+							$song_content .= $song_id . " / " . $date . " / " . $cnt;
+						$song_content .= "</div>";
+					}
+					
+					// artists
+					$data = $mdb->getTop2020StatsHistory("artists", $year);
+					
+					$artist_content = "";
+					
+					foreach ($data as $elem) {
+						$artist_id = $elem["InstanceId"];
+						$date = $elem["Date"];
+						$cnt = $elem["PlayCount"];
+						
+						$artist_content .= "<div>";
+							$artist_content .= $artist_id . " / " . $date . " / " . $cnt;
+						$artist_content .= "</div>";
+					}
+					
+					break;
+					
+				case "maximum":
+					$title_text = "Maximum";
+					
+					
+					break;
+					
+				case "no1s":
+					$title_text = "# of #1's";
+					
+					
+					break;
+					
+				default:
+					break;
+			}
+			
+			// header
+			$html .= "<div class='top2020-stats-content-title'>" . $title_text . " " . $year . "</div>";
+			
+			// add content
+			$html .= "<ul class='nav nav-tabs'>";
+				$html .= "<li class='active'>";
+					$html .= "<a data-toggle='tab' href='#songs'>Songs</a>";
+				$html .= "</li>";
+				
+				$html .= "<li>";
+					$html .= "<a data-toggle='tab' href='#artists'>Artists</a>";
+				$html .= "</li>";
+			$html .= "</ul>";
+			
+			$html .= "<div class='tab-content'>";
+				$html .= "<div id='songs' class='tab-pane fade in active'>";
+					$html .= $song_content;
+				$html .= "</div>";
+				
+				$html .= "<div id='artists' class='tab-pane fade'>";
+					$html .= $artist_content;
+				$html .= "</div>";
+			$html .= "</div>";
+			
+			return $html;
 		}
 		
 		/**

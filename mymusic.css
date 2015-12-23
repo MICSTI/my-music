@@ -215,6 +215,23 @@ a {
 }
 /* ---------------------------- */
 
+/* ----- Top 20/20 stats------ */
+#top2020-stats-accordion.affix {
+	position: fixed;
+	top: 16px;
+}
+
+#top2020-stats-container {
+	padding-top: 24px;
+}
+
+.top2020-stats-content-title {
+	padding: 8px 12px;
+	margin-bottom: 12px;
+	font-size: 1.2em;
+}
+/* ---------------------------- */
+
 /* ------- Admin search ------- */
 .as_choice {
 	padding: 2px 4px;

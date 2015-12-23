@@ -3301,6 +3301,89 @@
 		}
 		
 		/**
+			Returns an array containing the history for the Top 20/20 stats in the specified year.
+		*/
+		public function getTop2020StatsHistory($type, $year, $ascending = false) {
+			$order = $ascending ? "ASC" : "DESC";
+			
+			$sql = "SELECT 
+						instance_id AS 'InstanceId',
+						_date AS 'Date',
+						cnt AS 'PlayCount'
+					FROM
+						stats
+					WHERE
+						year = :year AND
+						instance_type = :type
+					ORDER BY
+						_date " . $order;
+						
+			$query = $this->db->prepare($sql);
+			$query->execute( array(':year' => $year, ':type' => $type) );
+			
+			if ($query->rowCount() > 0) {
+				return $query->fetchAll(PDO::FETCH_ASSOC);
+			} else {
+				return array();
+			}
+		}
+		
+		/**
+			Returns an array containing the maximum amounts for the Top 20/20 stats in the specified year.
+		*/
+		public function getTop2020StatsMaximum($type, $year, $limit = 10) {
+			$sql = "SELECT 
+						instance_id AS 'InstanceId',
+						_date AS 'Date',
+						cnt AS 'PlayCount'
+					FROM
+						stats
+					WHERE
+						year = :year AND
+						instance_type = :type
+					ORDER BY
+						cnt DESC
+					LIMIT " . $limit;
+						
+			$query = $this->db->prepare($sql);
+			$query->execute( array(':year' => $year, ':type' => $type) );
+			
+			if ($query->rowCount() > 0) {
+				return $query->fetchAll(PDO::FETCH_ASSOC);
+			} else {
+				return array();
+			}
+		}
+		
+		/**
+			Returns an array containing the count of #1 places for the Top 20/20 stats in the specified year.
+		*/
+		public function getTop2020StatsNoNo1($type, $year, $limit = 366) {
+			$sql = "SELECT 
+						instance_id AS 'InstanceId',
+						COUNT(instance_id) AS 'No1Count'
+					FROM
+						stats
+					WHERE
+						year = :year AND
+						instance_type = :type
+					GROUP BY
+						instance_id
+					ORDER BY
+						COUNT(instance_id) DESC
+					LIMIT " . $limit;
+						
+			$query = $this->db->prepare($sql);
+			$query->execute( array(':year' => $year, ':type' => $type) );
+			
+			if ($query->rowCount() > 0) {
+				return $query->fetchAll(PDO::FETCH_ASSOC);
+			} else {
+				return array();
+			}
+		}
+		
+		/**
 			Returns an array containing all calendarial year charts, by default ordered by descending year.
 			The sort order can be changed via the ascending flag.
 			If no calendarial year charts are found, an empty array is returned.
