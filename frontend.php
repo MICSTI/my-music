@@ -109,6 +109,7 @@
 								$menu .= "<li><a href='favourites.php'>Favourites</a></li>";
 								$menu .= "<li><a href='calendarial.php'>Calendarial</a></li>";
 								$menu .= "<li><a href='custom_range.php'>Custom range</a></li>";
+								$menu .= "<li><a href='top2020_stats.php'>Top 20/20 Stats</a></li>";
 							$menu .= "</ul>";
 							
 						$menu .= "<li class='" . $this->getActiveText("top2020", $selected) . "'><a href='top2020.php'>Top 20/20</a></li>";
