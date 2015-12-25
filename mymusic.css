@@ -230,6 +230,18 @@ a {
 	margin-bottom: 12px;
 	font-size: 1.2em;
 }
+
+.top2020-stats-history-elem {
+	margin-top: 10px;
+	background-color: #e2e2e2;
+	border-radius: 6px;
+	padding: 5px 0px 0px 5px;
+}
+
+.top2020-stats-history-elem-title {
+	font-weight: bold;
+	margin: 4px;
+}
 /* ---------------------------- */
 
 /* ------- Admin search ------- */
