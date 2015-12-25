@@ -1347,24 +1347,24 @@
 			Returns the content for the song tab
 		*/
 		private function getCalendarialSongContent($mdb, $songs) {
-			$content = "";
+			$song_content = "";
 
 			$rank = 1;
 			
 			$previous = -1;
 			
-			$content .= "<table class='table table-striped'>";
-				$content .= "<thead>";
-					$content .= "<tr>";
-						$content .= "<th class='col-sm-1 rank'>Place</th>";
-						$content .= "<th class='col-sm-5'>Song</th>";
-						$content .= "<th class='col-sm-4'>Artist</th>";
-						$content .= "<th class='col-sm-1'>Count</th>";
-						$content .= "<th class='col-sm-1'>Country</th>";
-					$content .= "</tr>";
-				$content .= "</thead>";
+			$song_content .= "<table class='table table-striped'>";
+				$song_content .= "<thead>";
+					$song_content .= "<tr>";
+						$song_content .= "<th class='col-sm-1 rank'>Place</th>";
+						$song_content .= "<th class='col-sm-5'>Song</th>";
+						$song_content .= "<th class='col-sm-4'>Artist</th>";
+						$song_content .= "<th class='col-sm-1'>Count</th>";
+						$song_content .= "<th class='col-sm-1'>Country</th>";
+					$song_content .= "</tr>";
+				$song_content .= "</thead>";
 				
-				$content .= "<tbody>";
+				$song_content .= "<tbody>";
 					foreach ($songs as $song) {
 						$played_count = $song["PlayedCount"];
 						
@@ -1381,45 +1381,45 @@
 						// set previous value to current value for next loop
 						$previous = $played_count;
 						
-						$content .= "<tr>";
-							$content .= "<td class='rank'>" . $rank_display . "</td>";
-							$content .= "<td><a href='song.php?id=" . $song["SongId"] . "'>" . $song["SongName"] . "</a></td>";
-							$content .= "<td><a href='artist.php?id=" . $song["ArtistId"] . "'>" . $song["ArtistName"] . "</a></td>";
-							$content .= "<td>" . $played_count . "</td>";
-							$content .= "<td>" . $main_country_flag . " " . $secondary_country_flag . "</td>";
-						$content .= "</tr>";
+						$song_content .= "<tr>";
+							$song_content .= "<td class='rank'>" . $rank_display . "</td>";
+							$song_content .= "<td><a href='song.php?id=" . $song["SongId"] . "'>" . $song["SongName"] . "</a></td>";
+							$song_content .= "<td><a href='artist.php?id=" . $song["ArtistId"] . "'>" . $song["ArtistName"] . "</a></td>";
+							$song_content .= "<td>" . $played_count . "</td>";
+							$song_content .= "<td>" . $main_country_flag . " " . $secondary_country_flag . "</td>";
+						$song_content .= "</tr>";
 						
 						// increase rank
 						$rank++;
 					}
-				$content .= "</tbody>";
-			$content .= "</table>";
+				$song_content .= "</tbody>";
+			$song_content .= "</table>";
 			
-			return $content;
+			return $song_content;
 		}
 		
 		/**
 			Returns the content for the artist tab
 		*/
 		private function getCalendarialArtistContent($mdb, $artists) {
-			$content = "";
+			$song_content = "";
 			
 			$rank = 1;
 			
 			$previous = -1;
 			
-			$content .= "<table class='table table-striped'>";
-				$content .= "<thead>";
-					$content .= "<tr>";
-						$content .= "<th class='col-sm-1 rank'>Place</th>";
-						$content .= "<th class='col-sm-5'>Artist</th>";
-						$content .= "<th class='col-sm-1'>Count</th>";
-						$content .= "<th class='col-sm-1'>Country</th>";
-						$content .= "<th class='col-sm-4'> </th>";
-					$content .= "</tr>";
-				$content .= "</thead>";
+			$song_content .= "<table class='table table-striped'>";
+				$song_content .= "<thead>";
+					$song_content .= "<tr>";
+						$song_content .= "<th class='col-sm-1 rank'>Place</th>";
+						$song_content .= "<th class='col-sm-5'>Artist</th>";
+						$song_content .= "<th class='col-sm-1'>Count</th>";
+						$song_content .= "<th class='col-sm-1'>Country</th>";
+						$song_content .= "<th class='col-sm-4'> </th>";
+					$song_content .= "</tr>";
+				$song_content .= "</thead>";
 				
-				$content .= "<tbody>";
+				$song_content .= "<tbody>";
 					foreach ($artists as $artist) {
 						$played_count = $artist["PlayedCount"];
 						
@@ -1436,45 +1436,45 @@
 						// set previous value to current value for next loop
 						$previous = $played_count;
 						
-						$content .= "<tr>";
-							$content .= "<td class='rank'>" . $rank_display . "</td>";
-							$content .= "<td><a href='artist.php?id=" . $artist["ArtistId"] . "'>" . $artist["ArtistName"] . "</a></td>";
-							$content .= "<td>" . $played_count . "</td>";
-							$content .= "<td>" . $main_country_flag . " " . $secondary_country_flag . "</td>";
-							$content .= "<td> </td>";
-						$content .= "</tr>";
+						$song_content .= "<tr>";
+							$song_content .= "<td class='rank'>" . $rank_display . "</td>";
+							$song_content .= "<td><a href='artist.php?id=" . $artist["ArtistId"] . "'>" . $artist["ArtistName"] . "</a></td>";
+							$song_content .= "<td>" . $played_count . "</td>";
+							$song_content .= "<td>" . $main_country_flag . " " . $secondary_country_flag . "</td>";
+							$song_content .= "<td> </td>";
+						$song_content .= "</tr>";
 						
 						// increase rank
 						$rank++;
 					}
-				$content .= "</tbody>";
-			$content .= "</table>";
+				$song_content .= "</tbody>";
+			$song_content .= "</table>";
 			
-			return $content;
+			return $song_content;
 		}
 		
 		/**
 			Returns the content for the record tab
 		*/
 		private function getCalendarialRecordContent($mdb, $records) {
-			$content = "";
+			$song_content = "";
 			
 			$rank = 1;
 			
 			$previous = -1;
 			
-			$content .= "<table class='table table-striped'>";
-				$content .= "<thead>";
-					$content .= "<tr>";
-						$content .= "<th class='col-sm-1 rank'>Place</th>";
-						$content .= "<th class='col-sm-5'>Record</th>";
-						$content .= "<th class='col-sm-4'>Artist</th>";
-						$content .= "<th class='col-sm-1'>Count</th>";
-						$content .= "<th class='col-sm-1'>Country</th>";
-					$content .= "</tr>";
-				$content .= "</thead>";
+			$song_content .= "<table class='table table-striped'>";
+				$song_content .= "<thead>";
+					$song_content .= "<tr>";
+						$song_content .= "<th class='col-sm-1 rank'>Place</th>";
+						$song_content .= "<th class='col-sm-5'>Record</th>";
+						$song_content .= "<th class='col-sm-4'>Artist</th>";
+						$song_content .= "<th class='col-sm-1'>Count</th>";
+						$song_content .= "<th class='col-sm-1'>Country</th>";
+					$song_content .= "</tr>";
+				$song_content .= "</thead>";
 				
-				$content .= "<tbody>";
+				$song_content .= "<tbody>";
 					foreach ($records as $record) {
 						$played_count = $record["PlayedCount"];
 						
@@ -1491,21 +1491,21 @@
 						// set previous value to current value for next loop
 						$previous = $played_count;
 						
-						$content .= "<tr>";
-							$content .= "<td class='rank'>" . $rank_display . "</td>";
-							$content .= "<td><a href='record.php?id=" . $record["RecordId"] . "'>" . $record["RecordName"] . "</a></td>";
-							$content .= "<td><a href='artist.php?id=" . $record["ArtistId"] . "'>" . $record["ArtistName"] . "</a></td>";
-							$content .= "<td>" . $played_count . "</td>";
-							$content .= "<td>" . $main_country_flag . " " . $secondary_country_flag . "</td>";
-						$content .= "</tr>";
+						$song_content .= "<tr>";
+							$song_content .= "<td class='rank'>" . $rank_display . "</td>";
+							$song_content .= "<td><a href='record.php?id=" . $record["RecordId"] . "'>" . $record["RecordName"] . "</a></td>";
+							$song_content .= "<td><a href='artist.php?id=" . $record["ArtistId"] . "'>" . $record["ArtistName"] . "</a></td>";
+							$song_content .= "<td>" . $played_count . "</td>";
+							$song_content .= "<td>" . $main_country_flag . " " . $secondary_country_flag . "</td>";
+						$song_content .= "</tr>";
 						
 						// increase rank
 						$rank++;
 					}
-				$content .= "</tbody>";
-			$content .= "</table>";
+				$song_content .= "</tbody>";
+			$song_content .= "</table>";
 			
-			return $content;
+			return $song_content;
 		}
 		
 		/**
@@ -1811,6 +1811,114 @@
 				case "maximum":
 					$title_text = "Maximum";
 					
+					$songs = $mdb->getTop2020StatsMaximum("songs", $year);
+					$artists = $mdb->getTop2020StatsMaximum("artists", $year);
+					
+					$song_content = "";
+					
+					// songs
+					$song_content .= "<table class='table table-striped'>";
+						$song_content .= "<thead>";
+							$song_content .= "<tr>";
+								$song_content .= "<th class='col-sm-1 rank'>Place</th>";
+								$song_content .= "<th class='col-sm-5'>Song</th>";
+								$song_content .= "<th class='col-sm-4'>Artist</th>";
+								$song_content .= "<th class='col-sm-1'>Count</th>";
+								$song_content .= "<th class='col-sm-1'>Country</th>";
+							$song_content .= "</tr>";
+						$song_content .= "</thead>";
+						
+						$song_content .= "<tbody>";
+							$rank = 1;
+			
+							$previous = -1;
+						
+							foreach ($songs as $song_elem) {
+								$song = $mdb->getSong($song_elem["InstanceId"]);
+								
+								$played_count = $song_elem["PlayCount"];
+								
+								// country
+								$main_country = $mdb->getCountry($song["ArtistMainCountryId"]);
+								$secondary_country = $mdb->getCountry($song["ArtistSecondaryCountryId"]);
+								
+								$main_country_flag = getCountryFlag($main_country);
+								$secondary_country_flag = getCountryFlag($secondary_country);
+								
+								// don't display rank if it's the same count as before - they are tied
+								$rank_display = $played_count == $previous ? "" : $rank;
+								
+								// set previous value to current value for next loop
+								$previous = $played_count;
+								
+								// date
+								$date_format = new MysqlDate($song_elem["Date"]);
+								
+								$song_content .= "<tr>";
+									$song_content .= "<td class='rank'>" . $rank_display . "</td>";
+									$song_content .= "<td><a href='song.php?id=" . $song["SongId"] . "'>" . $song["SongName"] . "</a></td>";
+									$song_content .= "<td><a href='artist.php?id=" . $song["ArtistId"] . "'>" . $song["ArtistName"] . "</a></td>";
+									$song_content .= "<td title='" . $date_format->convert2AustrianDate() . "'>" . $played_count . "</td>";
+									$song_content .= "<td>" . $main_country_flag . " " . $secondary_country_flag . "</td>";
+								$song_content .= "</tr>";
+								
+								// increase rank
+								$rank++;
+							}
+						$song_content .= "</tbody>";
+					$song_content .= "</table>";
+					
+					// artists
+					$artist_content = "";
+					
+					$artist_content .= "<table class='table table-striped'>";
+						$artist_content .= "<thead>";
+							$artist_content .= "<tr>";
+								$artist_content .= "<th class='col-sm-1 rank'>Place</th>";
+								$artist_content .= "<th class='col-sm-9'>Artist</th>";
+								$artist_content .= "<th class='col-sm-1'>Count</th>";
+								$artist_content .= "<th class='col-sm-1'>Country</th>";
+							$artist_content .= "</tr>";
+						$artist_content .= "</thead>";
+						
+						$artist_content .= "<tbody>";
+							$rank = 1;
+			
+							$previous = -1;
+						
+							foreach ($artists as $artist_elem) {
+								$artist = $mdb->getArtist($artist_elem["InstanceId"]);
+								
+								$played_count = $artist_elem["PlayCount"];
+								
+								// country
+								$main_country = $mdb->getCountry($artist["ArtistMainCountryId"]);
+								$secondary_country = $mdb->getCountry($artist["ArtistSecondaryCountryId"]);
+								
+								$main_country_flag = getCountryFlag($main_country);
+								$secondary_country_flag = getCountryFlag($secondary_country);
+								
+								// don't display rank if it's the same count as before - they are tied
+								$rank_display = $played_count == $previous ? "" : $rank;
+								
+								// set previous value to current value for next loop
+								$previous = $played_count;
+								
+								// date
+								$date_format = new MysqlDate($artist_elem["Date"]);
+								
+								$artist_content .= "<tr>";
+									$artist_content .= "<td class='rank'>" . $rank_display . "</td>";
+									$artist_content .= "<td><a href='artist.php?id=" . $song["ArtistId"] . "'>" . $song["ArtistName"] . "</a></td>";
+									$artist_content .= "<td title='" . $date_format->convert2AustrianDate() . "'>" . $played_count . "</td>";
+									$artist_content .= "<td>" . $main_country_flag . " " . $secondary_country_flag . "</td>";
+								$artist_content .= "</tr>";
+								
+								// increase rank
+								$rank++;
+							}
+						$artist_content .= "</tbody>";
+					$artist_content .= "</table>";
 					
 					break;
 					
