@@ -1587,6 +1587,7 @@
 					$previous_id = -1;
 					$previous_date = "";
 					$start_date = "x";
+					$first = true;
 					
 					foreach ($data as $elem) {
 						$song_id = $elem["InstanceId"];
@@ -1598,25 +1599,35 @@
 							if ($previous_id >= 0) {
 								$song_content .= "<div class='top2020-stats-history-elem'>";
 									// print date
-									if ($start_date == $previous_date) {
-										// only one day
-										$song_content .= "<div class='top2020-stats-history-elem-title'>";
-											$start_date_format = new MysqlDate($start_date);
+									if ($first) {
+										$first = false;
 										
-											$song_content .= $start_date_format->convert2AustrianDate();
+										$start_date_format = new MysqlDate($previous_date);
+										
+										$song_content .= "<div class='top2020-stats-history-elem-title'>";
+											$song_content .= "since " . $start_date_format->convert2AustrianDate();
 										$song_content .= "</div>";
 									} else {
-										// run over more days
-										$song_content .= "<div class='top2020-stats-history-elem-title'>";
-											$start_date_format = new MysqlDate($start_date);
-											$previous_date_format = new MysqlDate($previous_date);
-										
-											$song_content .= $previous_date_format->convert2AustrianDate() . " - " . $start_date_format->convert2AustrianDate();
-										$song_content .= "</div>";
+											if ($start_date == $previous_date) {
+											// only one day
+											$song_content .= "<div class='top2020-stats-history-elem-title'>";
+												$start_date_format = new MysqlDate($start_date);
+											
+												$song_content .= $start_date_format->convert2AustrianDate();
+											$song_content .= "</div>";
+										} else {
+											// run over more days
+											$song_content .= "<div class='top2020-stats-history-elem-title'>";
+												$start_date_format = new MysqlDate($start_date);
+												$previous_date_format = new MysqlDate($previous_date);
+											
+												$song_content .= $previous_date_format->convert2AustrianDate() . " - " . $start_date_format->convert2AustrianDate();
+											$song_content .= "</div>";
+										}
 									}
 									
 									// print song
-									$song = $mdb->getSong($song_id);
+									$song = $mdb->getSong($previous_id);
 									
 									$song_content .= "<table class='table'>";
 										$song_content .= "<tr>";
@@ -1653,25 +1664,33 @@
 					// print last song in the queue
 					$song_content .= "<div class='top2020-stats-history-elem'>";
 						// print date
-						if ($start_date == $previous_date) {
-							// only one day
-							$song_content .= "<div class='top2020-stats-history-elem-title'>";
-								$start_date_format = new MysqlDate($start_date);
+						if ($first) {
+							$first = false;
 							
-								$song_content .= $start_date_format->convert2AustrianDate();
-							$song_content .= "</div>";
+							$start_date_format = new MysqlDate($start_date);
+							
+							$song_content .= "since " . $start_date_format->convert2AustrianDate();
 						} else {
-							// run over more days
-							$song_content .= "<div class='top2020-stats-history-elem-title'>";
-								$start_date_format = new MysqlDate($start_date);
-								$previous_date_format = new MysqlDate($previous_date);
-							
-								$song_content .= $previous_date_format->convert2AustrianDate() . " - " . $start_date_format->convert2AustrianDate();
-							$song_content .= "</div>";
+								if ($start_date == $previous_date) {
+								// only one day
+								$song_content .= "<div class='top2020-stats-history-elem-title'>";
+									$start_date_format = new MysqlDate($start_date);
+								
+									$song_content .= $start_date_format->convert2AustrianDate();
+								$song_content .= "</div>";
+							} else {
+								// run over more days
+								$song_content .= "<div class='top2020-stats-history-elem-title'>";
+									$start_date_format = new MysqlDate($start_date);
+									$previous_date_format = new MysqlDate($previous_date);
+								
+									$song_content .= $previous_date_format->convert2AustrianDate() . " - " . $start_date_format->convert2AustrianDate();
+								$song_content .= "</div>";
+							}
 						}
 						
 						// print song
-						$song = $mdb->getSong($song_id);
+						$song = $mdb->getSong($previous_id);
 						
 						$song_content .= "<table class='table'>";
 							$song_content .= "<tr>";
@@ -1705,6 +1724,7 @@
 					$previous_id = -1;
 					$previous_date = "";
 					$start_date = "x";
+					$first = true;
 					
 					foreach ($data as $elem) {
 						$artist_id = $elem["InstanceId"];
@@ -1716,25 +1736,35 @@
 							if ($previous_id >= 0) {
 								$artist_content .= "<div class='top2020-stats-history-elem'>";
 									// print date
-									if ($start_date == $previous_date) {
-										// only one day
-										$artist_content .= "<div class='top2020-stats-history-elem-title'>";
-											$start_date_format = new MysqlDate($start_date);
+									if ($first) {
+										$first = false;
 										
-											$artist_content .= $start_date_format->convert2AustrianDate();
+										$start_date_format = new MysqlDate($previous_date);
+										
+										$artist_content .= "<div class='top2020-stats-history-elem-title'>";
+											$artist_content .= "since " . $start_date_format->convert2AustrianDate();
 										$artist_content .= "</div>";
 									} else {
-										// run over more days
-										$artist_content .= "<div class='top2020-stats-history-elem-title'>";
-											$start_date_format = new MysqlDate($start_date);
-											$previous_date_format = new MysqlDate($previous_date);
-										
-											$artist_content .= $previous_date_format->convert2AustrianDate() . " - " . $start_date_format->convert2AustrianDate();
-										$artist_content .= "</div>";
+										if ($start_date == $previous_date) {
+											// only one day
+											$artist_content .= "<div class='top2020-stats-history-elem-title'>";
+												$start_date_format = new MysqlDate($start_date);
+											
+												$artist_content .= $start_date_format->convert2AustrianDate();
+											$artist_content .= "</div>";
+										} else {
+											// run over more days
+											$artist_content .= "<div class='top2020-stats-history-elem-title'>";
+												$start_date_format = new MysqlDate($start_date);
+												$previous_date_format = new MysqlDate($previous_date);
+											
+												$artist_content .= $previous_date_format->convert2AustrianDate() . " - " . $start_date_format->convert2AustrianDate();
+											$artist_content .= "</div>";
+										}
 									}
 									
 									// print artist
-									$artist = $mdb->getArtist($artist_id);
+									$artist = $mdb->getArtist($previous_id);
 									
 									$artist_content .= "<table class='table'>";
 										$artist_content .= "<tr>";
@@ -1767,25 +1797,35 @@
 					// print last artist in the queue
 					$artist_content .= "<div class='top2020-stats-history-elem'>";
 						// print date
-						if ($start_date == $previous_date) {
-							// only one day
-							$artist_content .= "<div class='top2020-stats-history-elem-title'>";
-								$start_date_format = new MysqlDate($start_date);
+						if ($first) {
+							$first = false;
 							
-								$artist_content .= $start_date_format->convert2AustrianDate();
+							$start_date_format = new MysqlDate($previous_date);
+							
+							$artist_content .= "<div class='top2020-stats-history-elem-title'>";
+								$artist_content .= "since " . $start_date_format->convert2AustrianDate();
 							$artist_content .= "</div>";
 						} else {
-							// run over more days
-							$artist_content .= "<div class='top2020-stats-history-elem-title'>";
-								$start_date_format = new MysqlDate($start_date);
-								$previous_date_format = new MysqlDate($previous_date);
-							
-								$artist_content .= $previous_date_format->convert2AustrianDate() . " - " . $start_date_format->convert2AustrianDate();
-							$artist_content .= "</div>";
+							if ($start_date == $previous_date) {
+								// only one day
+								$artist_content .= "<div class='top2020-stats-history-elem-title'>";
+									$start_date_format = new MysqlDate($start_date);
+								
+									$artist_content .= $start_date_format->convert2AustrianDate();
+								$artist_content .= "</div>";
+							} else {
+								// run over more days
+								$artist_content .= "<div class='top2020-stats-history-elem-title'>";
+									$start_date_format = new MysqlDate($start_date);
+									$previous_date_format = new MysqlDate($previous_date);
+								
+									$artist_content .= $previous_date_format->convert2AustrianDate() . " - " . $start_date_format->convert2AustrianDate();
+								$artist_content .= "</div>";
+							}
 						}
 						
 						// print artist
-						$artist = $mdb->getArtist($artist_id);
+						$artist = $mdb->getArtist($previous_id);
 						
 						$artist_content .= "<table class='table'>";
 							$artist_content .= "<tr>";
