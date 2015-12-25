@@ -3335,12 +3335,14 @@
 			$sql = "SELECT 
 						instance_id AS 'InstanceId',
 						_date AS 'Date',
-						cnt AS 'PlayCount'
+						MAX(cnt) AS 'PlayCount'
 					FROM
 						stats
 					WHERE
 						year = :year AND
 						instance_type = :type
+					GROUP BY
+						instance_id
 					ORDER BY
 						cnt DESC
 					LIMIT " . $limit;

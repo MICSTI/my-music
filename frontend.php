@@ -1949,7 +1949,7 @@
 								
 								$artist_content .= "<tr>";
 									$artist_content .= "<td class='rank'>" . $rank_display . "</td>";
-									$artist_content .= "<td><a href='artist.php?id=" . $song["ArtistId"] . "'>" . $song["ArtistName"] . "</a></td>";
+									$artist_content .= "<td><a href='artist.php?id=" . $artist["ArtistId"] . "'>" . $artist["ArtistName"] . "</a></td>";
 									$artist_content .= "<td title='" . $date_format->convert2AustrianDate() . "'>" . $played_count . "</td>";
 									$artist_content .= "<td>" . $main_country_flag . " " . $secondary_country_flag . "</td>";
 								$artist_content .= "</tr>";
@@ -2057,7 +2057,7 @@
 								
 								$artist_content .= "<tr>";
 									$artist_content .= "<td class='rank'>" . $rank_display . "</td>";
-									$artist_content .= "<td><a href='artist.php?id=" . $song["ArtistId"] . "'>" . $song["ArtistName"] . "</a></td>";
+									$artist_content .= "<td><a href='artist.php?id=" . $artist["ArtistId"] . "'>" . $artist["ArtistName"] . "</a></td>";
 									$artist_content .= "<td>" . $played_count . "</td>";
 									$artist_content .= "<td>" . $main_country_flag . " " . $secondary_country_flag . "</td>";
 								$artist_content .= "</tr>";
