@@ -1701,15 +1701,110 @@
 					
 					$artist_content = "";
 					
+					// keep track of previous #1
+					$previous_id = -1;
+					$previous_date = "";
+					$start_date = "x";
+					
 					foreach ($data as $elem) {
 						$artist_id = $elem["InstanceId"];
 						$date = $elem["Date"];
 						$cnt = $elem["PlayCount"];
 						
-						$artist_content .= "<div>";
-							$artist_content .= $artist_id . " / " . $date . " / " . $cnt;
-						$artist_content .= "</div>";
+						if ($artist_id != $previous_id) {							
+							// print old artist (if it exists)
+							if ($previous_id >= 0) {
+								$artist_content .= "<div class='top2020-stats-history-elem'>";
+									// print date
+									if ($start_date == $previous_date) {
+										// only one day
+										$artist_content .= "<div class='top2020-stats-history-elem-title'>";
+											$start_date_format = new MysqlDate($start_date);
+										
+											$artist_content .= $start_date_format->convert2AustrianDate();
+										$artist_content .= "</div>";
+									} else {
+										// run over more days
+										$artist_content .= "<div class='top2020-stats-history-elem-title'>";
+											$start_date_format = new MysqlDate($start_date);
+											$previous_date_format = new MysqlDate($previous_date);
+										
+											$artist_content .= $previous_date_format->convert2AustrianDate() . " - " . $start_date_format->convert2AustrianDate();
+										$artist_content .= "</div>";
+									}
+									
+									// print artist
+									$artist = $mdb->getArtist($artist_id);
+									
+									$artist_content .= "<table class='table'>";
+										$artist_content .= "<tr>";
+											$artist_content .= "<td class='col-sm-10'>";
+												$artist_content .= getArtistLink($artist["ArtistId"], $artist["ArtistName"]);
+											$artist_content .= "</td>";
+											
+											$artist_content .= "<td class='col-sm-2'>";
+												$main_country = $mdb->getCountry($artist["ArtistMainCountryId"]);
+												$secondary_country = $mdb->getCountry($artist["ArtistSecondaryCountryId"]);
+												
+												$main_country_flag = getCountryFlag($main_country);
+												$secondary_country_flag = getCountryFlag($secondary_country);
+												
+												$artist_content .= $main_country_flag . " " . $secondary_country_flag;
+											$artist_content .= "</td>";
+										$artist_content .= "</tr>";
+									$artist_content .= "</table>";
+								$artist_content .= "</div>";
+							}
+							
+							// keep track of start date for this new artist
+							$start_date = $date;
+						}
+						
+						$previous_id = $artist_id;
+						$previous_date = $date;
 					}
+					
+					// print last artist in the queue
+					$artist_content .= "<div class='top2020-stats-history-elem'>";
+						// print date
+						if ($start_date == $previous_date) {
+							// only one day
+							$artist_content .= "<div class='top2020-stats-history-elem-title'>";
+								$start_date_format = new MysqlDate($start_date);
+							
+								$artist_content .= $start_date_format->convert2AustrianDate();
+							$artist_content .= "</div>";
+						} else {
+							// run over more days
+							$artist_content .= "<div class='top2020-stats-history-elem-title'>";
+								$start_date_format = new MysqlDate($start_date);
+								$previous_date_format = new MysqlDate($previous_date);
+							
+								$artist_content .= $previous_date_format->convert2AustrianDate() . " - " . $start_date_format->convert2AustrianDate();
+							$artist_content .= "</div>";
+						}
+						
+						// print artist
+						$artist = $mdb->getArtist($artist_id);
+						
+						$artist_content .= "<table class='table'>";
+							$artist_content .= "<tr>";
+								$artist_content .= "<td class='col-sm-10'>";
+									$artist_content .= getArtistLink($artist["ArtistId"], $artist["ArtistName"]);
+								$artist_content .= "</td>";
+								
+								$artist_content .= "<td class='col-sm-2'>";
+									$main_country = $mdb->getCountry($artist["ArtistMainCountryId"]);
+									$secondary_country = $mdb->getCountry($artist["ArtistSecondaryCountryId"]);
+									
+									$main_country_flag = getCountryFlag($main_country);
+									$secondary_country_flag = getCountryFlag($secondary_country);
+									
+									$artist_content .= $main_country_flag . " " . $secondary_country_flag;
+								$artist_content .= "</td>";
+							$artist_content .= "</tr>";
+						$artist_content .= "</table>";
+					$artist_content .= "</div>";
 					
 					break;
 					
