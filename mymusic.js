@@ -1603,7 +1603,7 @@ $(document).ready( function () {
 					$("#top2020-stats-content").html(response.content);
 					
 					// add tooltips
-					//addTooltips();
+					addTooltips();
 				} else {
 					console.log("Error", response.message);
 					globalNotify("Error getting charts content", "error");

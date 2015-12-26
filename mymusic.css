@@ -344,7 +344,7 @@ a {
 
 /* ---- NO AFFIX ON SMALL DEVICES ---- */
 @media (max-width: 765px) {
-	#calendarial-accordion.affix, #settings.affix, #administration.affix {
+	#calendarial-accordion.affix, #settings.affix, #administration.affix, #top2020-stats-accordion.affix {
 		position: static;
 	}
 }
