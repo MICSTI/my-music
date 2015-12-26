@@ -1574,6 +1574,9 @@
 			$song_content = "songs";
 			$artist_content = "artists";
 			
+			// check if the year is the current year (important for displaying "since ..." in the title; this will not be displayed if it is a previous year)
+			$current_year = date('Y') == $year;
+			
 			switch ($type) {
 				case "history":
 					$title_text = "History";
@@ -1599,9 +1602,7 @@
 							if ($previous_id >= 0) {
 								$song_content .= "<div class='top2020-stats-history-elem'>";
 									// print date
-									if ($first) {
-										$first = false;
-										
+									if ($first && $current_year) {
 										$start_date_format = new MysqlDate($previous_date);
 										
 										$song_content .= "<div class='top2020-stats-history-elem-title'>";
@@ -1651,6 +1652,9 @@
 										$song_content .= "</tr>";
 									$song_content .= "</table>";
 								$song_content .= "</div>";
+								
+								// delete first flag
+								$first = false;
 							}
 							
 							// keep track of start date for this new song
@@ -1664,7 +1668,7 @@
 					// print last song in the queue
 					$song_content .= "<div class='top2020-stats-history-elem'>";
 						// print date
-						if ($first) {
+						if ($first && $current_year) {
 							$first = false;
 							
 							$start_date_format = new MysqlDate($start_date);
@@ -1736,9 +1740,7 @@
 							if ($previous_id >= 0) {
 								$artist_content .= "<div class='top2020-stats-history-elem'>";
 									// print date
-									if ($first) {
-										$first = false;
-										
+									if ($first && $current_year) {
 										$start_date_format = new MysqlDate($previous_date);
 										
 										$artist_content .= "<div class='top2020-stats-history-elem-title'>";
@@ -1784,6 +1786,9 @@
 										$artist_content .= "</tr>";
 									$artist_content .= "</table>";
 								$artist_content .= "</div>";
+								
+								// delete first flag
+								$first = false;
 							}
 							
 							// keep track of start date for this new artist
@@ -1797,7 +1802,7 @@
 					// print last artist in the queue
 					$artist_content .= "<div class='top2020-stats-history-elem'>";
 						// print date
-						if ($first) {
+						if ($first && $current_year) {
 							$first = false;
 							
 							$start_date_format = new MysqlDate($previous_date);
