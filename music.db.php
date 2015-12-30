@@ -3344,7 +3344,7 @@
 					GROUP BY
 						instance_id
 					ORDER BY
-						cnt DESC
+						MAX(cnt) DESC
 					LIMIT " . $limit;
 						
 			$query = $this->db->prepare($sql);
