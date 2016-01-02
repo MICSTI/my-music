@@ -1582,6 +1582,10 @@ $(document).ready( function () {
 			var _type = $(this).attr("data-type");
 			var _year = $(this).attr("data-year");
 			
+			// defaults to history if year is clicked
+			if (_type == "year")
+				_type = "history";
+			
 			// data object
 			var _data = {
 				type: _type,

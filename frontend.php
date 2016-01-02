@@ -1673,7 +1673,9 @@
 							
 							$start_date_format = new MysqlDate($start_date);
 							
-							$song_content .= "since " . $start_date_format->convert2AustrianDate();
+							$song_content .= "<div class='top2020-stats-history-elem-title'>";
+								$song_content .= "since " . $start_date_format->convert2AustrianDate();
+							$song_content .= "</div>";
 						} else {
 								if ($start_date == $previous_date) {
 								// only one day
