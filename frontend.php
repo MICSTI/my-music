@@ -1671,7 +1671,7 @@
 						if ($first && $current_year) {
 							$first = false;
 							
-							$start_date_format = new MysqlDate($start_date);
+							$start_date_format = new MysqlDate($previous_date);
 							
 							$song_content .= "<div class='top2020-stats-history-elem-title'>";
 								$song_content .= "since " . $start_date_format->convert2AustrianDate();
