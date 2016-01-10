@@ -9,6 +9,15 @@
 	
 	$songs = $mc->getMDB()->getPlayedHistoryForDate($date);
 	
+	// setting for displaying red exclamation mark next to artist name
+	$no_country_setting = $mc->getMDB()->getConfig("display_no_country_indicator");
+	
+	if ($no_country_setting == "true" OR $no_country_setting == "yes") {
+		$display_no_country = true;
+	} else {
+		$display_no_country = false;
+	}
+	
 	// day name
 	$datetime = new DateTime($date);
 	$day_name = getDayName(date('N', $datetime->getTimestamp()));
@@ -71,10 +80,25 @@
 					$activity = $mc->getMDB()->getActivity($song["ActivityId"]);
 					$activity_string = getActivitySpan($activity);
 					
+					// get artist info (for displaying exclamation mark if artist has no country)
+					$artist = $mc->getMDB()->getArtist($song["ArtistId"]);
+					
+					if (empty($artist["ArtistMainCountryId"]) AND empty($artist["ArtistSecondaryCountryId"])) {
+						$no_country = true;
+					} else {
+						$no_country = false;
+					}
+					
+					if ($display_no_country AND $no_country) {
+						$no_country_span = "<span class='no-country'>!</span>";
+					} else {
+						$no_country_span = "";
+					}
+					
 					$html .= "<tr>";
 						$html .= "<td>" . getTimeFromTimestamp($song["Timestamp"]) . "</td>";
 						$html .= "<td>" . getSongLink($song["SongId"], $song["SongName"]) . "</td>";
-						$html .= "<td>" . getArtistLink($song["ArtistId"], $song["ArtistName"]) . "</td>";
+						$html .= "<td>" . getArtistLink($song["ArtistId"], $song["ArtistName"]) . $no_country_span . "</td>";
 						$html .= "<td class='hidden-xs'>" . getRecordLink($song["RecordId"], $song["RecordName"]) . "</td>";
 						$html .= "<td class='hidden-xs'>" . $device_string . "</td>";
 						$html .= "<td class='hidden-xs'>" . $activity_string . "</td>";

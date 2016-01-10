@@ -46,6 +46,16 @@ a {
 	color: #f89406;
 }
 
+.no-country {
+	font-weight: bold;
+    color: #fff;
+    background-color: #ef4836;
+    display: inline-block;
+    margin: -4px 4px;
+    border-radius: 4px;
+    padding: 1px 6px;
+}
+
 .flag-icon {
 	margin-right: 3px;
 }
