@@ -1,3 +1,19 @@
+- Artists without country
+SELECT
+  ar.id,
+  ar.name,
+  COUNT(ar.id)
+FROM
+  played pl INNER JOIN
+  songs so ON so.id = pl.sid INNER JOIN
+  artists ar ON so.aid = ar.id
+WHERE
+  ar.main_country_id = 0 AND ar.sec_country_id = 0
+GROUP BY
+  ar.id
+ORDER BY
+  COUNT(ar.id) DESC
+
 - Most played songs
 SELECT
 	so.id AS "SongId",
