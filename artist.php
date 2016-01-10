@@ -35,9 +35,11 @@
 					$html .= "</div>";
 					
 					// # times played
+					$times = $play_count == 1 ? "time" : "times";
+					
 					$html .= "<div class='song-general-info col-sm-7'>";
 						$html .= "<div class='col-sm-3 bold'>Played:</div>";
-						$html .= "<div class='col-sm-9'>" . $play_count . " times</div>";
+						$html .= "<div class='col-sm-9'>" . $play_count . " " . $times . "</div>";
 					$html .= "</div>";
 					
 					// artist details edit button
