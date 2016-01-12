@@ -1212,6 +1212,10 @@
 				$html .= "<li>";
 					$html .= "<a data-toggle='tab' href='#activities'>Activities</a>";
 				$html .= "</li>";
+				
+				$html .= "<li>";
+					$html .= "<a data-toggle='tab' href='#lightning'>Lightning strikes</a>";
+				$html .= "</li>";
 			$html .= "</ul>";
 			
 			$html .= "<div class='tab-content'>";
@@ -1239,6 +1243,13 @@
 					$activity_statistics = $mdb->getOverallActivityStatistics($date_from, $date_to);
 					
 					$html .= $this->getActivityStatisticsTable($mdb, $activity_statistics);
+				$html .= "</div>";
+				
+				$html .= "<div id='lightning' class='tab-pane fade'>";
+					// get lightning strikes content
+					$lightning_strikes = $mdb->getLightningStrikes($date_from, $date_to, 30);
+						
+					$html .= $this->getLightningStrikesTable($mdb, $lightning_strikes);
 				$html .= "</div>";
 			$html .= "</div>";
 			
@@ -1350,7 +1361,7 @@
 				if ($month == 0) {
 					$html .= "<div id='lightning' class='tab-pane fade'>";
 						// get lightning strikes content
-						$lightning_strikes = $mdb->getLightningStrikes($year, 30);
+						$lightning_strikes = $mdb->getLightningStrikes($year . "-01-01", $year . "-12-31", 30);
 						
 						$html .= $this->getLightningStrikesTable($mdb, $lightning_strikes);
 					$html .= "</div>";
@@ -1585,7 +1596,7 @@
 		/**
 			Returns the content for the lightning strikes tab
 		*/
-		private function getLightningStrikesTable($mdb, $lightning_strikes) {
+		public function getLightningStrikesTable($mdb, $lightning_strikes) {
 			$content = "";
 
 			$rank = 1;

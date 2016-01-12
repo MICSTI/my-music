@@ -4270,17 +4270,17 @@
 		/**
 			Gets the lightning strikes for the specified year
 		*/
-		public function getLightningStrikes($year, $limit = 50) {
+		public function getLightningStrikes($date_from, $date_to, $limit = 50) {
 			$limit = " LIMIT 0, " . $limit;
 			
-			if ($year == 0) {
+			if ($date_from == "") {
 				// overall
 				$where = " ";
 				$exec_array = array();
 			} else {
-				// year
-				$where = " YEAR(pl.timestamp) = :year AND ";
-				$exec_array = array(":year" => $year);
+				// time span
+				$where = " DATE(pl.timestamp) >= :date_from AND DATE(pl.timestamp) <= :date_to AND ";
+				$exec_array = array(":date_from" => $date_from, ":date_to" => $date_to);
 			}
 			
 			$sql = "SELECT

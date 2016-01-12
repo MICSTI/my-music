@@ -38,6 +38,10 @@
 		$html .= "<li>";
 			$html .= "<a data-toggle='tab' href='#activities'>Activities</a>";
 		$html .= "</li>";
+		
+		$html .= "<li>";
+			$html .= "<a data-toggle='tab' href='#lightning'>Lightning strikes</a>";
+		$html .= "</li>";
 	$html .= "</ul>";
 	
 	$html .= "<div class='tab-content'>";
@@ -68,6 +72,15 @@
 			$activity_statistics = $mc->getMDB()->getOverallActivityStatistics();
 			
 			$html .= $mc->getFrontend()->getActivityStatisticsTable($mc->getMDB(), $activity_statistics);
+			
+		$html .= "</div>";
+		
+		$html .= "<div id='lightning' class='tab-pane fade'>";
+			
+			// get lightning strikes content
+			$lightning_strikes = $mc->getMDB()->getLightningStrikes("", "", 100);
+			
+			$html .= $mc->getFrontend()->getLightningStrikesTable($mc->getMDB(), $lightning_strikes);
 			
 		$html .= "</div>";
 	$html .= "</div>";
