@@ -13,6 +13,30 @@ GROUP BY
   ar.id
 ORDER BY
   COUNT(ar.id) DESC
+  
+- Lightning strikes
+SELECT
+  a.SongId,
+  so.name AS 'SongName',
+  ar.name AS 'ArtistName',
+  a.PlayedDate,
+  a.PlayedCount
+FROM
+	(SELECT
+	  pl.sid AS 'SongId',
+	  DATE(pl.timestamp) AS 'PlayedDate',
+	  COUNT(pl.sid) AS 'PlayedCount'
+	FROM
+	  played pl
+	WHERE
+	  YEAR(pl.timestamp) = 2015
+	GROUP BY
+	  pl.sid,
+	  DATE(pl.timestamp)
+	ORDER BY
+	  COUNT(pl.sid) DESC) a INNER JOIN
+	songs so ON so.id = a.SongId INNER JOIN
+	artists ar ON ar.id = so.aid
 
 - Most played songs
 SELECT
