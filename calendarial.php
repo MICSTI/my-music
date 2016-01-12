@@ -83,8 +83,13 @@
 		// content right
 		$html .= "<div class='col-sm-9' id='calendarial-content'>";
 			// automatically get content for the first year in the accordion
-			$default_year = date("Y");
-			$default_month = date("m") - 1;
+			if ($month < 12) {
+				$default_year = date("Y");
+				$default_month = date("m") - 1;
+			} else {
+				$default_year = date("Y") - 1;
+				$default_month = 12;
+			}
 			
 			$html .= $mc->getFrontend()->getCalendarialChartsContent($mc->getMDB(), "month", $default_year, $default_month);
 		$html .= "</div>";

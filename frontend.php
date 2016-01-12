@@ -1310,6 +1310,13 @@
 				$html .= "<li>";
 					$html .= "<a data-toggle='tab' href='#activities'>Activities</a>";
 				$html .= "</li>";
+				
+				// if we're in year mode, display the lightning strikes
+				if ($month == 0) {
+					$html .= "<li>";
+						$html .= "<a data-toggle='tab' href='#lightning'>Lightning strikes</a>";
+					$html .= "</li>";
+				}
 			$html .= "</ul>";
 			
 			$html .= "<div class='tab-content'>";
@@ -1338,6 +1345,16 @@
 					
 					$html .= $this->getActivityStatisticsTable($mdb, $activity_statistics);
 				$html .= "</div>";
+				
+				// if we're in year mode, display the lightning strikes
+				if ($month == 0) {
+					$html .= "<div id='lightning' class='tab-pane fade'>";
+						// get lightning strikes content
+						$lightning_strikes = $mdb->getLightningStrikes($year, 30);
+						
+						$html .= $this->getLightningStrikesTable($mdb, $lightning_strikes);
+					$html .= "</div>";
+				}
 			$html .= "</div>";
 			
 			return $html;
@@ -1563,6 +1580,66 @@
 			}
 			
 			return $html;
+		}
+		
+		/**
+			Returns the content for the lightning strikes tab
+		*/
+		private function getLightningStrikesTable($mdb, $lightning_strikes) {
+			$content = "";
+
+			$rank = 1;
+			
+			$previous = -1;
+			
+			$content .= "<table class='table table-striped'>";
+				$content .= "<thead>";
+					$content .= "<tr>";
+						$content .= "<th class='col-sm-1 rank'>Place</th>";
+						$content .= "<th class='col-sm-4'>Song</th>";
+						$content .= "<th class='col-sm-3'>Artist</th>";
+						$content .= "<th class='col-sm-2'>Date</th>";
+						$content .= "<th class='col-sm-1'>Count</th>";
+						$content .= "<th class='col-sm-1'>Country</th>";
+					$content .= "</tr>";
+				$content .= "</thead>";
+				
+				$content .= "<tbody>";
+					foreach ($lightning_strikes as $song) {
+						$played_count = $song["PlayedCount"];
+						
+						// country
+						$main_country = $mdb->getCountry($song["ArtistMainCountryId"]);
+						$secondary_country = $mdb->getCountry($song["ArtistSecondaryCountryId"]);
+						
+						$main_country_flag = getCountryFlag($main_country);
+						$secondary_country_flag = getCountryFlag($secondary_country);
+						
+						// don't display rank if it's the same count as before - they are tied
+						$rank_display = $played_count == $previous ? "" : $rank;
+						
+						// set previous value to current value for next loop
+						$previous = $played_count;
+						
+						// display date
+						$date = new MySqlDate($song["PlayedDate"]);
+						
+						$content .= "<tr>";
+							$content .= "<td class='rank'>" . $rank_display . "</td>";
+							$content .= "<td><a href='song.php?id=" . $song["SongId"] . "'>" . $song["SongName"] . "</a></td>";
+							$content .= "<td><a href='artist.php?id=" . $song["ArtistId"] . "'>" . $song["ArtistName"] . "</a></td>";
+							$content .= "<td>" . $date->convert2AustrianDate() . "</td>";
+							$content .= "<td>" . $played_count . "</td>";
+							$content .= "<td>" . $main_country_flag . " " . $secondary_country_flag . "</td>";
+						$content .= "</tr>";
+						
+						// increase rank
+						$rank++;
+					}
+				$content .= "</tbody>";
+			$content .= "</table>";
+			
+			return $content;
 		}
 		
 		/**

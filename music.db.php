@@ -4268,6 +4268,59 @@
 		}
 		
 		/**
+			Gets the lightning strikes for the specified year
+		*/
+		public function getLightningStrikes($year, $limit = 50) {
+			$limit = " LIMIT 0, " . $limit;
+			
+			if ($year == 0) {
+				// overall
+				$where = " ";
+				$exec_array = array();
+			} else {
+				// year
+				$where = " YEAR(pl.timestamp) = :year AND ";
+				$exec_array = array(":year" => $year);
+			}
+			
+			$sql = "SELECT
+					  a.SongId,
+					  so.name AS 'SongName',
+					  ar.id AS 'ArtistId',
+					  ar.name AS 'ArtistName',
+					  ar.main_country_id AS 'ArtistMainCountryId',
+					  ar.sec_country_id AS 'ArtistSecondaryCountryId',
+					  a.PlayedDate,
+					  a.PlayedCount
+					FROM
+						(SELECT
+						  pl.sid AS 'SongId',
+						  DATE(pl.timestamp) AS 'PlayedDate',
+						  COUNT(pl.sid) AS 'PlayedCount'
+						FROM
+						  played pl
+						WHERE
+						  " . $where . "
+						  pl.sid NOT IN (12071, 13078, 13080, 13838, 13839)
+						GROUP BY
+						  pl.sid,
+						  DATE(pl.timestamp)
+						ORDER BY
+						  COUNT(pl.sid) DESC) a INNER JOIN
+						songs so ON so.id = a.SongId INNER JOIN
+						artists ar ON ar.id = so.aid" . $limit;
+			
+			$query = $this->db->prepare($sql);
+			$query->execute( $exec_array );
+			
+			if ($query->rowCount() > 0) {
+				return $query->fetchAll(PDO::FETCH_ASSOC);
+			} else {
+				return array();
+			}
+		}
+		
+		/**
 			Gets the Top 20/20 country statistics.
 		*/
 		public function getTop2020CountryStatistics($secondary_weight = 0.3) {
