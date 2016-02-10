@@ -1731,7 +1731,12 @@
 					} else {
 						$start_date_format = new MysqlDate($start_date);
 						
-						$html .= $current_date_format->convert2AustrianDate() . " - " . $start_date_format->convert2AustrianDate();
+						// check if #1 duration was longer than one day
+						if ($current_date == $start_date) {
+							$html .= $current_date_format->convert2AustrianDate();
+						} else {
+							$html .= $current_date_format->convert2AustrianDate() . " - " . $start_date_format->convert2AustrianDate();
+						}
 					}
 				$html .= "</div>";
 				
