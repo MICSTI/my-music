@@ -1654,6 +1654,163 @@
 		}
 		
 		/**
+			Returns the tab content for the Top 20/20 stats history function.
+		*/
+		private function getTop2020StatsHistoryContent($mdb, $type, $year) {
+			$html = "";
+			
+			$history_data = $mdb->getTop2020StatsHistory($type, $year);
+					
+			$transformed_data = $mdb->transformTop2020StatsHistory($history_data);
+			
+			$days = array_keys($transformed_data);
+			
+			$previous_day = array();
+			$current_day = array();
+			$first_day = true;
+			$first_element = true;
+			$current_year = date('Y') == $year;
+			$start_date = "";
+			$current_date = "";
+			$change = false;
+			
+			foreach ($days as $day) {
+				$current_day = $transformed_data[$day];
+				
+				if ($change) {
+					$change = false;
+					
+					// set new start date
+					$start_date = $current_date;
+				}
+				
+				// always skip the first day
+				if (!$first_day) {
+					$arr1 = $this->getInstanceIds($current_day);
+					$arr2 = $this->getInstanceIds($previous_day);
+					
+					// if the number of elements in the arrays are different or the array elements are not equal, there was definitely a change in #1
+					if (count($current_day) != count($previous_day) OR !$this->areElementsEqual($arr1, $arr2)) {
+						$since = ($first_element AND $current_year) ? true : false;
+						
+						// get html for #1 element
+						$html .= $this->getElementHtml($mdb, $previous_day, $current_date, $start_date, $type, $since);
+						
+						// set change flag
+						$change = true;
+						
+						// delete first element flag
+						$first_element = false;
+					}
+				} else {
+					$first_day = false;
+					
+					$start_date = $day;
+				}
+				
+				$previous_day = $current_day;
+				$current_date = $day;
+			}
+			
+			// add the last day in the queue
+			$since = ($first_element AND $current_year) ? true : false;
+			$html .= $this->getElementHtml($mdb, $previous_day, $current_date, $start_date, $type, $since);
+			
+			return $html;
+		}
+		
+		private function getElementHtml($mdb, $day, $current_date, $start_date, $type, $since = false) {
+			$html = "";
+			
+			$html .= "<div class='top2020-stats-history-elem'>";
+				$html .= "<div class='top2020-stats-history-elem-title'>";
+					$current_date_format = new MysqlDate($current_date);
+					
+					if ($since) {
+						$html .= "since " . $current_date_format->convert2AustrianDate();
+					} else {
+						$start_date_format = new MysqlDate($start_date);
+						
+						$html .= $current_date_format->convert2AustrianDate() . " - " . $start_date_format->convert2AustrianDate();
+					}
+				$html .= "</div>";
+				
+				$html .= "<table class='table'>";
+					foreach ($day as $elem) {
+						$html .= "<tr>";
+							if ($type == "songs") {
+								// songs
+								$song = $mdb->getSong($elem["InstanceId"]);
+								
+								$html .= "<td class='col-sm-5'>";
+									$html .= getSongLink($song["SongId"], $song["SongName"]);
+								$html .= "</td>";
+								
+								$html .= "<td class='col-sm-5'>";
+									$html .= getArtistLink($song["ArtistId"], $song["ArtistName"]);
+								$html .= "</td>";
+								
+								$html .= "<td class='col-sm-2'>";
+									$main_country = $mdb->getCountry($song["ArtistMainCountryId"]);
+									$secondary_country = $mdb->getCountry($song["ArtistSecondaryCountryId"]);
+									
+									$main_country_flag = getCountryFlag($main_country);
+									$secondary_country_flag = getCountryFlag($secondary_country);
+									
+									$html .= $main_country_flag . " " . $secondary_country_flag;
+								$html .= "</td>";
+							} else {
+								// artists
+								$artist = $mdb->getArtist($elem["InstanceId"]);
+									
+								$html .= "<td class='col-sm-10'>";
+									$html .= getArtistLink($artist["ArtistId"], $artist["ArtistName"]);
+								$html .= "</td>";
+								
+								$html .= "<td class='col-sm-2'>";
+									$main_country = $mdb->getCountry($artist["ArtistMainCountryId"]);
+									$secondary_country = $mdb->getCountry($artist["ArtistSecondaryCountryId"]);
+									
+									$main_country_flag = getCountryFlag($main_country);
+									$secondary_country_flag = getCountryFlag($secondary_country);
+									
+									$html .= $main_country_flag . " " . $secondary_country_flag;
+								$html .= "</td>";
+							}
+						$html .= "</tr>";
+					}
+				$html .= "</table>";
+			$html .= "</div>";
+			
+			return $html;
+		}
+		
+		/**
+			Gets all instance ids from a day array.
+		*/
+		private function getInstanceIds($day) {
+			$ids = array();
+			
+			foreach ($day as $elem) {
+				array_push($ids, $elem["InstanceId"]);
+			}
+			
+			return $ids;
+		}
+		
+		/**
+			Checks if the elements of the arrays are present in both arrays.
+		*/
+		private function areElementsEqual($arr1, $arr2) {
+			foreach ($arr1 as $elem) {
+				if (!in_array($elem, $arr2))
+					return false;
+			}
+			
+			return true;
+		}
+		
+		/**
 			Returns the content with the Top 20/20 stats content
 		*/
 		public function getTop2020StatsContent($mdb, $type, $year) {
@@ -1670,276 +1827,10 @@
 					$title_text = "History";
 					
 					// songs
-					$data = $mdb->getTop2020StatsHistory("songs", $year);
-					
-					$song_content = "";
-					
-					// keep track of previous #1
-					$previous_id = -1;
-					$previous_date = "";
-					$start_date = "x";
-					$first = true;
-					
-					foreach ($data as $elem) {
-						$song_id = $elem["InstanceId"];
-						$date = $elem["Date"];
-						$cnt = $elem["PlayCount"];
-						
-						if ($song_id != $previous_id) {							
-							// print old song (if it exists)
-							if ($previous_id >= 0) {
-								$song_content .= "<div class='top2020-stats-history-elem'>";
-									// print date
-									if ($first && $current_year) {
-										$start_date_format = new MysqlDate($previous_date);
-										
-										$song_content .= "<div class='top2020-stats-history-elem-title'>";
-											$song_content .= "since " . $start_date_format->convert2AustrianDate();
-										$song_content .= "</div>";
-									} else {
-											if ($start_date == $previous_date) {
-											// only one day
-											$song_content .= "<div class='top2020-stats-history-elem-title'>";
-												$start_date_format = new MysqlDate($start_date);
-											
-												$song_content .= $start_date_format->convert2AustrianDate();
-											$song_content .= "</div>";
-										} else {
-											// run over more days
-											$song_content .= "<div class='top2020-stats-history-elem-title'>";
-												$start_date_format = new MysqlDate($start_date);
-												$previous_date_format = new MysqlDate($previous_date);
-											
-												$song_content .= $previous_date_format->convert2AustrianDate() . " - " . $start_date_format->convert2AustrianDate();
-											$song_content .= "</div>";
-										}
-									}
-									
-									// print song
-									$song = $mdb->getSong($previous_id);
-									
-									$song_content .= "<table class='table'>";
-										$song_content .= "<tr>";
-											$song_content .= "<td class='col-sm-5'>";
-												$song_content .= getSongLink($song["SongId"], $song["SongName"]);
-											$song_content .= "</td>";
-											
-											$song_content .= "<td class='col-sm-5'>";
-												$song_content .= getArtistLink($song["ArtistId"], $song["ArtistName"]);
-											$song_content .= "</td>";
-											
-											$song_content .= "<td class='col-sm-2'>";
-												$main_country = $mdb->getCountry($song["ArtistMainCountryId"]);
-												$secondary_country = $mdb->getCountry($song["ArtistSecondaryCountryId"]);
-												
-												$main_country_flag = getCountryFlag($main_country);
-												$secondary_country_flag = getCountryFlag($secondary_country);
-												
-												$song_content .= $main_country_flag . " " . $secondary_country_flag;
-											$song_content .= "</td>";
-										$song_content .= "</tr>";
-									$song_content .= "</table>";
-								$song_content .= "</div>";
-								
-								// delete first flag
-								$first = false;
-							}
-							
-							// keep track of start date for this new song
-							$start_date = $date;
-						}
-						
-						$previous_id = $song_id;
-						$previous_date = $date;
-					}
-					
-					// print last song in the queue
-					$song_content .= "<div class='top2020-stats-history-elem'>";
-						// print date
-						if ($first && $current_year) {
-							$first = false;
-							
-							$start_date_format = new MysqlDate($previous_date);
-							
-							$song_content .= "<div class='top2020-stats-history-elem-title'>";
-								$song_content .= "since " . $start_date_format->convert2AustrianDate();
-							$song_content .= "</div>";
-						} else {
-								if ($start_date == $previous_date) {
-								// only one day
-								$song_content .= "<div class='top2020-stats-history-elem-title'>";
-									$start_date_format = new MysqlDate($start_date);
-								
-									$song_content .= $start_date_format->convert2AustrianDate();
-								$song_content .= "</div>";
-							} else {
-								// run over more days
-								$song_content .= "<div class='top2020-stats-history-elem-title'>";
-									$start_date_format = new MysqlDate($start_date);
-									$previous_date_format = new MysqlDate($previous_date);
-								
-									$song_content .= $previous_date_format->convert2AustrianDate() . " - " . $start_date_format->convert2AustrianDate();
-								$song_content .= "</div>";
-							}
-						}
-						
-						// print song
-						$song = $mdb->getSong($previous_id);
-						
-						$song_content .= "<table class='table'>";
-							$song_content .= "<tr>";
-								$song_content .= "<td class='col-sm-5'>";
-									$song_content .= getSongLink($song["SongId"], $song["SongName"]);
-								$song_content .= "</td>";
-								
-								$song_content .= "<td class='col-sm-5'>";
-									$song_content .= getArtistLink($song["ArtistId"], $song["ArtistName"]);
-								$song_content .= "</td>";
-								
-								$song_content .= "<td class='col-sm-2'>";
-									$main_country = $mdb->getCountry($song["ArtistMainCountryId"]);
-									$secondary_country = $mdb->getCountry($song["ArtistSecondaryCountryId"]);
-									
-									$main_country_flag = getCountryFlag($main_country);
-									$secondary_country_flag = getCountryFlag($secondary_country);
-									
-									$song_content .= $main_country_flag . " " . $secondary_country_flag;
-								$song_content .= "</td>";
-							$song_content .= "</tr>";
-						$song_content .= "</table>";
-					$song_content .= "</div>";
+					$song_content = $this->getTop2020StatsHistoryContent($mdb, "songs", $year);
 					
 					// artists
-					$data = $mdb->getTop2020StatsHistory("artists", $year);
-					
-					$artist_content = "";
-					
-					// keep track of previous #1
-					$previous_id = -1;
-					$previous_date = "";
-					$start_date = "x";
-					$first = true;
-					
-					foreach ($data as $elem) {
-						$artist_id = $elem["InstanceId"];
-						$date = $elem["Date"];
-						$cnt = $elem["PlayCount"];
-						
-						if ($artist_id != $previous_id) {							
-							// print old artist (if it exists)
-							if ($previous_id >= 0) {
-								$artist_content .= "<div class='top2020-stats-history-elem'>";
-									// print date
-									if ($first && $current_year) {
-										$start_date_format = new MysqlDate($previous_date);
-										
-										$artist_content .= "<div class='top2020-stats-history-elem-title'>";
-											$artist_content .= "since " . $start_date_format->convert2AustrianDate();
-										$artist_content .= "</div>";
-									} else {
-										if ($start_date == $previous_date) {
-											// only one day
-											$artist_content .= "<div class='top2020-stats-history-elem-title'>";
-												$start_date_format = new MysqlDate($start_date);
-											
-												$artist_content .= $start_date_format->convert2AustrianDate();
-											$artist_content .= "</div>";
-										} else {
-											// run over more days
-											$artist_content .= "<div class='top2020-stats-history-elem-title'>";
-												$start_date_format = new MysqlDate($start_date);
-												$previous_date_format = new MysqlDate($previous_date);
-											
-												$artist_content .= $previous_date_format->convert2AustrianDate() . " - " . $start_date_format->convert2AustrianDate();
-											$artist_content .= "</div>";
-										}
-									}
-									
-									// print artist
-									$artist = $mdb->getArtist($previous_id);
-									
-									$artist_content .= "<table class='table'>";
-										$artist_content .= "<tr>";
-											$artist_content .= "<td class='col-sm-10'>";
-												$artist_content .= getArtistLink($artist["ArtistId"], $artist["ArtistName"]);
-											$artist_content .= "</td>";
-											
-											$artist_content .= "<td class='col-sm-2'>";
-												$main_country = $mdb->getCountry($artist["ArtistMainCountryId"]);
-												$secondary_country = $mdb->getCountry($artist["ArtistSecondaryCountryId"]);
-												
-												$main_country_flag = getCountryFlag($main_country);
-												$secondary_country_flag = getCountryFlag($secondary_country);
-												
-												$artist_content .= $main_country_flag . " " . $secondary_country_flag;
-											$artist_content .= "</td>";
-										$artist_content .= "</tr>";
-									$artist_content .= "</table>";
-								$artist_content .= "</div>";
-								
-								// delete first flag
-								$first = false;
-							}
-							
-							// keep track of start date for this new artist
-							$start_date = $date;
-						}
-						
-						$previous_id = $artist_id;
-						$previous_date = $date;
-					}
-					
-					// print last artist in the queue
-					$artist_content .= "<div class='top2020-stats-history-elem'>";
-						// print date
-						if ($first && $current_year) {
-							$first = false;
-							
-							$start_date_format = new MysqlDate($previous_date);
-							
-							$artist_content .= "<div class='top2020-stats-history-elem-title'>";
-								$artist_content .= "since " . $start_date_format->convert2AustrianDate();
-							$artist_content .= "</div>";
-						} else {
-							if ($start_date == $previous_date) {
-								// only one day
-								$artist_content .= "<div class='top2020-stats-history-elem-title'>";
-									$start_date_format = new MysqlDate($start_date);
-								
-									$artist_content .= $start_date_format->convert2AustrianDate();
-								$artist_content .= "</div>";
-							} else {
-								// run over more days
-								$artist_content .= "<div class='top2020-stats-history-elem-title'>";
-									$start_date_format = new MysqlDate($start_date);
-									$previous_date_format = new MysqlDate($previous_date);
-								
-									$artist_content .= $previous_date_format->convert2AustrianDate() . " - " . $start_date_format->convert2AustrianDate();
-								$artist_content .= "</div>";
-							}
-						}
-						
-						// print artist
-						$artist = $mdb->getArtist($previous_id);
-						
-						$artist_content .= "<table class='table'>";
-							$artist_content .= "<tr>";
-								$artist_content .= "<td class='col-sm-10'>";
-									$artist_content .= getArtistLink($artist["ArtistId"], $artist["ArtistName"]);
-								$artist_content .= "</td>";
-								
-								$artist_content .= "<td class='col-sm-2'>";
-									$main_country = $mdb->getCountry($artist["ArtistMainCountryId"]);
-									$secondary_country = $mdb->getCountry($artist["ArtistSecondaryCountryId"]);
-									
-									$main_country_flag = getCountryFlag($main_country);
-									$secondary_country_flag = getCountryFlag($secondary_country);
-									
-									$artist_content .= $main_country_flag . " " . $secondary_country_flag;
-								$artist_content .= "</td>";
-							$artist_content .= "</tr>";
-						$artist_content .= "</table>";
-					$artist_content .= "</div>";
+					$artist_content = $this->getTop2020StatsHistoryContent($mdb, "artists", $year);
 					
 					break;
 					

@@ -641,7 +641,6 @@
 		public function endsWith ($haystack, $needle) {
 			return $needle === "" || substr($haystack, -strlen($needle)) === $needle;
 		}
-
 		
 		public function getSongInfo ($sid) {
 			$song_info = $this->getMDB()->getSong($sid);

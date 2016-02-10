@@ -3339,6 +3339,25 @@
 		}
 		
 		/**
+			Transforms the Top 20/20 stats history array to an associative array with dates
+		*/
+		public function transformTop2020StatsHistory($history_array) {
+			$transformed = array();
+			
+			foreach ($history_array as $elem) {
+				$date = $elem["Date"];
+				
+				if (!array_key_exists($date, $transformed)) {
+					$transformed[$date] = array();
+				}
+				
+				array_push($transformed[$date], array("InstanceId" => $elem["InstanceId"], "PlayCount" => $elem["PlayCount"]));
+			}
+			
+			return $transformed;
+		}
+		
+		/**
 			Returns an array containing the maximum amounts for the Top 20/20 stats in the specified year.
 		*/
 		public function getTop2020StatsMaximum($type, $year, $limit = 10) {
