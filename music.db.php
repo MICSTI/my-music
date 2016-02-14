@@ -2971,7 +2971,7 @@
 			$exec_played = $query->execute( array(':parent_id' => $parent_id, ':child_id' => $child_id) );
 			
 			// correct charts
-			$sql = "UPDATE charts_content SET instance_id = :parent_id WHERE instance_type = 'songs' AND instance_id = :child_id";
+			$sql = "UPDATE chart_content SET instance_id = :parent_id WHERE instance_type = 'songs' AND instance_id = :child_id";
 			$query = $this->db->prepare($sql);
 			$exec_played = $query->execute( array(':parent_id' => $parent_id, ':child_id' => $child_id) );
 		
