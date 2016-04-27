@@ -3360,7 +3360,7 @@
 		/**
 			Returns an array containing the maximum amounts for the Top 20/20 stats in the specified year.
 		*/
-		public function getTop2020StatsMaximum($type, $year, $limit = 10) {
+		public function getTop2020StatsMaximum($type, $year, $limit = 1000) {
 			$sql = "SELECT 
 						instance_id AS 'InstanceId',
 						_date AS 'Date',
@@ -3389,7 +3389,7 @@
 		/**
 			Returns an array containing the count of #1 places for the Top 20/20 stats in the specified year.
 		*/
-		public function getTop2020StatsNoNo1($type, $year, $limit = 366) {
+		public function getTop2020StatsNoNo1($type, $year, $limit = 1000) {
 			$sql = "SELECT 
 						instance_id AS 'InstanceId',
 						COUNT(instance_id) AS 'No1Count'
