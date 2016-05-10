@@ -4,7 +4,7 @@
 	$html = "";
 	
 	// Headline
-	$html .= "<h3>Concert history</h3>";
+	$html .= "<h3>Upcoming concerts</h3>";
 	
 	$html .= $mc->getFrontend()->notImplementedYet();
 	

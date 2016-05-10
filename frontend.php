@@ -102,6 +102,7 @@
 				$menu .= "<div id='navbarCollapse' class='collapse navbar-collapse'>";
 					$menu .= "<ul class='nav navbar-nav'>";
 						$menu .= "<li class='" . $this->getActiveText("home", $selected) . "'><a href='index.php'>Home</a></li>";
+						
 						$menu .= "<li class='dropdown " . $this->getActiveText("statistics", $selected) . "'>";
 							$menu .= "<a href='#' data-toggle='dropdown' class='dropdown-toggle'>Statistics <b class='caret'></b></a>";
 							
@@ -111,10 +112,20 @@
 								$menu .= "<li><a href='custom_range.php'>Custom range</a></li>";
 								$menu .= "<li><a href='top2020_stats.php'>Top 20/20 Stats</a></li>";
 							$menu .= "</ul>";
-							
+						$menu .= "</li>";
+						
 						$menu .= "<li class='" . $this->getActiveText("top2020", $selected) . "'><a href='top2020.php'>Top 20/20</a></li>";
 						$menu .= "<li class='" . $this->getActiveText("history", $selected) . "'><a href='history.php'>History</a></li>";
-						//$menu .= "<li class='" . $this->getActiveText("concerts", $selected) . "'><a href='concerts.php'>Concerts</a></li>";
+						
+						$menu .= "<li class='dropdown " . $this->getActiveText("concerts", $selected) . "'>";
+							$menu .= "<a href='#' data-toggle='dropdown' class='dropdown-toggle'>Concerts <b class='caret'></b></a>";
+							
+							$menu .= "<ul class='dropdown-menu'>";
+								$menu .= "<li><a href='concerts.php'>History</a></li>";
+								$menu .= "<li><a href='upcoming.php'>Find upcoming concerts</a></li>";
+							$menu .= "</ul>";
+						$menu .= "</li>";
+						
 						$menu .= "<li class='" . $this->getActiveText("update", $selected) . "'><a href='update.php'>Update</a></li>";
 						$menu .= "<li class='" . $this->getActiveText("administration", $selected) . "'><a href='administration.php'>Administration</a></li>";
 						$menu .= "<li class='" . $this->getActiveText("settings", $selected) . "'><a href='settings.php'>Settings</a></li>";

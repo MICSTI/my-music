@@ -50,15 +50,15 @@
 									$html .= "<a href='#' class='top2020-stats-item' data-type='history' data-year='" . $year . "'>History</a>";
 								$html .= "</div>";
 								
-								// Maximum amount
-								$html .= "<div>";
-									$html .= "<a href='#' class='top2020-stats-item' data-type='maximum' data-year='" . $year . "'>Maximum</a>";
-								$html .= "</div>";	
-								
 								// No of #1 ranks
 								$html .= "<div>";
 									$html .= "<a href='#' class='top2020-stats-item' data-type='no1s' data-year='" . $year . "'># of #1's</a>";
 								$html .= "</div>";
+								
+								// Maximum amount
+								$html .= "<div>";
+									$html .= "<a href='#' class='top2020-stats-item' data-type='maximum' data-year='" . $year . "'>Maximum</a>";
+								$html .= "</div>";	
 							$html .= "</div>";
 						$html .= "</div>";
 					}
