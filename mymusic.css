@@ -349,8 +349,42 @@ a {
 .label-tomato {
 	background-color: tomato;
 }
+
+.label-iron {
+	background-color: #dadfe1;
+}
+
+.label-summer-sky {
+	background-color: #1e8bc3;
+}
+
+.label-buttercup {
+	background-color: #f39c12;
+}
 /* --------------- */
 
+/* --------- EVENTS --------- */
+.event {
+	padding: 10px 12px;
+	border-bottom: 1px solid #eee;
+}
+
+.event:hover {
+	cursor: pointer;
+	background-color: #eee;
+}
+
+.event-datetime {
+	font-size: 0.9em;
+}
+
+.event-artist {
+	font-weight: bold;
+	font-size: 1.2em;
+	margin-bottom: 2px;
+}
+
+/* -------------------------- */
 
 /* ---- NO AFFIX ON SMALL DEVICES ---- */
 @media (max-width: 765px) {

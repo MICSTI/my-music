@@ -4660,6 +4660,82 @@
 			return false;
 		}
 		
+		public function getEventEntries() {
+			$today = date('Y-m-d');
+			
+			$sql = "SELECT
+						ev.eventId AS 'AffiliateEventId',
+						ev.name AS 'EventName',
+						ev.aid AS 'ArtistId',
+						ev._date AS 'EventDate',
+						ev._time AS 'EventTime',
+						ev.location AS 'EventLocation',
+						ev.link AS 'AffiliateLink',
+						ev.viewed AS 'EventViewed',
+						evc.name AS 'EventCityName'
+					FROM
+						events ev INNER JOIN
+						eventCities evc ON evc.cityId = ev.cityId
+					WHERE
+						ev._date >= :today
+					ORDER BY
+						ev.viewed ASC,
+						ev._date ASC,
+						ev._time ASC,
+						ev.name ASC";
+						
+			$query = $this->db->prepare($sql);
+			$query->execute( array(':today' => $today) );
+			
+			if ($query->rowCount() > 0) {
+				return $query->fetchAll(PDO::FETCH_ASSOC);
+			} else {
+				return array();
+			}
+		}
+		
+		public function markEventsAsViewed() {
+			$sql = "UPDATE events SET viewed = 1";
+						
+			$query = $this->db->prepare($sql);
+			$query->execute();
+		}
+		
+		public function addEventEntry($eventId, $artist, $artist_id, $link, $location, $cityId, $cityName, $date, $time) {
+			$sql = "INSERT INTO events (eventId, name, aid, cityId, cityName, _date, _time, location, link, viewed) VALUES (:eventId, :artist, :aid, :cityId, :cityName, :date, :time, :location, :link, '0')";
+			$query = $this->db->prepare($sql);
+			$success = $query->execute( array(':eventId' => $eventId, ':artist' => $artist, ':aid' => $artist_id, ':cityId' => $cityId, ':cityName' => $cityName, ':date' => $date, ':time' => $time, ':location' => $location, ':link' => $link) );
+			
+			if ($query->rowCount() > 0) {
+				$inserted = $this->db->lastInsertId();
+				
+				return $inserted;
+			} else {
+				return false;
+			}
+		}
+		
+		public function updateEventEntry($eventId, $field, $value) {
+			$sql = "UPDATE events SET :field = :value WHERE eventId = :id";
+			$query = $this->db->prepare($sql);
+			$query->execute( array(':id' => $eventId, ':field' => $field, ':value' => $value) );
+			
+			return $query->rowCount() > 0;
+		}
+		
+		public function eventEntryExists($event_id) {
+			$sql = "SELECT eventId FROM events WHERE eventId = :id";
+			$query = $this->db->prepare($sql);
+			$query->execute( array(':id' => $event_id) );
+			
+			if ($query->rowCount() > 0) {
+				$fetch = $query->fetch(PDO::FETCH_ASSOC);
+				return true;
+			}
+			
+			return false;
+		}
+		
 		/**
 			Compiles the Top 20/20 charts.
 		*/

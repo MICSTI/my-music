@@ -1046,6 +1046,14 @@ function resetAddPlayed() {
 	addNewAddPlayedDiv();
 }
 
+function openLink(elem) {
+	var url = $(elem).attr("data-link");
+	
+	if (url !== undefined && url !== "") {
+		window.open(url, "_blank");
+	}
+}
+
 /**
 	Gets the played data for the date.
 */
