@@ -4,7 +4,42 @@
 	$html = "";
 	
 	// Headline
-	$html .= "<h3>Upcoming concerts</h3>";
+	$html .= "<h3 id='upcoming'>Upcoming concerts</h3>";
+	
+	// update status
+	$html .= "<div class='event-update-status'>";
+	
+		$html .= "<div class='event-update-title'>Update status</div>";
+	
+		$cities = $mc->getMdb()->getEventCities();
+		
+		foreach ($cities as $city) {
+			// try to get update config value for this city
+			$update_timestamp = $mc->getMdb()->getConfig("event_update_timestamp_" . $city["CityId"]);
+			
+			if ($update_timestamp !== false) {
+				$timestamp = new UnixTimestamp($update_timestamp);
+				$formatted_timestamp = $timestamp->convert2AustrianDateTime();
+				
+				$html .= "<div class='event-city-status'>";
+					$html .= "<span class='event-city-name bold'>" . $city["CityName"] . ": </span>";
+					$html .= "<span class='event-city-timestamp'>" . $formatted_timestamp . "</span>";
+				$html .= "</div>";
+			}
+		}
+		
+	$html .= "</div>";
+	
+	// event filtering
+	$html .= "<div class='event-filter'>";
+		$html.= "<span class='bold'>Event filtering: </span>";
+	
+		// show all events
+		$html .= "<span class='event-filter-item bold' data-filter='all'>All events</span>";
+		$html .= "<span class='event-filter-item' data-filter='matched'>Matched events</span>";
+		$html .= "<span class='event-filter-item' data-filter='graz'>Events in Graz</span>";
+		$html .= "<span class='event-filter-item' data-filter='vienna'>Events in Vienna</span>";
+	$html .= "</div>";
 	
 	$events = $mc->getMdb()->getEventEntries();
 	
@@ -23,7 +58,14 @@
 		
 		$label = getImportanceLabel($played);
 		
-		$html .= "<div class='event " . $label . "' data-affiliate-id='" . $event["AffiliateEventId"] . "' data-link='" . $event["AffiliateLink"] . "' data-city='" . $event["EventCityName"] . "' onclick='openLink(this)'>";
+		$matched = $label != "" ? "true" : "false";
+		
+		$html .= "<div class='event " . $label . "' data-matched='" . $matched . "' data-affiliate-id='" . $event["AffiliateEventId"] . "' data-link='" . $event["AffiliateLink"] . "' data-city='" . strtolower($event["EventCityName"]) . "' onclick='openLink(this)'>";
+		
+			// "NEW" ribbon
+			if ($viewed == 0)
+				$html .= "<div class='ribbon'><span>New</span></div>";
+		
 			$html .= "<div class='event-datetime'>";
 				$date_mysql = new MysqlDate($event["EventDate"]);
 				$date = $date_mysql->convert2AustrianDate();
@@ -48,7 +90,7 @@
 			return "";
 		} else if ($count <= 10) {
 			return "label-iron";
-		} else if ($count <= 250) {
+		} else if ($count <= 200) {
 			return "label-summer-sky";
 		} else {
 			return "label-buttercup";

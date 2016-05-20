@@ -1,6 +1,8 @@
 <?php
 	include('resources.php');
 	
+	set_time_limit(0);
+	
 	$city_id = $_GET["cityId"];
 	$output = $_GET["output"];
 	
@@ -129,10 +131,15 @@
 				$super_counter++;
 				
 				if ($super_counter >= $total_count) {
-					exit;
+					break;
 				}
 			}
 		} while ($super_counter < $total_count);
+		
+		// save update timestamp
+		if ($write_to_db) {
+			$mc->getMdb()->setConfig("event_update_timestamp_" . $city_id, mktime());
+		}
 	}
 	
 	function getStringBetween($string, $start, $end = "", $excludeSearch = true) {

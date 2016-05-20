@@ -1647,6 +1647,59 @@ $(document).ready( function () {
 		});
 	}
 	
+	// Upcoming events
+	var upcoming = $("#upcoming");
+	if (upcoming.length > 0) {
+		// filter items
+		$(".event-filter-item").on("click", function() {
+			$this = $(this);
+			
+			$(".event-filter-item").removeClass("bold");
+			
+			var filterType = $(this).attr("data-filter");
+			
+			var done = function() {
+				$this.addClass("bold");
+			}
+			
+			switch (filterType) {
+				case "all":
+					$(".event").show();
+					
+					done();
+					
+					break;
+					
+				case "matched":
+					$(".event[data-matched='false']").hide();
+					$(".event[data-matched='true']").show();
+					
+					done();
+					
+					break;
+					
+				case "graz":
+					$(".event[data-city='wien']").hide();
+					$(".event[data-city='graz']").show();
+					
+					done();
+				
+					break;
+					
+				case "vienna":
+					$(".event[data-city='graz']").hide();
+					$(".event[data-city='wien']").show();
+					
+					done();
+				
+					break;
+					
+				default:
+					break;
+			}
+		});
+	}
+	
 	var removeAdministrationActive = function() {
 		$("#administration a").removeClass("active");
 	}

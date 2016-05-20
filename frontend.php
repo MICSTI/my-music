@@ -122,7 +122,7 @@
 							
 							$menu .= "<ul class='dropdown-menu'>";
 								$menu .= "<li><a href='concerts.php'>History</a></li>";
-								$menu .= "<li><a href='upcoming.php'>Find upcoming concerts</a></li>";
+								$menu .= "<li><a href='upcoming.php'>Upcoming concerts</a></li>";
 							$menu .= "</ul>";
 						$menu .= "</li>";
 						

@@ -4694,6 +4694,23 @@
 			}
 		}
 		
+		public function getEventCities() {
+			$sql = "SELECT
+						cityId AS 'CityId',
+						name AS 'CityName'
+					FROM
+						eventCities";
+						
+			$query = $this->db->prepare($sql);
+			$query->execute( );
+			
+			if ($query->rowCount() > 0) {
+				return $query->fetchAll(PDO::FETCH_ASSOC);
+			} else {
+				return array();
+			}
+		}
+		
 		public function markEventsAsViewed() {
 			$sql = "UPDATE events SET viewed = 1";
 						

@@ -10,6 +10,11 @@ a {
 	outline: 0 !important;
 }
 
+h1 {
+	margin-left: 8px;
+	margin-right: 8px;
+}
+
 .bold {
 	font-weight: bold;
 }
@@ -367,11 +372,27 @@ a {
 .event {
 	padding: 10px 12px;
 	border-bottom: 1px solid #eee;
+	position: relative;
 }
 
 .event:hover {
 	cursor: pointer;
 	background-color: #eee;
+}
+
+.event.label-iron:hover {
+	background-color: #dadfe1 !important;
+	color: #fff;
+}
+
+.event.label-summer-sky:hover {
+	background-color: #1e8bc3 !important;
+	color: #fff;
+}
+
+.event.label-buttercup:hover {
+	background-color: #f39c12 !important;
+	color: #fff;
 }
 
 .event-datetime {
@@ -384,6 +405,77 @@ a {
 	margin-bottom: 2px;
 }
 
+.event-update-status {
+	margin-top: 16px;
+	margin-bottom: 20px;
+}
+
+.event-update-title {
+	font-weight: bold;
+	margin-bottom: 5px;
+	border-bottom: 1px solid #ccc;
+}
+
+.event-filter {
+	margin-bottom: 12px;
+}
+
+.event-filter-item {
+	display: inline-block;
+	padding: 3px 12px;
+	color: #337ab7;
+}
+
+.event-filter-item:hover {
+	cursor: pointer;
+}
+
+/* -------------------------- */
+
+/* --------- RIBBON --------- */
+.ribbon {
+  position: absolute;
+  right: -5px; top: -5px;
+  z-index: 1;
+  overflow: hidden;
+  width: 75px; height: 75px;
+  text-align: right;
+}
+.ribbon span {
+  font-size: 10px;
+  font-weight: bold;
+  color: #FFF;
+  text-transform: uppercase;
+  text-align: center;
+  line-height: 20px;
+  transform: rotate(45deg);
+  -webkit-transform: rotate(45deg);
+  width: 100px;
+  display: block;
+  background: #79A70A;
+  background: linear-gradient(#F70505 0%, #8F0808 100%);
+  box-shadow: 0 3px 10px -5px rgba(0, 0, 0, 1);
+  position: absolute;
+  top: 19px; right: -21px;
+}
+.ribbon span::before {
+  content: "";
+  position: absolute; left: 0px; top: 100%;
+  z-index: -1;
+  border-left: 3px solid #8F0808;
+  border-right: 3px solid transparent;
+  border-bottom: 3px solid transparent;
+  border-top: 3px solid #8F0808;
+}
+.ribbon span::after {
+  content: "";
+  position: absolute; right: 0px; top: 100%;
+  z-index: -1;
+  border-left: 3px solid transparent;
+  border-right: 3px solid #8F0808;
+  border-bottom: 3px solid transparent;
+  border-top: 3px solid #8F0808;
+}
 /* -------------------------- */
 
 /* ---- NO AFFIX ON SMALL DEVICES ---- */
