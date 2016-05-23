@@ -1,5 +1,7 @@
 <?php
 	include('resources.php');
+	
+	$weekdays = Array("So", "Mo", "Di", "Mi", "Do", "Fr", "Sa");
 
 	$html = "";
 	
@@ -67,11 +69,14 @@
 				$html .= "<div class='ribbon'><span>New</span></div>";
 		
 			$html .= "<div class='event-datetime'>";
+				$php_date = strtotime($event["EventDate"]);
+				$weekday = $weekdays[date("w", $php_date)];
+			
 				$date_mysql = new MysqlDate($event["EventDate"]);
 				$date = $date_mysql->convert2AustrianDate();
 				$time = $event["EventTime"];
 				
-				$html .= $date . " " . $time;
+				$html .= $weekday . ", " . $date . " " . $time;
 			$html .= "</div>";
 			
 			$html .= "<div class='event-artist'>" . $name . "</div>";
