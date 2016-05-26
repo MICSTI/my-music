@@ -43,7 +43,13 @@
 				$eventId = getStringBetween($link, "key=");
 				$artist = cleanHtml(getStringBetween($h4, "<span>", "</span>"));
 				
-				$aid = $mc->getMdb()->getArtistIdByName($artist);
+				try {
+					$aid = $mc->getMdb()->getArtistIdByName($artist);
+				} catch (PDOException $e) {
+					$aid = false;
+					echo "Skipped " . $artist . "<hr/>";
+				}
+				
 				$artist_id = $aid !== false ? $aid : -1;
 				
 				$dl = getStringBetween($item, "<dl", "</dl>");
