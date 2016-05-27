@@ -42,7 +42,7 @@
 	// Top 5 Songs
 	$songs = $mc->getMDB()->getTopXSongs(5);
 	
-	$html .= "<div class='col-xs-6'>";
+	$html .= "<div class='col-sm-6 col-xs-12'>";
 		$html .= "<div class='panel panel-default'>";
 			$html .= "<div class='panel-heading'><h4>Your favourite songs</h4></div>";
 			
@@ -75,7 +75,7 @@
 	// Top 5 Artists
 	$artists = $mc->getMDB()->getTopXArtists(5);
 	
-	$html .= "<div class='col-xs-6'>";
+	$html .= "<div class='col-sm-6 col-xs-12'>";
 		$html .= "<div class='panel panel-default'>";
 			$html .= "<div class='panel-heading'><h4>Your favourite artists</h4></div>";
 			
