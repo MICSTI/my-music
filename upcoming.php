@@ -93,9 +93,9 @@
 	function getImportanceLabel($count) {
 		if ($count <= 0) {
 			return "";
-		} else if ($count <= 10) {
+		} else if ($count < 10) {
 			return "label-iron";
-		} else if ($count <= 200) {
+		} else if ($count < 200) {
 			return "label-summer-sky";
 		} else {
 			return "label-buttercup";
