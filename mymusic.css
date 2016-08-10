@@ -159,6 +159,20 @@ h1 {
 	border-top: 1px solid #888 !important;
 }
 
+.activitySelectionContainer {
+	margin-top: 16px;
+}
+
+.activitySelectionItem {
+	margin-right: 20px;
+}
+
+.activitySelectionItem input[type=checkbox] {
+	position: relative;
+	top: 3px;
+	margin-right: 7px;
+}
+
 .administration-paragraph {
 	margin-bottom: 12px;
 }

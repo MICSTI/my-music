@@ -4161,7 +4161,7 @@
 		/**
 			Gets the overall country statistics for the whole database.
 		*/
-		public function getOverallCountryStatistics($secondary_weight = 0.3, $date_from = "", $date_to = "") {
+		public function getOverallCountryStatistics($secondary_weight = 0.3, $date_from = "", $date_to = "", $activities = array()) {
 			$main_weight = 1 - $secondary_weight;
 			
 			if ($date_from == "") {
@@ -4172,6 +4172,14 @@
 				$first_where = "WHERE DATE(pl.timestamp) >= :date_from1 AND DATE(pl.timestamp) <= :date_to1";
 				$second_where = "WHERE ar.sec_country_id > 0 AND DATE(pl.timestamp) >= :date_from2 AND DATE(pl.timestamp) <= :date_to2";
 				$exec_array = array(':mw' => $main_weight, ':sw' => $secondary_weight, ':date_from1' => $date_from, ':date_from2' => $date_from, ':date_to1' => $date_to, ':date_to2' => $date_to);
+			}
+			
+			$all_activities = count($this->getActivities());
+			
+			if (count($activities) > 0 AND count($activities) < $all_activities) {
+				$activity_str = " AND pl.actid IN (" . strip_tags(implode(",", $activities)) . ") ";
+			} else {
+				$activity_str = "";
 			}
 			
 			$sql = "SELECT
@@ -4192,7 +4200,7 @@
 									played pl INNER JOIN
 									songs so ON so.id = pl.sid INNER JOIN
 									artists ar ON ar.id = so.aid
-								" . $first_where . " 
+								" . $first_where . $activity_str . " 
 								GROUP BY
 									ar.id
 							) ag
@@ -4213,7 +4221,7 @@
 									played pl INNER JOIN
 									songs so ON so.id = pl.sid INNER JOIN
 									artists ar ON ar.id = so.aid
-								" . $second_where . " 
+								" . $second_where . $activity_str . " 
 								GROUP BY
 									ar.id
 							) ah
@@ -4251,13 +4259,21 @@
 		/**
 			Gets the overall activity statistics for the whole database.
 		*/
-		public function getOverallActivityStatistics($date_from = "", $date_to = "") {
+		public function getOverallActivityStatistics($date_from = "", $date_to = "", $activities = array()) {
 			if ($date_from == "") {
 				$where = "";
 				$exec_array = array();
 			} else {
 				$where = "WHERE DATE(pl.timestamp) >= :date_from AND DATE(pl.timestamp) <= :date_to";
 				$exec_array = array(':date_from' => $date_from, ':date_to' => $date_to);
+			}
+			
+			$all_activities = count($this->getActivities());
+			
+			if (count($activities) > 0 AND count($activities) < $all_activities) {
+				$activity_str = " AND pl.actid IN (" . strip_tags(implode(",", $activities)) . ") ";
+			} else {
+				$activity_str = "";
 			}
 			
 			$sql = "SELECT
@@ -4267,7 +4283,7 @@
 					FROM
 						played pl INNER JOIN
 						activities ac ON ac.id = pl.actid
-					" . $where . " 
+					" . $where . $activity_str . " 
 					GROUP BY
 						ac.id
 					ORDER BY
@@ -4299,7 +4315,7 @@
 		/**
 			Gets the lightning strikes for the specified year
 		*/
-		public function getLightningStrikes($date_from, $date_to, $limit = 50) {
+		public function getLightningStrikes($date_from, $date_to, $limit = 50, $activities = array()) {
 			$limit = " LIMIT 0, " . $limit;
 			
 			if ($date_from == "") {
@@ -4310,6 +4326,14 @@
 				// time span
 				$where = " DATE(pl.timestamp) >= :date_from AND DATE(pl.timestamp) <= :date_to AND ";
 				$exec_array = array(":date_from" => $date_from, ":date_to" => $date_to);
+			}
+			
+			$all_activities = count($this->getActivities());
+			
+			if (count($activities) > 0 AND count($activities) < $all_activities) {
+				$activity_str = " pl.actid IN (" . strip_tags(implode(",", $activities)) . ") AND ";
+			} else {
+				$activity_str = "";
 			}
 			
 			$sql = "SELECT
@@ -4329,7 +4353,7 @@
 						FROM
 						  played pl
 						WHERE
-						  " . $where . "
+						  " . $where . $activity_str . "
 						  pl.sid NOT IN (12071, 13078, 13080, 13838, 13839)
 						GROUP BY
 						  pl.sid,
@@ -4457,7 +4481,15 @@
 		/**
 			Returns an array containing the song statistics for the specified date range.
 		*/
-		public function getPlayedSongStatistics ($date_from, $date_to, $limit_low, $limit_high) {
+		public function getPlayedSongStatistics ($date_from, $date_to, $limit_low, $limit_high, $activities = array()) {
+			$all_activities = count($this->getActivities());
+			
+			if (count($activities) > 0 AND count($activities) < $all_activities) {
+				$activity_str = strip_tags(implode(",", $activities));
+			} else {
+				$activity_str = "";
+			}
+			
 			$sql = "SELECT
 						so.id AS 'SongId',
 						so.name AS 'SongName',
@@ -4474,7 +4506,14 @@
 						INNER JOIN artists ar ON ar.id = so.aid
 						INNER JOIN records re ON re.id = so.rid
 					WHERE
-						DATE(pl.timestamp) >= :date_from AND DATE(pl.timestamp) <= :date_to
+						DATE(pl.timestamp) >= :date_from AND DATE(pl.timestamp) <= :date_to";
+						
+						
+			if ($activity_str != "") {
+				$sql .= " AND actid IN (" . $activity_str . ") ";
+			}
+						
+			$sql .= " 
 					GROUP BY
 						pl.sid
 					ORDER BY
@@ -4497,7 +4536,15 @@
 		/**
 			Returns an array containing the song statistics for the specified date range.
 		*/
-		public function getPlayedArtistStatistics ($date_from, $date_to, $limit_low, $limit_high) {
+		public function getPlayedArtistStatistics ($date_from, $date_to, $limit_low, $limit_high, $activities = array()) {
+			$all_activities = count($this->getActivities());
+			
+			if (count($activities) > 0 AND count($activities) < $all_activities) {
+				$activity_str = strip_tags(implode(",", $activities));
+			} else {
+				$activity_str = "";
+			}
+			
 			$sql = "SELECT
 						ar.id AS 'ArtistId',
 						ar.name AS 'ArtistName',
@@ -4509,7 +4556,14 @@
 						INNER JOIN songs so ON so.id = pl.sid
 						INNER JOIN artists ar ON ar.id = so.aid
 					WHERE
-						DATE(pl.timestamp) >= :date_from AND DATE(pl.timestamp) <= :date_to
+						DATE(pl.timestamp) >= :date_from AND DATE(pl.timestamp) <= :date_to";
+						
+						
+			if ($activity_str != "") {
+				$sql .= " AND actid IN (" . $activity_str . ") ";
+			}
+						
+			$sql .= " 
 					GROUP BY
 						ar.id
 					ORDER BY
@@ -4531,7 +4585,15 @@
 		/**
 			Returns an array containing the record statistics for the specified date range.
 		*/
-		public function getPlayedRecordStatistics ($date_from, $date_to, $limit_low, $limit_high) {
+		public function getPlayedRecordStatistics ($date_from, $date_to, $limit_low, $limit_high, $activities = array()) {
+			$all_activities = count($this->getActivities());
+				
+			if (count($activities) > 0 AND count($activities) < $all_activities) {
+				$activity_str = strip_tags(implode(",", $activities));
+			} else {
+				$activity_str = "";
+			}
+			
 			$sql = "SELECT
 						re.id AS 'RecordId',
 						re.name AS 'RecordName',
@@ -4546,7 +4608,14 @@
 						INNER JOIN artists ar ON ar.id = so.aid
 						INNER JOIN records re ON re.id = so.rid
 					WHERE
-						DATE(pl.timestamp) >= :date_from AND DATE(pl.timestamp) <= :date_to
+						DATE(pl.timestamp) >= :date_from AND DATE(pl.timestamp) <= :date_to";
+						
+						
+			if ($activity_str != "") {
+				$sql .= " AND actid IN (" . $activity_str . ") ";
+			}
+						
+			$sql .= " 
 					GROUP BY
 						re.id
 					ORDER BY

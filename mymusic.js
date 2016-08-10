@@ -1485,9 +1485,32 @@ $(document).ready( function () {
 	if (custom_statistics.length > 0) {
 		// calculate button
 		$("#custom-range-calculate").on("click", function() {
+			custom_statistics.empty();
+			
+			// show loading indicator
+			var loadStatus = $("<div>", {
+				class: 'loadStatus',
+				html: 'Calculating statistics...'
+			});
+			
+			loadStatus.hide()
+					  .appendTo(custom_statistics)
+					  .fadeIn(250);
+					  
+			// get selected activities
+			var $selectedActivities = $(".activitySelection");
+			var selectedActivities = [];
+			
+			$selectedActivities.each(function(idx, item) {
+				if ($(item).is(':checked')) {
+					selectedActivities.push($(item).attr("data-id"));
+				}
+			});
+			
 			_data = {
 				from: $("#custom-statistics-start-date").val(),
-				to: $("#custom-statistics-end-date").val()
+				to: $("#custom-statistics-end-date").val(),
+				activities: selectedActivities
 			};
 			
 			$.ajax( {

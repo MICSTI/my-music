@@ -173,8 +173,9 @@
 				
 				$from = $json_data["from"];
 				$to = $json_data["to"];
+				$activities = $json_data["activities"];
 				
-				$response["content"] = $mc->getFrontend()->getCustomRangeStatisticsContent($mc->getMDB(), $from, $to);
+				$response["content"] = $mc->getFrontend()->getCustomRangeStatisticsContent($mc->getMDB(), $from, $to, $activities);
 				$response["success"] = true;
 			
 				break;

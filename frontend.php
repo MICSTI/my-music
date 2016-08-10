@@ -1187,7 +1187,7 @@
 		/**
 			Returns the content for the custom range statistics page.
 		*/
-		public function getCustomRangeStatisticsContent($mdb, $from, $to) {
+		public function getCustomRangeStatisticsContent($mdb, $from, $to, $activities) {
 			$date_from = getMysqlDate($from);
 			$date_to = getMysqlDate($to);
 			
@@ -1196,9 +1196,9 @@
 			
 			$secondary_country_weight = $mdb->getConfig("secondary_country_weight");
 			
-			$songs = $mdb->getPlayedSongStatistics($date_from, $date_to, $limit_low, $limit_high);
-			$artists = $mdb->getPlayedArtistStatistics($date_from, $date_to, $limit_low, $limit_high);
-			$records = $mdb->getPlayedRecordStatistics($date_from, $date_to, $limit_low, $limit_high);
+			$songs = $mdb->getPlayedSongStatistics($date_from, $date_to, $limit_low, $limit_high, $activities);
+			$artists = $mdb->getPlayedArtistStatistics($date_from, $date_to, $limit_low, $limit_high, $activities);
+			$records = $mdb->getPlayedRecordStatistics($date_from, $date_to, $limit_low, $limit_high, $activities);
 			
 			$html = "";
 			
@@ -1244,21 +1244,21 @@
 				
 				$html .= "<div id='countries' class='tab-pane fade'>";
 					// get country statistics content
-					$country_statistics = $mdb->getOverallCountryStatistics($secondary_country_weight, $date_from, $date_to);
+					$country_statistics = $mdb->getOverallCountryStatistics($secondary_country_weight, $date_from, $date_to, $activities);
 					
 					$html .= $this->getCountryStatisticsTable($mdb, $country_statistics);
 				$html .= "</div>";
 				
 				$html .= "<div id='activities' class='tab-pane fade'>";
 					// get activity statistics content
-					$activity_statistics = $mdb->getOverallActivityStatistics($date_from, $date_to);
+					$activity_statistics = $mdb->getOverallActivityStatistics($date_from, $date_to, $activities);
 					
 					$html .= $this->getActivityStatisticsTable($mdb, $activity_statistics);
 				$html .= "</div>";
 				
 				$html .= "<div id='lightning' class='tab-pane fade'>";
 					// get lightning strikes content
-					$lightning_strikes = $mdb->getLightningStrikes($date_from, $date_to, 30);
+					$lightning_strikes = $mdb->getLightningStrikes($date_from, $date_to, 30, $activities);
 						
 					$html .= $this->getLightningStrikesTable($mdb, $lightning_strikes);
 				$html .= "</div>";
