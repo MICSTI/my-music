@@ -2141,6 +2141,13 @@
 							$html .= "</tr>";
 						}
 						
+						// add sum row
+						$html .= "<tr class='result-sum'>";
+							$html .= "<td class='bold'>Total</td>";
+							$html .= "<td></td>";
+							$html .= "<td class='text-right'>" . $sum . "</td>";
+						$html .= "</tr>";
+						
 					$html .= "</tbody>";
 					
 				$html .= "</table>";
