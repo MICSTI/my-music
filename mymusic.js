@@ -12,7 +12,7 @@ var ADD_SONG_AC_OPTIONS = {
 	itemDisplay: function(_category, _item, _choiceClass) {
 		switch (_category) {
 			case "songs":
-				return "<div class='" + _choiceClass + "' data-category='" + _category + "' data-id='" + _item.SongId + "' data-artist=\"" + _item.ArtistName + "\" data-song=\"" + _item.SongName + "\" data-record=\"" + _item.RecordName + "\">" +
+				return "<div class='" + _choiceClass + "' data-category='" + _category + "' data-id='" + _item.SongId + "' data-artist=\"" + _item.ArtistName + "\" data-song=\"" + _item.SongName.replace(/"/g, "&#34;").replace(/'/g, "&#39;") + "\" data-record=\"" + _item.RecordName + "\">" +
 							"<div class='search_artist_name'>" + _item.ArtistName + "</div>" +
 							"<div>" + _item.SongName + "</div>" +
 							"<div class='search_record_name'>" + _item.RecordName + "</div>" +
