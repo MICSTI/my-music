@@ -448,6 +448,19 @@ h1 {
 	cursor: pointer;
 }
 
+.artist_upcoming_event {
+	margin-bottom: 10px;
+}
+
+.artist_upcoming_event:last-child {
+	margin-bottom: 0;
+}
+
+.ticket-link {
+	display: inline-block;
+	margin-left: 12px;
+}
+
 /* -------------------------- */
 
 /* --------- RIBBON --------- */

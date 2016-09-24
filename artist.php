@@ -76,6 +76,26 @@
 				$html .= "</div>";
 			$html .= "</div>";
 			
+			// upcoming concerts
+			$upcoming = $mc->getMDB()->getEventsForArtist($aid);
+			
+			if (count($upcoming) > 0) {
+				$html .= "<div class='panel panel-default'>";
+					$html .= "<div class='panel-heading bold'>Upcoming concerts</div>";
+					
+					$html .= "<div class='panel-body'>";
+						foreach ($upcoming as $event) {
+							$mysql_date = new MysqlDate($event['EventDate']);
+							
+							$html .= "<div class='artist_upcoming_event'>";
+								$html .= "<div class='bold'>" . $mysql_date->convert2AustrianDate() . " " . $event['EventTime'] . "</div>";
+								$html .= "<div>" . $event['EventLocation'] . "<span class='ticket-link'><a href='" . $event['EventAffiliateLink'] . "' target='_blank'>Tickets</a></span></div>";
+							$html .= "</div>";
+						}
+					$html .= "</div>";
+				$html .= "</div>";
+			}
+			
 			// song accordion
 			$html .= "<div id='song-accordion' class='panel-group'>";
 				// Popular

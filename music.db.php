@@ -4822,6 +4822,34 @@
 			return false;
 		}
 		
+		public function getEventsForArtist($aid) {
+			$today = date('Y-m-d');
+			
+			$sql = "SELECT
+						_date AS 'EventDate',
+						_time AS 'EventTime',
+						location AS 'EventLocation',
+						cityName AS 'EventCityName',
+						link AS 'EventAffiliateLink'
+					FROM
+						events
+					WHERE
+						aid = :aid AND
+						_date >= :today
+					ORDER By
+						_date ASC,
+						_time ASC";
+						
+			$query = $this->db->prepare($sql);
+			$query->execute( array(':aid' => $aid, ':today' => $today) );
+			
+			if ($query->rowCount() > 0) {
+				return $query->fetchAll(PDO::FETCH_ASSOC);
+			}
+			
+			return array();
+		}
+		
 		/**
 			Compiles the Top 20/20 charts.
 		*/
