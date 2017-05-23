@@ -7,7 +7,7 @@
 		private $PAGE_TITLE = "myMusic";
 		
 		private $STYLESHEETS = array(
-								"http://fonts.googleapis.com/css?family=Oxygen",
+								"https://fonts.googleapis.com/css?family=Oxygen",
 								"external/bootstrap/css/bootstrap.min.css",
 								"external/flags/css/flag-icon.min.css",
 								"external/jquery/jquery-ui.min.css",
