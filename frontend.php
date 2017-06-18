@@ -798,6 +798,9 @@
 							
 							$default_device = $mdb->getConfig("default_web_device");
 							
+							// there are no conditionals, just use default device
+							$device_id = $default_device;
+							
 							// keep track of active state to add a divider between active and non-active devices
 							$dev_active = true;
 							
@@ -809,7 +812,7 @@
 									$html .= "<option data-divider='true'></option>";
 								}
 								
-								$html .= "<option value='" . $device["DeviceId"] . "' data-icon='" . $icon["IconPath"] . "' " . compareOption($default_device, $device["DeviceId"]) . ">" . $device["DeviceName"] . "</option>";
+								$html .= "<option value='" . $device["DeviceId"] . "' data-icon='" . $icon["IconPath"] . "' " . compareOption($device_id, $device["DeviceId"]) . ">" . $device["DeviceName"] . "</option>";
 							}
 						$html .= "</select></div>";
 					$html .= "</div>";
@@ -824,8 +827,32 @@
 							// get default web activity
 							$default_activity = $mdb->getConfig("default_web_activity");
 							
+							// check if there are conditional devices for the web activity
+							$conditional_entry = $mdb->getConfig("conditional_web_activity_ip");
+							
+							$conditional_entry_parts = explode(":", $conditional_entry);
+							
+							$conditional_entry_activity = $conditional_entry_parts[0];
+							$conditional_entry_ip_parts = explode(";", $conditional_entry_parts[1]);
+							
+							$ip_address = $_SERVER['REMOTE_ADDR'];
+							
+							$use_conditional_activity = false;
+							
+							foreach ($conditional_entry_ip_parts as $ip) {
+								if (strpos($ip_address, $ip) === 0) {
+									$use_conditional_activity = true;
+								}
+							}
+							
+							if ($use_conditional_activity === true) {
+								$activity_id = $conditional_entry_activity;
+							} else {
+								$activity_id = $default_activity;
+							}
+							
 							foreach ($activities as $activity) {
-								$html .= "<option value='" . $activity["ActivityId"] . "' data-content=\"<span class='label label-big label-" . $activity["ActivityColor"] . "'>#" . $activity["ActivityName"] . "</span> \" " . compareOption($default_activity, $activity["ActivityId"]) . ">"  . "</option>";
+								$html .= "<option value='" . $activity["ActivityId"] . "' data-content=\"<span class='label label-big label-" . $activity["ActivityColor"] . "'>#" . $activity["ActivityName"] . "</span> \" " . compareOption($activity_id, $activity["ActivityId"]) . ">"  . "</option>";
 							}
 						$html .= "</select></div>";
 					$html .= "</div>";
