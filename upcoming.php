@@ -41,6 +41,8 @@
 		$html .= "<span class='event-filter-item' data-filter='matched'>Matched events</span>";
 		$html .= "<span class='event-filter-item' data-filter='graz'>Events in Graz</span>";
 		$html .= "<span class='event-filter-item' data-filter='vienna'>Events in Vienna</span>";
+		$html .= "<span class='event-filter-item' data-filter='linz'>Events in Linz</span>";
+		$html .= "<span class='event-filter-item' data-filter='salzburg'>Events in Salzburg</span>";
 	$html .= "</div>";
 	
 	$events = $mc->getMdb()->getEventEntries();

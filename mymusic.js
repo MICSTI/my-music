@@ -1703,6 +1703,8 @@ $(document).ready( function () {
 					
 				case "graz":
 					$(".event[data-city='wien']").hide();
+					$(".event[data-city='linz']").hide();
+					$(".event[data-city='salzburg']").hide();
 					$(".event[data-city='graz']").show();
 					
 					done();
@@ -1711,7 +1713,29 @@ $(document).ready( function () {
 					
 				case "vienna":
 					$(".event[data-city='graz']").hide();
+					$(".event[data-city='linz']").hide();
+					$(".event[data-city='salzburg']").hide();
 					$(".event[data-city='wien']").show();
+					
+					done();
+				
+					break;
+					
+				case "linz":
+					$(".event[data-city='graz']").hide();
+					$(".event[data-city='salzburg']").hide();
+					$(".event[data-city='wien']").hide();
+					$(".event[data-city='linz']").show();
+					
+					done();
+				
+					break;
+					
+				case "salzburg":
+					$(".event[data-city='graz']").hide();
+					$(".event[data-city='wien']").hide();
+					$(".event[data-city='linz']").hide();
+					$(".event[data-city='salzburg']").show();
 					
 					done();
 				
