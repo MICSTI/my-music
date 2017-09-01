@@ -4361,7 +4361,9 @@
 						ORDER BY
 						  COUNT(pl.sid) DESC) a INNER JOIN
 						songs so ON so.id = a.SongId INNER JOIN
-						artists ar ON ar.id = so.aid" . $limit;
+						artists ar ON ar.id = so.aid
+					ORDER BY
+						a.PlayedCount DESC " . $limit;
 			
 			$query = $this->db->prepare($sql);
 			$query->execute( $exec_array );
