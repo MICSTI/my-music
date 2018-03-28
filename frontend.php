@@ -786,7 +786,7 @@
 					// datepicker
 					$html .= "<div class='col-sm-2'>";
 						$html .= "<div class='bold'>Date</div>";
-						$html .= "<div><input type='text' id='played-date' class='form-control date-picker' placeholder='Date' value='" . $date . "' /></div>";
+						$html .= "<div><input type='text' id='played-date' class='form-control date-picker' placeholder='Date' value='" . $date . "' autocomplete='off' /></div>";
 					$html .= "</div>";
 					
 					// device
@@ -894,11 +894,11 @@
 			
 			return "<div id='" . $id . "-container' class='form-group add-played-song-div row'>
 						<div class='col-sm-2'>
-							<input type='text' class='form-control add-played-song-time' placeholder='Time' value='" . $time . "' />
+							<input type='text' class='form-control add-played-song-time' placeholder='Time' value='" . $time . "' autocomplete='off' />
 						</div>
 						
 						<div class='add-played-song-input col-sm-10'>
-							<input type='text' id='" . $id . "' class='form-control add-played-song' placeholder='Choose song' />
+							<input type='text' id='" . $id . "' class='form-control add-played-song' placeholder='Choose song' autocomplete='off' />
 						</div>
 						
 						<div class='add-played-song-display col-sm-10'></div>
@@ -1073,7 +1073,7 @@
 			
 			// Top bar with search field
 			$html .= "<div class='row administration-paragraph'>";
-				$html .= "<input type='text' id='admin-search-song' class='form-control admin-search autofocus' />";
+				$html .= "<input type='text' id='admin-search-song' class='form-control admin-search autofocus' autocomplete='off' />";
 			$html .= "</div>";
 			
 			// result div
@@ -1097,7 +1097,7 @@
 			
 			// Top bar with search field
 			$html .= "<div class='row administration-paragraph'>";
-				$html .= "<input type='text' id='admin-search-artist' class='form-control admin-search autofocus' />";
+				$html .= "<input type='text' id='admin-search-artist' class='form-control admin-search autofocus' autocomplete='off' />";
 			$html .= "</div>";
 			
 			// result div
@@ -1121,7 +1121,7 @@
 			
 			// Top bar with search field
 			$html .= "<div class='row administration-paragraph'>";
-				$html .= "<input type='text' id='admin-search-record' class='form-control admin-search autofocus' />";
+				$html .= "<input type='text' id='admin-search-record' class='form-control admin-search autofocus' autocomplete='off' />";
 			$html .= "</div>";
 			
 			// result div
@@ -1145,7 +1145,7 @@
 			
 			// Top bar with datepicker
 			$html .= "<div class='row administration-paragraph'>";
-				$html .= "<input type='text' id='played-administration-date' class='form-control date-picker' placeholder='Date' value='" . date("d.m.Y") . "' />";
+				$html .= "<input type='text' id='played-administration-date' class='form-control date-picker' placeholder='Date' value='" . date("d.m.Y") . "' autocomplete='off' />";
 			$html .= "</div>";
 			
 			// result div
