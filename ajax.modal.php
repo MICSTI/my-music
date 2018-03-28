@@ -44,7 +44,7 @@
 					$body .= "<div class='form-group'>";
 						$body .= "<label for='icon-name' class='control-label col-xs-2'>Name</label>";
 						$body .= "<div class='col-xs-10'>";
-							$body .= "<input type='text' class='form-control autofocus' id='icon-name' name='icon-name' placeholder='Name' value='" . $icon["IconName"] . "' />";
+							$body .= "<input type='text' class='form-control autofocus' id='icon-name' name='icon-name' placeholder='Name' value='" . $icon["IconName"] . "' autocomplete='off' />";
 						$body .= "</div>";
 					$body .= "</div>";
 					
@@ -64,7 +64,7 @@
 					$body .= "<div class='form-group'>";
 						$body .= "<label for='icon-path' class='control-label col-xs-2'>Path</label>";
 						$body .= "<div class='col-xs-10'>";
-							$body .= "<input type='text' class='form-control' id='icon-path' name='icon-path' placeholder='Path' value='" . $icon["IconPath"] . "' />";
+							$body .= "<input type='text' class='form-control' id='icon-path' name='icon-path' placeholder='Path' value='" . $icon["IconPath"] . "' autocomplete='off' />";
 						$body .= "</div>";
 					$body .= "</div>";
 				$body .= "</form>";
@@ -129,7 +129,7 @@
 					$body .= "<div class='form-group'>";
 						$body .= "<label for='device-name' class='control-label col-xs-2'>Name</label>";
 						$body .= "<div class='col-xs-10'>";
-							$body .= "<input type='text' class='form-control autofocus' id='device-name' name='device-name' placeholder='Name' value='" . $device["DeviceName"] . "' />";
+							$body .= "<input type='text' class='form-control autofocus' id='device-name' name='device-name' placeholder='Name' value='" . $device["DeviceName"] . "' autocomplete='off' />";
 						$body .= "</div>";
 					$body .= "</div>";
 					
@@ -220,7 +220,7 @@
 					$body .= "<div class='form-group'>";
 						$body .= "<label for='device-type-name' class='control-label col-xs-2'>Name</label>";
 						$body .= "<div class='col-xs-10'>";
-							$body .= "<input type='text' class='form-control autofocus' id='device-type-name' name='device-type-name' placeholder='Name' value='" . $device_type["DeviceTypeName"] . "' />";
+							$body .= "<input type='text' class='form-control autofocus' id='device-type-name' name='device-type-name' placeholder='Name' value='" . $device_type["DeviceTypeName"] . "' autocomplete='off' />";
 						$body .= "</div>";
 					$body .= "</div>";
 					
@@ -297,7 +297,7 @@
 					$body .= "<div class='form-group'>";
 						$body .= "<label for='activity-name' class='control-label col-xs-2'>Name</label>";
 						$body .= "<div class='col-xs-10'>";
-							$body .= "<input type='text' class='form-control autofocus' id='activity-name' name='activity-name' placeholder='Name' value='" . $activity["ActivityName"] . "' />";
+							$body .= "<input type='text' class='form-control autofocus' id='activity-name' name='activity-name' placeholder='Name' value='" . $activity["ActivityName"] . "' autocomplete='off' />";
 						$body .= "</div>";
 					$body .= "</div>";
 					
@@ -374,7 +374,7 @@
 					$body .= "<div class='form-group'>";
 						$body .= "<label for='country-name' class='control-label col-xs-2'>Name</label>";
 						$body .= "<div class='col-xs-10'>";
-							$body .= "<input type='text' class='form-control autofocus' id='country-name' name='country-name' placeholder='Name' value='" . $country["CountryName"] . "' />";
+							$body .= "<input type='text' class='form-control autofocus' id='country-name' name='country-name' placeholder='Name' value='" . $country["CountryName"] . "' autocomplete='off' />";
 						$body .= "</div>";
 					$body .= "</div>";
 					
@@ -382,7 +382,7 @@
 					$body .= "<div class='form-group'>";
 						$body .= "<label for='country-short' class='control-label col-xs-2'>Short</label>";
 						$body .= "<div class='col-xs-10'>";
-							$body .= "<input type='text' class='form-control' id='country-short' name='country-short' placeholder='Short (Alpha2 code)' value='" . $country["CountryShort"] . "' />";
+							$body .= "<input type='text' class='form-control' id='country-short' name='country-short' placeholder='Short (Alpha2 code)' value='" . $country["CountryShort"] . "' autocomplete='off' />";
 						$body .= "</div>";
 					$body .= "</div>";
 				$body .= "</form>";
@@ -444,7 +444,7 @@
 					$body .= "<div class='form-group'>";
 						$body .= "<label for='config-property' class='control-label col-xs-2'>Property</label>";
 						$body .= "<div class='col-xs-10'>";
-							$body .= "<input type='text' class='form-control autofocus' id='config-property' name='config-property' placeholder='Property' value='" . $config["ConfigProperty"] . "' />";
+							$body .= "<input type='text' class='form-control autofocus' id='config-property' name='config-property' placeholder='Property' value='" . $config["ConfigProperty"] . "' autocomplete='off' />";
 						$body .= "</div>";
 					$body .= "</div>";
 					
@@ -452,7 +452,7 @@
 					$body .= "<div class='form-group'>";
 						$body .= "<label for='config-value' class='control-label col-xs-2'>Value</label>";
 						$body .= "<div class='col-xs-10'>";
-							$body .= "<input type='text' class='form-control' id='config-value' name='config-value' placeholder='Value' value='" . $config["ConfigValue"] . "' />";
+							$body .= "<input type='text' class='form-control' id='config-value' name='config-value' placeholder='Value' value='" . $config["ConfigValue"] . "' autocomplete='off' />";
 						$body .= "</div>";
 					$body .= "</div>";
 				$body .= "</form>";
@@ -514,7 +514,7 @@
 					$body .= "<div class='form-group'>";
 						$body .= "<label for='record-type-name' class='control-label col-xs-2'>Name</label>";
 						$body .= "<div class='col-xs-10'>";
-							$body .= "<input type='text' class='form-control autofocus' id='record-type-name' name='record-type-name' placeholder='Name' value='" . $record_type["RecordTypeName"] . "' />";
+							$body .= "<input type='text' class='form-control autofocus' id='record-type-name' name='record-type-name' placeholder='Name' value='" . $record_type["RecordTypeName"] . "' autocomplete='off' />";
 						$body .= "</div>";
 					$body .= "</div>";
 					
@@ -638,7 +638,7 @@
 						$body .= "<div class='form-group'>";
 							$body .= "<label for='record-publish' class='control-label col-xs-3'>Publish date</label>";
 							$body .= "<div class='col-xs-9'>";
-								$body .= "<input type='text' class='form-control date-picker' id='record-publish' name='record-publish' placeholder='Date' value='" . $publish_date . "' />";
+								$body .= "<input type='text' class='form-control date-picker' id='record-publish' name='record-publish' placeholder='Date' value='" . $publish_date . "' autocomplete='off' />";
 							$body .= "</div>";
 						$body .= "</div>";
 						
@@ -1080,7 +1080,7 @@
 					$body .= "<div class='form-group'>";
 						$body .= "<label for='song-admin-song-title' class='control-label col-xs-2'>Title</label>";
 						$body .= "<div class='col-xs-10'>";
-							$body .= "<input type='text' class='form-control autofocus' id='song-admin-song-title' name='song-admin-song-title' placeholder='Song title' value=\"" . $song["SongName"] . "\" />";
+							$body .= "<input type='text' class='form-control autofocus' id='song-admin-song-title' name='song-admin-song-title' placeholder='Song title' value=\"" . $song["SongName"] . "\" autocomplete='off' />";
 						$body .= "</div>";
 					$body .= "</div>";
 					
@@ -1088,7 +1088,7 @@
 					$body .= "<div class='form-group'>";
 						$body .= "<label for='song-admin-artist-name' class='control-label col-xs-2'>Artist</label>";
 						$body .= "<div class='col-xs-10'>";
-							$body .= "<input type='text' class='form-control' id='song-admin-artist-name' name='song-admin-artist-name' placeholder='Artist name' value=\"" . $song["ArtistName"] . "\" />";
+							$body .= "<input type='text' class='form-control' id='song-admin-artist-name' name='song-admin-artist-name' placeholder='Artist name' value=\"" . $song["ArtistName"] . "\" autocomplete='off' />";
 						$body .= "</div>";
 					$body .= "</div>";
 					
@@ -1096,7 +1096,7 @@
 					$body .= "<div class='form-group'>";
 						$body .= "<label for='song-admin-record-name' class='control-label col-xs-2'>Record</label>";
 						$body .= "<div class='col-xs-10'>";
-							$body .= "<input type='text' class='form-control' id='song-admin-record-name' name='song-admin-record-name' placeholder='Record name' value=\"" . $song["RecordName"] . "\" />";
+							$body .= "<input type='text' class='form-control' id='song-admin-record-name' name='song-admin-record-name' placeholder='Record name' value=\"" . $song["RecordName"] . "\" autocomplete='off' />";
 						$body .= "</div>";
 					$body .= "</div>";
 					
@@ -1278,7 +1278,7 @@
 					$body .= "<div class='form-group'>";
 						$body .= "<label for='artist-admin-artist-name' class='control-label col-xs-2'>Name</label>";
 						$body .= "<div class='col-xs-10'>";
-							$body .= "<input type='text' class='form-control autofocus' id='artist-admin-artist-name' name='artist-admin-artist-name' placeholder='Name' value=\"" . $artist["ArtistName"] . "\" />";
+							$body .= "<input type='text' class='form-control autofocus' id='artist-admin-artist-name' name='artist-admin-artist-name' placeholder='Name' value=\"" . $artist["ArtistName"] . "\" autocomplete='off' />";
 						$body .= "</div>";
 					$body .= "</div>";
 					
@@ -1381,7 +1381,7 @@
 					$body .= "<div class='form-group'>";
 						$body .= "<label for='record-admin-record-name' class='control-label col-xs-3'>Title</label>";
 						$body .= "<div class='col-xs-9'>";
-							$body .= "<input type='text' class='form-control autofocus' id='record-admin-record-name' name='record-admin-record-name' placeholder='Name' value=\"" . $record["RecordName"] . "\" />";
+							$body .= "<input type='text' class='form-control autofocus' id='record-admin-record-name' name='record-admin-record-name' placeholder='Name' value=\"" . $record["RecordName"] . "\" autocomplete='off' />";
 						$body .= "</div>";
 					$body .= "</div>";
 				
@@ -1389,7 +1389,7 @@
 					$body .= "<div class='form-group'>";
 						$body .= "<label for='record-admin-artist-name' class='control-label col-xs-3'>Artist</label>";
 						$body .= "<div class='col-xs-9'>";
-							$body .= "<input type='text' class='form-control' id='record-admin-artist-name' name='record-admin-artist-name' placeholder='Artist name' value='" . $record["ArtistName"] . "' />";
+							$body .= "<input type='text' class='form-control' id='record-admin-artist-name' name='record-admin-artist-name' placeholder='Artist name' value='" . $record["ArtistName"] . "' autocomplete='off' />";
 						$body .= "</div>";
 					$body .= "</div>";
 					
@@ -1421,7 +1421,7 @@
 					$body .= "<div class='form-group'>";
 						$body .= "<label for='record-admin-publish-date' class='control-label col-xs-3'>Publish date</label>";
 						$body .= "<div class='col-xs-9'>";
-							$body .= "<input type='text' class='form-control date-picker' id='record-admin-publish-date' name='record-admin-publish-date' placeholder='Date' value='" . $publish_date . "' />";
+							$body .= "<input typ='text' class='form-control date-picker' id='record-admin-publish-date' name='record-admin-publish-date' placeholder='Date' value='" . $publish_date . "' autocomplete='off' />";
 						$body .= "</div>";
 					$body .= "</div>";
 				$body .= "</form>";
@@ -1511,7 +1511,7 @@
 					$body .= "<div class='form-group'>";
 						$body .= "<label for='played-admin-time' class='control-label col-xs-2'>Time</label>";
 						$body .= "<div class='col-xs-10'>";
-							$body .= "<input type='text' class='form-control autofocus' id='played-admin-time' name='played-admin-time' placeholder='Time' value='" . $time . "' />";
+							$body .= "<input type='text' class='form-control autofocus' id='played-admin-time' name='played-admin-time' placeholder='Time' value='" . $time . "' autocomplete='off' />";
 						$body .= "</div>";
 					$body .= "</div>";
 				
@@ -1522,7 +1522,7 @@
 						$body .= "<label for='played-admin-song-id' class='control-label col-xs-2'>Song</label>";
 						
 						$body .= "<div id='played-admin-song-input' class='col-xs-10'>";
-							$body .= "<input type='text' id='played-admin-song-id' class='form-control' placeholder='Choose song' value=\"" . $song["SongName"] . "\" />";
+							$body .= "<input type='text' id='played-admin-song-id' class='form-control' placeholder='Choose song' value=\"" . $song["SongName"] . "\" autocomplete='off' />";
 						$body .= "</div>";
 						
 						$body .= "<div id='played-admin-song-display' class='col-xs-10'>";
