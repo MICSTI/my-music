@@ -22,7 +22,7 @@
 	$datetime = new DateTime($date);
 	$day_name = getDayName(date('N', $datetime->getTimestamp()));
 	
-	$datepicker_elem = "<input type='text' id='pickdate' class='form-control' placeholder='Pick date' value='" . $mysql_date->convert2AustrianDate() . "' />";
+	$datepicker_elem = "<input type='text' id='pickdate' class='form-control' placeholder='Pick date' value='" . $mysql_date->convert2AustrianDate() . "' autocomplete='off' />";
 	
 	// Headline
 	$html .= "<h3>History</h3>";

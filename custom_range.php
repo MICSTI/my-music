@@ -10,7 +10,7 @@
 	$html .= "<div class='custom-statistics-control'>";
 		$html .= "<form class='form-inline'>";
 			$html .= "<div class='form-group'>";
-				$html .= "<input type='text' id='custom-statistics-start-date' class='form-control date-picker' placeholder='Start date' />";
+				$html .= "<input type='text' id='custom-statistics-start-date' class='form-control date-picker' placeholder='Start date' autocomplete='off' />";
 			$html .= "</div>";
 			
 			$html .= "<div class='form-group custom-statistics-between'>";
@@ -18,7 +18,7 @@
 			$html .= "</div>";
 			
 			$html .= "<div class='form-group'>";
-				$html .= "<input type='text' id='custom-statistics-end-date' class='form-control date-picker' placeholder='End date' />";
+				$html .= "<input type='text' id='custom-statistics-end-date' class='form-control date-picker' placeholder='End date' autocomplete='off' />";
 			$html .= "</div>";
 			
 			$html .= "<div class='form-group custom-statistics-between'>";
