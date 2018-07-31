@@ -117,14 +117,16 @@
 						$menu .= "<li class='" . $this->getActiveText("top2020", $selected) . "'><a href='top2020.php'>Top 20/20</a></li>";
 						$menu .= "<li class='" . $this->getActiveText("history", $selected) . "'><a href='history.php'>History</a></li>";
 						
-						$menu .= "<li class='dropdown " . $this->getActiveText("concerts", $selected) . "'>";
+						$menu .= "<li class='" . $this->getActiveText("concerts", $selected) . "'><a href='upcoming.php'>Concerts</a></li>";
+						
+						/*$menu .= "<li class='dropdown " . $this->getActiveText("concerts", $selected) . "'>";
 							$menu .= "<a href='#' data-toggle='dropdown' class='dropdown-toggle'>Concerts <b class='caret'></b></a>";
 							
 							$menu .= "<ul class='dropdown-menu'>";
 								$menu .= "<li><a href='concerts.php'>History</a></li>";
 								$menu .= "<li><a href='upcoming.php'>Upcoming concerts</a></li>";
 							$menu .= "</ul>";
-						$menu .= "</li>";
+						$menu .= "</li>";*/
 						
 						$menu .= "<li class='" . $this->getActiveText("update", $selected) . "'><a href='update.php'>Update</a></li>";
 						$menu .= "<li class='" . $this->getActiveText("administration", $selected) . "'><a href='administration.php'>Administration</a></li>";
