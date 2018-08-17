@@ -4387,6 +4387,11 @@
 			$month = substr($compile_date, 5, 2);
 			$day = substr($compile_date, 8, 2);
 			
+			// convert strings to integer
+			$year = (int)$year;
+			$month = (int)$month;
+			$day = (int)$day;
+			
 			$start_date = new UnixTimestamp(mktime(0, 0, 0, $month, $day - 21, $year));
 			$end_date = new UnixTimestamp(mktime(0, 0, 0, $month, $day - 1, $year));
 			
@@ -4404,6 +4409,11 @@
 			$year = substr($compile_date, 0, 4);
 			$month = substr($compile_date, 5, 2);
 			$day = substr($compile_date, 8, 2);
+			
+			// convert strings to integer
+			$year = (int)$year;
+			$month = (int)$month;
+			$day = (int)$day;
 			
 			$start_date = new UnixTimestamp(mktime(0, 0, 0, $month, $day - 21, $year));
 			$end_date = new UnixTimestamp(mktime(0, 0, 0, $month, $day - 1, $year));
