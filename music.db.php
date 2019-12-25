@@ -1603,11 +1603,20 @@
 		public function shortSingleSearch ($mode, $search, $limit = 10) {			
 			switch ($mode) {
 				case "songs":
-					$sql = "SELECT SongId, SongName, ArtistName, RecordName FROM SongsView WHERE SongName LIKE :search1 OR ArtistName LIKE :search2 LIMIT :limit";
+					$sql = "SELECT
+								songs.id AS SongId,
+								songs.name AS SongName,
+								artists.name AS ArtistName,
+								records.name AS RecordName
+							FROM songs
+								INNER JOIN artists ON artists.id = songs.aid
+								INNER JOIN records ON records.id = songs.rid
+							WHERE songs.name LIKE :search1
+							LIMIT :limit";
 			
 					try {
 						$query = $this->db->prepare($sql);
-						$query->execute( array(':search1' => $search . "%", ':search2' => $search . "%", ':limit' => $limit) );
+						$query->execute( array(':search1' => $search . "%", ':limit' => $limit) );
 						
 						return $query->fetchAll(PDO::FETCH_ASSOC);
 					} catch (Exception $e) {
@@ -1662,11 +1671,20 @@
 		public function longSingleSearch ($mode, $search, $limit = 10) {
 			switch ($mode) {
 				case "songs":
-					$sql = "SELECT SongId, SongName, ArtistName, RecordName FROM SongsView WHERE SongName LIKE :search1 OR ArtistName LIKE :search2 LIMIT :limit";
+					$sql = "SELECT
+								songs.id AS SongId,
+								songs.name AS SongName,
+								artists.name AS ArtistName,
+								records.name AS RecordName
+							FROM songs
+								INNER JOIN artists ON artists.id = songs.aid
+								INNER JOIN records ON records.id = songs.rid
+							WHERE songs.name LIKE :search1
+							LIMIT :limit";
 			
 					try {
 						$query = $this->db->prepare($sql);
-						$query->execute( array(':search1' => "%" . $search . "%", ':search2' => "%" . $search . "%",':limit' => $limit) );
+						$query->execute( array(':search1' => "%" . $search . "%", ':limit' => $limit) );
 						
 						return $query->fetchAll(PDO::FETCH_ASSOC);
 					} catch (Exception $e) {
@@ -1739,7 +1757,7 @@
 						$exec_array[$term_str2] = "%" . $term . "%";
 						
 						// for multi-search, we always match like "%XXX%"
-						$tq = "( SELECT SongId FROM SongsView WHERE SongName LIKE " . $term_str1 . " OR ArtistName LIKE " . $term_str2 . " )";
+						$tq = "( SELECT songs.id AS SongId FROM songs INNER JOIN artists ON artists.id = songs.aid INNER JOIN records ON records.id = songs.rid WHERE songs.name LIKE " . $term_str1 . " OR artists.name LIKE " . $term_str2 . " )";
 						
 						if ($term_query != "") {
 							$term_query .= " UNION ALL ";
@@ -1750,7 +1768,7 @@
 					
 					$count_query = " SELECT SongId, COUNT(SongId) AS 'SongCount' FROM ( " . $term_query . " ) count_query GROUP BY SongId HAVING COUNT(SongId) >= :term_count ";
 				
-					$main_sql = "SELECT sv.SongId, sv.SongName, sv.ArtistName, sv.RecordName FROM ( " . $count_query . " ) sub_query INNER JOIN SongsView sv ON sv.SongId = sub_query.SongId LIMIT :limit";
+					$main_sql = "SELECT songs.id AS SongId, songs.name AS SongName, artists.name AS ArtistName, records.name AS RecordName FROM ( " . $count_query . " ) sub_query INNER JOIN songs ON sub_query.SongId = songs.id INNER JOIN artists ON artists.id = songs.aid INNER JOIN records ON records.id = songs.rid LIMIT :limit";
 					
 					try {
 						$query = $this->db->prepare($main_sql);
