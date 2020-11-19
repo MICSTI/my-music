@@ -2,8 +2,8 @@
 	include('resources.php');
 	
 	// GET keys
-	$GET_SEARCH_TEXT = "search";
-	$GET_SEARCH_CATEGORIES = "categories";
+	$POST_SEARCH_TEXT = "search";
+	$POST_SEARCH_CATEGORIES = "categories";
 	
 	// JSON keys
 	$KEY_STATUS = "status";
@@ -34,9 +34,9 @@
 	// Response array
 	$json = array();
 	
-	if ($_GET) {
-		$query = isset($_GET[$GET_SEARCH_TEXT]) ? trim($_GET[$GET_SEARCH_TEXT]) : false;
-		$categories = isset($_GET[$GET_SEARCH_CATEGORIES]) ? trim($_GET[$GET_SEARCH_CATEGORIES]) : false;
+	if ($_POST) {
+		$query = isset($_POST[$POST_SEARCH_TEXT]) ? trim($_POST[$POST_SEARCH_TEXT]) : false;
+		$categories = isset($_POST[$POST_SEARCH_CATEGORIES]) ? trim($_POST[$POST_SEARCH_CATEGORIES]) : false;
 		
 		if ($query !== false) {			
 			// check if query is not empty
