@@ -4627,10 +4627,10 @@
 			$sql = "SELECT
 						re.id AS 'RecordId',
 						re.name AS 'RecordName',
-						ar.id AS 'ArtistId',
-						ar.name AS 'ArtistName',
-						ar.main_country_id AS 'ArtistMainCountryId',
-						ar.sec_country_id AS 'ArtistSecondaryCountryId',
+						ANY_VALUE(ar.id) AS 'ArtistId',
+						ANY_VALUE(ar.name) AS 'ArtistName',
+						ANY_VALUE(ar.main_country_id) AS 'ArtistMainCountryId',
+						ANY_VALUE(ar.sec_country_id) AS 'ArtistSecondaryCountryId',
 						COUNT(pl.sid) AS 'PlayedCount'
 					FROM
 						played pl
