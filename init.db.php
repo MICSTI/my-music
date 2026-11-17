@@ -3,7 +3,17 @@
 		private $dbc = null;
 		
 		public function __construct () {
-			$this->dbc = new PDO('mysql:host=localhost;dbname=d01b0305;charset=utf8', 'root', '');
+			$host = getenv('DB_HOST') ?: 'localhost';
+			$name = getenv('DB_NAME') ?: 'd01b0305';
+			$user = getenv('DB_USER') ?: 'root';
+			$pass = getenv('DB_PASSWORD') ?: '';
+
+			$this->dbc = new PDO(
+				"mysql:host=$host;dbname=$name;charset=utf8",
+				$user,
+				$pass
+			);
+			
 			$this->dbc->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 			$this->dbc->setAttribute(PDO::ATTR_EMULATE_PREPARES, false);
 		}
