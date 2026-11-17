@@ -16,7 +16,7 @@
 				$this->open($this->getMMFile());
 				$this->setMusicDB($music_db);
 			} catch (Exception $e) {
-				exit("MediaMonkey database file could not be read.");
+				//exit("MediaMonkey database file could not be read.");
 			}
 		}
 		
